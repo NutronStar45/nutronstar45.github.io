@@ -1,17 +1,48 @@
+/* General style */
 * {
-    font-family: Roboto;
+	font-family: Roboto;
 }
+/* Div group */
 .divGroup {
-    border: 1px dashed #7f7f7f;
-    margin-bottom: 10px;
+	border: 1px dashed #7f7f7f;
+	margin-bottom: 10px;
 }
+/* Div group without margin */
 .divGroupNoMargin {
-    border: 1px dashed #7f7f7f;
+	border: 1px dashed #7f7f7f;
 }
+/* Div group title */
 .divGroupTitle {
-    font-size: 10px;
-    margin-left: 10px;
+	font-size: 10px;
+	margin-left: 10px;
 }
+/* Div group description line */
 .divGroupLine {
-    margin-left: 20px;
+	margin-left: 20px;
+}
+/* Tooltip */
+.tooltip {
+	position: relative;
+	display: inline-block;
+	border-bottom: 1.5px dotted #000;
+}
+/* Tooltip text */
+.tooltip .tooltipText {
+	visibility: hidden;
+	width: 250px;
+	background-color: #000;
+	color: #fff;
+	text-align: center;
+	border-radius: 3px;
+	padding: 5px 0;
+
+	/* Positioning the tooltop */
+	position: absolute;
+	z-index: 1;
+	bottom: 20px;
+	left: 0%;
+}
+/* Show tooltip when hovering */
+.tooltip:hover .tooltipText {
+	visibility: visible;
 }
