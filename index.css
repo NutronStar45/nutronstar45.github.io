@@ -30,8 +30,8 @@
 .tooltip .tooltipText {
 	visibility: hidden;
 	width: 250px;
-	background-color: #000;
-	color: #fff;
+	background-color: #3f3f3f;
+	color: #000;
 	text-align: center;
 	border-radius: 3px;
 	padding: 5px 0;
