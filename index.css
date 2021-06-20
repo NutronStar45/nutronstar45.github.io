@@ -1,0 +1,17 @@
+* {
+    font-family: Roboto;
+}
+.divGroup {
+    border: 1px dashed #7f7f7f;
+    margin-bottom: 10px;
+}
+.divGroupNoMargin {
+    border: 1px dashed #7f7f7f;
+}
+.divGroupTitle {
+    font-size: 10px;
+    margin-left: 10px;
+}
+.divGroupLine {
+    margin-left: 20px;
+}
