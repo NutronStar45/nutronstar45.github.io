@@ -12,7 +12,19 @@
 
 <body>
 	<!-- Toolbar -->
-	<img src="/imgs/toolbar.svg" alt="Toolbar" />
+	<svg class="toolbar" id="toolbarMeta" width="1000" height="50">
+		<!-- Homepage icon -->
+		<a xlink:href="/">
+			<rect width="50" height="50" style="fill:#fff" />
+			<path d="M5 25 l20 -20 l20 20" stroke="#7f7f7f" stroke-width="3" fill="none" />
+			<rect y="25" width="50" height="25" style="fill:#fff" />
+			<path d="M12 25 l0 20 l26 0 l0 -20" stroke="#7f7f7f" stroke-width="3" fill="none" />
+		</a>
+		<!-- Projects -->
+		<a xlink:href="/projs">
+			<text x="100" y="30" fill="#000">Projects</text>
+		</a>
+	</svg>
 	<!-- Page title -->
 	<h2 class="pageTitle" id="pageTitle">Projects</h2>
 	<!-- Ongoing -->
