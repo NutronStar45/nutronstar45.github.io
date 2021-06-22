@@ -64,7 +64,7 @@ window.onload = () => {
 	pages.forEach(element => {
 		// If the page has toolbar enabled
 		if (document.title == element.title &&
-			element.attributes.toolbar.enabled)
+			element.attributes.toolbar.enabled) {
 			document.getElementById(element.attributes.toolbar.id).innerHTML = `
 				<!-- Homepage icon -->
 				<a xlink:href="/">
@@ -78,9 +78,9 @@ window.onload = () => {
 					<text x="100" y="30" fill="#000">Projects</text>
 				</a>
 			`;
-
-		// File missing location on HTTP404
-		if (element.relation == 'HTTP404')
-			document.getElementById('pageSubtitle').innerHTML = `File or Site missing at <code>${ window.location.pathname }</code>`;
+			// File missing location on HTTP404
+			if (element.relation == 'HTTP404')
+				document.getElementById('pageSubtitle').innerHTML = `File or Site missing at <code>${window.location.pathname}</code>`;
+		}
 	});
 }
