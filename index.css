@@ -1,7 +1,34 @@
 /* General style */
 * {
-	font-family: Roboto;
+	font: 100%/160% Roboto;
 }
+
+/* Header 2 */
+h2 {
+	font: bold 1.5em/160% Roboto;
+}
+
+
+
+
+
+/*
+ * Page title element
+ */
+
+/* Page subtitle */
+.pageSubtitle {
+	font-size: 20px;
+}
+
+
+
+
+
+/*
+ * Div group element
+ */
+
 /* Div group */
 .divGroup {
 	border: 1px dashed #7f7f7f;
@@ -20,6 +47,15 @@
 .divGroupLine {
 	margin-left: 20px;
 }
+
+
+
+
+
+/*
+ * Tooltip element
+ */
+
 /* Tooltip */
 .tooltip {
 	position: relative;
@@ -45,4 +81,30 @@
 /* Show tooltip when hovering */
 .tooltip:hover .tooltipText {
 	visibility: visible;
+}
+
+
+
+
+
+/*
+ * Misc style
+ */
+
+/* <code> style */
+code {
+	background-color: #efefef;
+	color: #bf0000;
+	font-family: 'Courier New';
+	margin: 0 5px 0 5px;
+}
+
+/* Go back image on 404 page */
+.goBackImage {
+	width: 30px;
+}
+/* Go back text on 404 page */
+.goBackText {
+	position: relative;
+	bottom: 10px;
 }
