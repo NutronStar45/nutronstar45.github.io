@@ -73,7 +73,7 @@ window.onload = () => {
 			document.getElementById(element.attributes.toolbar.id).innerHTML = `
 				<svg class="toolbar" id="toolbarMeta" width="1000" height="50">
 					<!-- Homepage icon -->
-					<a xlink:href="/">
+					<a xlink:href="javascript:link('/');">
 						<rect width="50" height="50" style="fill:${
 							paramEntries.theme == 'white' ? '#fff' : (
 							paramEntries.theme == 'dimmedBlack' ? '#1f1f1f' : (
@@ -88,7 +88,7 @@ window.onload = () => {
 						<polyline points="12,25 12,45 38,45 38,25" style="fill:none;stroke:#7f7f7f;stroke-width:3;" />
 					</a>
 					<!-- Projects -->
-					<a xlink:href="/projs">
+					<a xlink:href="javascript:link('/projs');">
 						<text x="100" y="30" fill="${
 							paramEntries.theme == 'white' ? '#000' : (
 							paramEntries.theme == 'dimmedBlack' ? '#fff' : (
@@ -116,5 +116,11 @@ window.onload = () => {
 	let selectTheme = document.getElementById('selectTheme');
 	selectTheme.onchange = () => {
 		window.location.href = '?theme=' + params[0].values[selectTheme.selectedIndex];
+	}
+
+	// Link to page
+	function link(path) {
+		//
+		`${ path }?theme=${ paramEntries.theme }`;
 	}
 }
