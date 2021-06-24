@@ -67,6 +67,13 @@ window.onload = () => {
 	});
 
 	pages.forEach(element => {
+		// Fill in internal script
+		document.getElementById('scriptInternal').innerHTML = `
+			function link(path) {
+				window.location.href = \`${ path }?theme=${ new URLSearchParams(window.location.search).get('theme') }\`;
+			}
+		`;
+
 		// If the page has toolbar enabled
 		if (document.title == element.title &&
 			element.attributes.toolbar.enabled) {
@@ -117,9 +124,4 @@ window.onload = () => {
 	selectTheme.onchange = () => {
 		window.location.href = '?theme=' + params[0].values[selectTheme.selectedIndex];
 	}
-}
-
-// Link to page
-function link(path) {
-	window.location.href = `${ path }?theme=${ paramEntries.theme }`;
 }
