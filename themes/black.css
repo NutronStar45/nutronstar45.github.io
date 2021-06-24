@@ -1,0 +1,160 @@
+/* General style */
+* {
+	font: 100%/160% Roboto;
+	background-color: #000;
+}
+
+/* Sticky toolbar */
+.toolbarMeta {
+	position: sticky;
+	position: -webkit-sticky; /* Safari */
+	top: 0;
+}
+
+/* Top right fixed toolbar */
+.toolbarFixed {
+	position: fixed;
+	top: 0;
+	right: 0;
+	z-index: 1;
+	padding: 0 5px;
+	border: 2px solid #fff;
+	margin: 8px 8px 0 0;
+}
+
+/* Text */
+h2, p, sup, li, a, select, label {
+	color: #fff;
+}
+
+/* Superscript */
+sup {
+	font-size: smaller;
+}
+
+/* Header 2 */
+h2 {
+	font: bold 1.5em/160% Roboto;
+}
+
+
+
+
+
+/*
+ * Page title element
+ */
+
+/* Page subtitle */
+.pageSubtitle {
+	font-size: 20px;
+}
+
+
+
+
+
+/*
+ * Div group element
+ */
+
+/* Div group */
+.divGroup {
+	border: 1px dashed #7f7f7f;
+	margin-bottom: 10px;
+}
+/* Div group without margin */
+.divGroupNoMargin {
+	border: 1px dashed #7f7f7f;
+}
+/* Div group title */
+.divGroupTitle {
+	font-size: 10px;
+	margin-left: 10px;
+}
+/* Div group description line */
+.divGroupLine {
+	margin-left: 20px;
+}
+
+
+
+
+
+/*
+ * Tooltip element
+ */
+
+/* Tooltip */
+.tooltip {
+	position: relative;
+	display: inline-block;
+	border-bottom: 1.5px dotted #fff;
+}
+/* Tooltip text */
+.tooltip .tooltipText {
+	visibility: hidden;
+	width: 250px;
+	background-color: #404040;
+	color: #fff;
+	text-align: center;
+	border-radius: 3px;
+	padding: 5px 0;
+
+	/* Positioning the tooltop */
+	position: absolute;
+	z-index: 1;
+	bottom: 20px;
+	left: 0%;
+}
+/* Show tooltip when hovering */
+.tooltip:hover .tooltipText {
+	visibility: visible;
+}
+
+
+
+
+
+/*
+ * Links
+ */
+
+/* Unvisited */
+a:link {
+	color: #ff1;
+	cursor: pointer;
+	text-decoration: underline;
+}
+/* Visited */
+a:visited {
+	color: #aae574;
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+
+
+
+
+/*
+ * Misc style
+ */
+
+/* Codespace */
+code {
+	background-color: #101010;
+	color: #40ffff;
+	font-family: 'Courier New';
+	margin: 0 5px 0 5px;
+}
+
+/* Go back image on 404 page */
+.goBackImage {
+	width: 30px;
+}
+/* Go back text on 404 page */
+.goBackText {
+	position: relative;
+	bottom: 10px;
+}
