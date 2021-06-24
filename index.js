@@ -70,7 +70,7 @@ window.onload = () => {
 		// Fill in internal script
 		document.getElementById('scriptInternal').innerHTML = `
 			function link(path) {
-				window.location.href = \`${ path }?theme=${ new URLSearchParams(window.location.search).get('theme') }\`;
+				window.location.href = \`\${ path }?theme=\${ new URLSearchParams(window.location.search).get('theme') }\`;
 			}
 		`;
 
