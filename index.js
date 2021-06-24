@@ -49,14 +49,14 @@ const params = [
 	}
 ]
 
+// URL query/params
+let paramEntriesRaw = new URLSearchParams(window.location.search);
+let paramEntries = {
+	theme: paramEntriesRaw.get('theme')
+};
+
 // On page loaded
 window.onload = () => {
-	// URL query/params
-	let paramEntriesRaw = new URLSearchParams(window.location.search);
-	let paramEntries = {
-		theme: paramEntriesRaw.get('theme')
-	};
-
 	// Themes
 	let hasValidTheme = false;
 	params[0].values.forEach(element => {
@@ -117,10 +117,9 @@ window.onload = () => {
 	selectTheme.onchange = () => {
 		window.location.href = '?theme=' + params[0].values[selectTheme.selectedIndex];
 	}
+}
 
-	// Link to page
-	function link(path) {
-		//
-		`${ path }?theme=${ paramEntries.theme }`;
-	}
+// Link to page
+function link(path) {
+	window.location.href = `${ path }?theme=${ paramEntries.theme }`;
 }
