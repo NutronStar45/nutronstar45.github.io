@@ -2,83 +2,86 @@
 <html lang="en">
 
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>NutronStar45's Work</title>
-	<!-- CSS -->
-	<link class="externalSource" id="stylesheetSource" rel="stylesheet" href="" />
-	<!-- JS -->
-	<script class="externalSource" id="scriptSource" src="/index.js"></script>
-	<script class="internalSource" id="scriptInternal"></script>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="keywords" content="NutronStar45,NutronStar45's Work,NutronStar45's Website">
+  <meta name="description" content="NutronStar45's website about his work">
+  <meta name="author" content="NutronStar45">
+  <title>NutronStar45's Work</title>
+  <!-- CSS -->
+  <link id="stylesheetSource" rel="stylesheet" href="" />
+  <!-- JS -->
+  <script src="/index.js"></script>
+  <script id="scriptInternal"></script>
 </head>
 
 <body>
-	<!-- Toolbar -->
-	<div class="toolbarMeta" id="toolbarMeta"></div>
-	<!-- Page title -->
-	<h2 class="pageTitle" id="pageTitle">NutronStar45's Work</h2>
-	<!-- About -->
-	<div class="divGroup" id="aboutDiv">
-		<p class="divGroupTitle" id="aboutDivTitle">Who am I?</p>
-		<p class="divGroupLine" id="aboutDivLine0">I'm NutronStar45 <sub>(Internet nick obviously)</sub>, I am a self-learning coder for Python and JavaScript, also a Minecraft player.</p>
-	</div>
-	<!-- Making contents -->
-	<div class="divGroupNoMargin" id="makingContentsDiv">
-		<p class="divGroupTitle" id="makingContentsDivTitle">What am I making?</p>
-		<!-- Currently making -->
-		<p class="divGroupLine" id="makingContentsDivLine0">I'm currently making</p>
-		<ul class="unorderedList" id="makingContentsList">
-			<li>
-				NutronStar45's Discord Bot <sup>[Details in <a href="javascript:link('/projs');">Projects</a>]</sup>
-			</li>
-			<li>
-				Nutron's SkyWars Pack <sup>[Details in <a href="javascript:link('/projs');">Projects</a>]</sup>
-			</li>
-			<li>
-				NutronStar45's Work <sup>[Details in <a href="javascript:link('/projs');">Projects</a>]</sup>
-			</li>
-		</ul>
-	</div>
-	<div class="divGroup" id="plannedMakingDiv">
-		<!-- Planned making -->
-		<p class="divGroupLine" id="plannedMakingDivLine0">Also I'm planning to make</p>
-		<ul class="unorderedList" id="plannedMakingList">
-			<li>
-				Nutron's Tools <sup>[Details in <a href="javascript:link('/projs');">Projects</a>]</sup>
-			</li>
-		</ul>
-	</div>
-	<!-- Links -->
-	<div class="divGroup" id="linksDiv">
-		<p class="divGroupTitle" id="linksDivTitle">Useful links</p>
-		<ul class="unorderedList" id="linksList">
-			<!-- GitHub Profile -->
-			<li>
-				<a href="https://github.com/NutronStar45">My GitHub Profile</a>
-			</li>
-			<!-- Permalink -->
-			<li>
-				<a href="https://nutronstar45.github.io">Permalink of this page</a>
-			</li>
-		</ul>
-	</div>
-	<!-- Sources -->
-	<div class="divGroup" id="sourcesDiv">
-		<p class="divGroupTitle" id="sourcesDivTitle">Sources</p>
-		<ul class="unorderedList" id="sourcesList">
-			<!-- Source code -->
-			<li>
-				Source<sup>[<a href="https://github.com/NutronStar45/nutronstar45.github.io" target="_blank">GitHub</a>]</sup>
-			</li>
-			<li>
-				<div class="tooltip" id="sourcesFontTooltip">Main font: Roboto
-					<span class="tooltipText" id="sourcesFontTooltipText">(Different platform/browser may show different fonts.)</span>
-				</div>
-				<sup>[<a href="https://fonts.google.com/specimen/Roboto" target="_blank">Google Fonts</a>] [<a href="https://en.wikipedia.org/wiki/Roboto" target="_blank">Wikipedia</a>]</sup>
-			</li>
-		</ul>
-	</div>
+  <!-- Toolbar -->
+  <div class="toolbarMeta" id="toolbarMeta"></div>
+  <!-- Page title -->
+  <h2>NutronStar45's Work</h2>
+  <!-- About -->
+  <div class="divGroup" name="about">
+    <p class="divGroupTitle">Who am I?</p>
+    <p class="divGroupLine">I'm NutronStar45 <sub>(Internet nick obviously)</sub>, I am a self-learning coder for Python and JavaScript, also a Minecraft player.</p>
+  </div>
+  <!-- Making contents -->
+  <div class="divGroupNoMargin" name="making">
+    <p class="divGroupTitle">What am I making?</p>
+    <!-- Currently making -->
+    <p class="divGroupLine">I'm currently making</p>
+    <ul>
+      <li>
+        NutronStar45's Discord Bot <sup>[Details in <a href="javascript:link('projs');">Projects</a>]</sup>
+      </li>
+      <li>
+        Nutron's SkyWars Pack <sup>[Details in <a href="javascript:link('projs');">Projects</a>]</sup>
+      </li>
+      <li>
+        NutronStar45's Work <sup>[Details in <a href="javascript:link('projs');">Projects</a>]</sup>
+      </li>
+    </ul>
+  </div>
+  <div class="divGroup" name="plannedMaking">
+    <!-- Planned making -->
+    <p class="divGroupLine">Also I'm planning to make</p>
+    <ul>
+      <li>
+        Nutron's Tools <sup>[Details in <a href="javascript:link('projs');">Projects</a>]</sup>
+      </li>
+    </ul>
+  </div>
+  <!-- Links -->
+  <div class="divGroup" name="links">
+    <p class="divGroupTitle">Useful links</p>
+    <ul>
+      <!-- GitHub Profile -->
+      <li>
+        <a href="javascript:link('NutronStar45', 'github');">My GitHub profile</a>
+      </li>
+      <!-- Permalink -->
+      <li>
+        <a href="javascript:link('/');">Permalink of this site</a>
+      </li>
+    </ul>
+  </div>
+  <!-- Sources -->
+  <div class="divGroup" name="sources">
+    <p class="divGroupTitle">Sources</p>
+    <ul>
+      <!-- Source code -->
+      <li>
+        Source<sup>[<a href="javascript:link('NutronStar45/nutronstar45.github.io', 'github');" target="_blank">GitHub</a>]</sup>
+      </li>
+      <li>
+        <div class="tooltip">Main font: Roboto
+          <span class="tooltipText">(Different platform/browser may show different fonts.)</span>
+        </div>
+        <sup>[<a href="https://fonts.google.com/specimen/Roboto" target="_blank">Google Fonts</a>] [<a href="javascript:link('Roboto', 'wiki');" target="_blank">Wikipedia</a>]</sup>
+      </li>
+    </ul>
+  </div>
 </body>
 
 </html>

@@ -1,40 +1,50 @@
 /* General style */
 * {
-	font: 100%/160% Roboto;
-	background-color: #1f1f1f;
+  font: 100%/160% Roboto;
+  background-color: #1f1f1f;
+  color: #fff;
 }
+
+/* 45 degrees rotated block */
+/* Unordered list markers/Before definition */
+/* Original SVG
+
+<svg width="17" height="13" xmlns="http://www.w3.org/2000/svg">
+  <rect x="6" y="4" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 8.5,6.5)" />
+</svg>
+
+ */
+ul ::marker {
+  content: url('data:image/svg+xml,<svg width="17" height="13" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="4" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 8.5,6.5)" /></svg>');
+}
+.definition::before {
+  content: url('data:image/svg+xml,<svg width="17" height="13" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="4" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 8.5,6.5)" /></svg>');
+}
+
+
+
+
+
+/*
+ * Toolbar
+ */
 
 /* Sticky toolbar */
 .toolbarMeta {
-	position: sticky;
-	position: -webkit-sticky; /* Safari */
-	top: 0;
+  position: sticky;
+  position: -webkit-sticky; /* Safari */
+  top: 0;
 }
 
 /* Top right fixed toolbar */
 .toolbarFixed {
-	position: fixed;
-	top: 0;
-	right: 0;
-	z-index: 1;
-	padding: 0 5px;
-	border: 2px solid #fff;
-	margin: 8px 8px 0 0;
-}
-
-/* Text */
-h2, p, sup, li, a, select, label {
-	color: #fff;
-}
-
-/* Superscript */
-sup {
-	font-size: smaller;
-}
-
-/* Header 2 */
-h2 {
-	font: bold 1.5em/160% Roboto;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  padding: 0 5px;
+  border: 2px solid #fff;
+  margin: 8px 8px 0 0;
 }
 
 
@@ -42,12 +52,12 @@ h2 {
 
 
 /*
- * Page title element
+ * Page title elements
  */
 
 /* Page subtitle */
 .pageSubtitle {
-	font-size: 20px;
+  font-size: 20px;
 }
 
 
@@ -55,26 +65,71 @@ h2 {
 
 
 /*
- * Div group element
+ * Div group elements
  */
 
 /* Div group */
 .divGroup {
-	border: 1px dashed #7f7f7f;
-	margin-bottom: 10px;
+  border: 1px dashed #7f7f7f;
+  margin: 0 8px 10px 0;
 }
 /* Div group without margin */
 .divGroupNoMargin {
-	border: 1px dashed #7f7f7f;
+  border: 1px dashed #7f7f7f;
 }
 /* Div group title */
 .divGroupTitle {
-	font-size: 10px;
-	margin-left: 10px;
+  font-size: 10px;
+  margin-left: 10px;
 }
 /* Div group description line */
 .divGroupLine {
-	margin-left: 20px;
+  margin-left: 20px;
+}
+
+
+
+
+
+/*
+ * Collapsible
+ */
+
+/* Button */
+.collapsibleButton {
+  border: none;
+  cursor: pointer;
+  display: block;
+}
+
+/* Closed button */
+.collapsibleButton:not(.opened) {
+  margin-bottom: 10px;
+}
+
+/* Open icon
+ * Closed collapsible button before
+ * Original SVG
+
+<svg width="17" height="13" xmlns="http://www.w3.org/2000/svg">
+  <polyline points="11,6.5 6,6.5 6,1.5" style="fill:none;stroke:rgb(255,255,255);stroke-width:1.5;" />
+</svg>
+
+ */
+.collapsibleButton:not(.opened)::before {
+  content: url('data:image/svg+xml,<svg width="17" height="13" xmlns="http://www.w3.org/2000/svg"><polyline points="11,6.5 6,6.5 6,1.5" style="fill:none;stroke:rgb(255,255,255);stroke-width:1.5;" /></svg>');
+}
+/* Fold icon
+ * Opened collapsible button before
+ * Original SVG
+
+<svg width="17" height="13" xmlns="http://www.w3.org/2000/svg">
+  <polyline points="11,6.5 6,6.5 6,11.5" style="fill:none;stroke:rgb(255,255,255);stroke-width:1.5;" />
+</svg>
+
+ */
+.collapsibleButton.opened::before {
+  content: url('data:image/svg+xml,<svg width="17" height="13" xmlns="http://www.w3.org/2000/svg"><polyline points="11,6.5 6,6.5 6,11.5" style="fill:none;stroke:rgb(255,255,255);stroke-width:1.5;" /></svg>');
 }
 
 
@@ -87,29 +142,86 @@ h2 {
 
 /* Tooltip */
 .tooltip {
-	position: relative;
-	display: inline-block;
-	border-bottom: 1.5px dotted #fff;
+  position: relative;
+  display: inline-block;
+  text-decoration: underline dotted #fff 1.5px;
 }
 /* Tooltip text */
 .tooltip .tooltipText {
-	visibility: hidden;
-	width: 250px;
-	background-color: #404040;
-	color: #fff;
-	text-align: center;
-	border-radius: 3px;
-	padding: 5px 0;
+  visibility: hidden;
+  width: 250px;
+  background-color: #404040;
+  color: #fff;
+  text-align: center;
+  border-radius: 3px;
+  padding: 5px 0;
 
-	/* Positioning the tooltop */
-	position: absolute;
-	z-index: 1;
-	bottom: 20px;
-	left: 0%;
+  /* Positioning the tooltop */
+  position: absolute;
+  z-index: 1;
+  bottom: 20px;
+  left: 0%;
 }
 /* Show tooltip when hovering */
 .tooltip:hover .tooltipText {
-	visibility: visible;
+  visibility: visible;
+}
+
+
+
+
+
+/*
+ * Blockquotes
+ */
+
+/* Blockquotes */
+blockquote {
+  display: block;
+}
+
+/* Quotation marks */
+/* Before/After blockquotes */
+/* Original SVG
+
+<svg width="20" height="14" xmlns="http://www.w3.org/2000/svg">
+  <g>
+    <rect x="9" y="5" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 11.5,7.5)" />
+    <polygon points="11.5,3.964 15.036,0.429 16.803,2.197 13.268,5.732" style="fill:rgb(255,255,255);" />
+    <rect x="1.929" y="5" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 4.429,7.5)" />
+    <polygon points="4.429,3.964 7.964,0.429 9.732,2.197 6.197,5.732" style="fill:rgb(255,255,255);" />
+  </g>
+</svg>
+
+<svg width="20" height="14" xmlns="http://www.w3.org/2000/svg">
+  <g transform="rotate(180 10,7)">
+    <rect x="9" y="5" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 11.5,7.5)" />
+    <polygon points="11.5,3.964 15.036,0.429 16.803,2.197 13.268,5.732" style="fill:rgb(255,255,255);" />
+    <rect x="1.929" y="5" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 4.429,7.5)" />
+    <polygon points="4.429,3.964 7.964,0.429 9.732,2.197 6.197,5.732" style="fill:rgb(255,255,255);" />
+  </g>
+</svg>
+
+ */
+blockquote::before {
+  content: url('data:image/svg+xml,<svg width="20" height="14" xmlns="http://www.w3.org/2000/svg"><g><rect x="9" y="5" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 11.5,7.5)" /><polygon points="11.5,3.964 15.036,0.429 16.803,2.197 13.268,5.732" style="fill:rgb(255,255,255);" /><rect x="1.929" y="5" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 4.429,7.5)" /><polygon points="4.429,3.964 7.964,0.429 9.732,2.197 6.197,5.732" style="fill:rgb(255,255,255);" /></g></svg>');
+}
+blockquote::after {
+  content: url('data:image/svg+xml,<svg width="20" height="14" xmlns="http://www.w3.org/2000/svg"><g transform="rotate(180 10,7)"><rect x="9" y="5" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 11.5,7.5)" /><polygon points="11.5,3.964 15.036,0.429 16.803,2.197 13.268,5.732" style="fill:rgb(255,255,255);" /><rect x="1.929" y="5" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 4.429,7.5)" /><polygon points="4.429,3.964 7.964,0.429 9.732,2.197 6.197,5.732" style="fill:rgb(255,255,255);" /></g></svg>');
+}
+
+/* Quotation dash */
+/* Before blockquotes source */
+/* Original SVG
+
+<svg width="300" height="16" xmlns="http://www.w3.org/2000/svg">
+  <line x1="240" y1="8" x2="290" y2="8" style="stroke:rgb(255,255,255);stroke-width:2;" />
+</svg>
+
+ */
+
+.blockquoteSource::before {
+  content: url('data:image/svg+xml,<svg width="300" height="16" xmlns="http://www.w3.org/2000/svg"><line x1="240" y1="8" x2="290" y2="8" style="stroke:rgb(255,255,255);stroke-width:2;" /></svg>');
 }
 
 
@@ -122,15 +234,15 @@ h2 {
 
 /* Unvisited */
 a:link {
-	color: #ff1;
-	cursor: pointer;
-	text-decoration: underline;
+  color: #ff1;
+  cursor: pointer;
+  text-decoration: underline;
 }
 /* Visited */
 a:visited {
-	color: #aae574;
-	cursor: pointer;
-	text-decoration: underline;
+  color: #aae574;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 
@@ -143,18 +255,27 @@ a:visited {
 
 /* Codespace */
 code {
-	background-color: #303030;
-	color: #10cfcf;
-	font-family: 'Courier New';
-	margin: 0 5px 0 5px;
+  background-color: #303030;
+  color: #10cfcf;
+  font-family: 'Courier New';
+  margin: 0 5px 0 5px;
 }
 
-/* Go back image on 404 page */
-.goBackImage {
-	width: 30px;
+/* Superscript */
+sup {
+  font-size: smaller;
 }
-/* Go back text on 404 page */
-.goBackText {
-	position: relative;
-	bottom: 10px;
+
+/* Header 2 */
+h2 {
+  font: bold 1.5em/160% Roboto;
+}
+
+b {
+  font-weight: bold;
+}
+
+/* Ordered list markers */
+ol ::marker {
+  font-size: 75%;
 }
