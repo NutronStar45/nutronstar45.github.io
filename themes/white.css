@@ -78,10 +78,10 @@ ul ::marker {
 }
 
 .collapsible-button:not(.opened)::before {
-  content: \25b4;
+  content: "\25b4";
 }
 .collapsible-button.opened::before {
-  content: \25be;
+  content: "\25be";
 }
 
 
@@ -184,7 +184,7 @@ blockquote::after {
  * Links
  */
 
-/* Unvisited */
+/* Not visited */
 a:link {
   color: #00e;
   cursor: pointer;
