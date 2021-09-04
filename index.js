@@ -66,15 +66,15 @@ function matchArrayValue(array, value) {
 }
 
 // URL query/params
-let paramEntriesRaw = new URLSearchParams(window.location.search);
-let paramEntries = {
+var paramEntriesRaw = new URLSearchParams(window.location.search);
+var paramEntries = {
   theme: paramEntriesRaw.get('theme')
 };
 
 // On page loaded
 window.onload = () => {
   // Themes
-  let hasValidTheme = false;
+  var hasValidTheme = false;
   params[0].values.forEach(element => {
     if (paramEntries.theme == element) {
       document.getElementById('stylesheet-source').href = `/themes/${element}.css`;
@@ -90,6 +90,18 @@ window.onload = () => {
 document.querySelectorAll('[internal-link]').forEach(element => {
   element.setAttribute('href', '/' + element.getAttribute('internal-link').split('-'));
 });
+
+var colls = document.querySelector('.collapsible-button');
+for (var coll = 0; coll < colls.length; coll++) {
+  colls[coll].addEventListener('click', () => {
+    var collContent = colls[coll].nextElementSibling;
+    colls[coll].classList.toggle('opened');
+    if (collContent.getAttribute('style') == 'display:none;')
+      collContent.setAttribute('style', 'display:block;');
+    else
+      collContent.setAttribute('style', 'display:none;');
+  });
+}
 `;
 
       // If toolbar is enabled
@@ -150,19 +162,6 @@ document.querySelectorAll('[internal-link]').forEach(element => {
 `;
       }
 
-      // Collapsible
-      let colls = document.querySelector('.collapsible-button');
-      for (let coll = 0; coll < colls.length; coll++) {
-        colls[coll].addEventListener('click', () => {
-          let collContent = colls[coll].nextElementSibling;
-          colls[coll].classList.toggle('opened');
-          if (collContent.getAttribute('style') == 'display:none;')
-            collContent.setAttribute('style', 'display:block;');
-          else
-            collContent.setAttribute('style', 'display:none;');
-        });
-      }
-
       // File missing location on HTTP404
       if (element.relationTree[0] == null)
         document.getElementById('page-subtitle').innerHTML = `File or Site missing at <code>${window.location.pathname}</code>`;
@@ -170,7 +169,7 @@ document.querySelectorAll('[internal-link]').forEach(element => {
   });
 
   // When theme changed
-  let selectTheme = document.getElementById('select-theme');
+  var selectTheme = document.getElementById('select-theme');
   selectTheme.onchange = () => {
     window.location.href = '?theme=' + params[0].values[selectTheme.selectedIndex];
   }
