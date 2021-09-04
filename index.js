@@ -73,9 +73,6 @@ let paramEntries = {
 
 // On page loaded
 window.onload = () => {
-  // Page title
-  let tabTitle = document.title;
-
   // Themes
   let hasValidTheme = false;
   params[0].values.forEach(element => {
@@ -88,6 +85,13 @@ window.onload = () => {
   // Search page in data
   pages.forEach(element => {
     if (document.title == element.title) {
+      // Fill internal script
+      document.getElementById('script-internal').innerHTML = `
+document.querySelectorAll('[internal-link]').forEach(element => {
+  element.setAttribute('href', '/' + element.getAttribute('internal-link').split('-'));
+});
+`;
+
       // If toolbar is enabled
       if (element.attributes.toolbar.enabled) {
         document.getElementById(element.attributes.toolbar.id).innerHTML =
@@ -170,9 +174,4 @@ window.onload = () => {
   selectTheme.onchange = () => {
     window.location.href = '?theme=' + params[0].values[selectTheme.selectedIndex];
   }
-
-  // Fill links
-  document.querySelectorAll('[internal-link]').forEach(element => {
-    element.setAttribute('href', '/' + element.getAttribute('internal-link').split('-'))
-  });
 }
