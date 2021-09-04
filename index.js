@@ -6,7 +6,7 @@ const pages = [
     attributes: {
       toolbar: {
         enabled: true,
-        id: 'toolbarMeta'
+        id: 'toolbar-meta'
       }
     }
   },
@@ -16,7 +16,7 @@ const pages = [
     attributes: {
       toolbar: {
         enabled: true,
-        id: 'toolbarMeta'
+        id: 'toolbar-meta'
       }
     }
   },
@@ -26,7 +26,7 @@ const pages = [
     attributes: {
       toolbar: {
         enabled: true,
-        id: 'toolbarMeta'
+        id: 'toolbar-meta'
       }
     }
   },
@@ -36,7 +36,7 @@ const pages = [
     attributes: {
       toolbar: {
         enabled: true,
-        id: 'toolbarMeta'
+        id: 'toolbar-meta'
       }
     }
   }
@@ -80,22 +80,17 @@ window.onload = () => {
   let hasValidTheme = false;
   params[0].values.forEach(element => {
     if (paramEntries.theme == element) {
-      document.getElementById('stylesheetSource').href = `/themes/${ element }.css`;
+      document.getElementById('stylesheet-source').href = `/themes/${ element }.css`;
       hasValidTheme = true;
-    } if (!hasValidTheme) document.getElementById('stylesheetSource').href = `/themes/${ params[0].defaultValue }.css`;
+    } if (!hasValidTheme) document.getElementById('stylesheet-source').href = `/themes/${ params[0].defaultValue }.css`;
   });
 
   // Fill in internal script
   pages.forEach(element => {
-    document.getElementById('scriptInternal').innerHTML =
+    document.getElementById('script-internal').innerHTML =
 `
-function link(path, site) {
-  if (site == undefined)
-    window.location.href = \`\${ path }?theme=\${ new URLSearchParams(window.location.search).get('theme') }\`;
-  else if (site == 'github')
-    window.location.href = \`https://github.com/\${ path }\`;
-  else if (site == 'wiki')
-    window.location.href = \`https://en.wikipedia.org/wiki/\${ path }\`;
+function link(path) {
+  window.location.href = \`\${ path }?theme=\${ new URLSearchParams(window.location.search).get('theme') }\`;
 }
 `;
 
@@ -130,13 +125,13 @@ function link(path, site) {
   </a>
 </svg>
 <!-- Fixed toolbar -->
-<div class="toolbarFixed">
+<div class="toolbar-fixed">
   <a href="#">To top</a>
-  <button class="collapsibleButton" type="button">Options</button>
+  <button class="collapsible-button" type="button">Options</button>
   <!-- Options -->
   <div style="display:none;">
-    <label for="selectTheme">Theme</label>
-    <select id="selectTheme" name="selectTheme">
+    <label for="select-theme">Theme</label>
+    <select id="select-theme" name="select-theme">
       <option${
         (
           !matchArrayValue(params[0].values, paramEntries.theme) &&
@@ -157,41 +152,12 @@ function link(path, site) {
       }>Black</option>
     </select>
   </div>
-  <button class="collapsibleButton" type="button">Contents</button>
-  <div style="display:none;">
-    <span>${
-      tabTitle == '404 Not Found' ? `
-<a href="#what">What is this?</a> <br>
-<a href="#why">Why is this happening?</a> <br>
-<a href="#nextMove">What should I do?</a>
-` : (
-      tabTitle == 'NutronStar45\'s Work' ? `
-<a href="#about">Who am I?</a> <br>
-<a href="#making">What am I making?</a> <br>
-<a href="#plannedMaking">Also I'm planning to make</a> <br>
-<a href="#links">Useful links</a> <br>
-<a href="#sources">Sources</a>
-` : (
-      tabTitle == 'Projects' ? `
-<a href="#ongoing">Ongoing</a> <br>
-<a href="#planned">Planned</a> <br>
-` : (
-      tabTitle == 'NutronStar45\'s Discord Bot' ? `
-<a href="#aboutDiscord">About Discord</a> <br>
-<a href="#aboutBot">About Discord bot</a> <br>
-<a href="#whatFor">What is this bot for?</a> <br>
-<a href="#getItWorking">How to get it working</a>
-` : (
-      ''
-    ))))
-    }</span>
-  </div>
 </div>
 `;
       }
 
       // Collapsible
-      let colls = document.getElementsByClassName('collapsibleButton');
+      let colls = document.getElementsByClassName('collapsible-button');
       for (let coll = 0; coll < colls.length; coll++) {
         colls[coll].addEventListener('click', () => {
           let collContent = colls[coll].nextElementSibling;
@@ -205,12 +171,12 @@ function link(path, site) {
 
       // File missing location on HTTP404
       if (element.relationTree[0] == null)
-        document.getElementById('pageSubtitle').innerHTML = `File or Site missing at <code>${ window.location.pathname }</code>`;
+        document.getElementById('page-subtitle').innerHTML = `File or Site missing at <code>${ window.location.pathname }</code>`;
     }
   });
 
   // When theme changed
-  let selectTheme = document.getElementById('selectTheme');
+  let selectTheme = document.getElementById('select-theme');
   selectTheme.onchange = () => {
     window.location.href = '?theme=' + params[0].values[selectTheme.selectedIndex];
   }

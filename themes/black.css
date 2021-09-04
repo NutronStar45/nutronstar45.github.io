@@ -30,14 +30,14 @@ ul ::marker {
  */
 
 /* Sticky toolbar */
-.toolbarMeta {
+.toolbar-meta {
   position: sticky;
   position: -webkit-sticky; /* WebKit (Safari) */
   top: 0;
 }
 
 /* Top right fixed toolbar */
-.toolbarFixed {
+.toolbar-fixed {
   position: fixed;
   top: 0;
   right: 0;
@@ -56,7 +56,7 @@ ul ::marker {
  */
 
 /* Page subtitle */
-.pageSubtitle {
+.page-subtitle {
   font-size: 20px;
 }
 
@@ -69,21 +69,17 @@ ul ::marker {
  */
 
 /* Div group */
-.divGroup {
+.div-group {
   border: 1px dashed #7f7f7f;
   margin: 0 8px 10px 0;
 }
-/* Div group without margin */
-.divGroupNoMargin {
-  border: 1px dashed #7f7f7f;
-}
 /* Div group title */
-.divGroupTitle {
+.div-group-title {
   font-size: 10px;
   margin-left: 10px;
 }
 /* Div group description line */
-.divGroupLine {
+.div-group-line {
   margin-left: 20px;
 }
 
@@ -96,75 +92,22 @@ ul ::marker {
  */
 
 /* Button */
-.collapsibleButton {
+.collapsible-button {
   border: none;
   cursor: pointer;
   display: block;
 }
 
 /* Closed button */
-.collapsibleButton:not(.opened) {
+.collapsible-button:not(.opened) {
   margin-bottom: 10px;
 }
 
-/* Open icon
- * Closed collapsible button before
- * Original SVG
-
-<svg width="17" height="13" xmlns="http://www.w3.org/2000/svg">
-  <polyline points="11,6.5 6,6.5 6,1.5" style="fill:none;stroke:rgb(255,255,255);stroke-width:1.5;" />
-</svg>
-
- */
-.collapsibleButton:not(.opened)::before {
-  content: url('data:image/svg+xml,<svg width="17" height="13" xmlns="http://www.w3.org/2000/svg"><polyline points="11,6.5 6,6.5 6,1.5" style="fill:none;stroke:rgb(255,255,255);stroke-width:1.5;" /></svg>');
+.collapsible-button:not(.opened)::before {
+  content: \25b4;
 }
-/* Fold icon
- * Opened collapsible button before
- * Original SVG
-
-<svg width="17" height="13" xmlns="http://www.w3.org/2000/svg">
-  <polyline points="11,6.5 6,6.5 6,11.5" style="fill:none;stroke:rgb(255,255,255);stroke-width:1.5;" />
-</svg>
-
- */
-.collapsibleButton.opened::before {
-  content: url('data:image/svg+xml,<svg width="17" height="13" xmlns="http://www.w3.org/2000/svg"><polyline points="11,6.5 6,6.5 6,11.5" style="fill:none;stroke:rgb(255,255,255);stroke-width:1.5;" /></svg>');
-}
-
-
-
-
-
-/*
- * Tooltip element
- */
-
-/* Tooltip */
-.tooltip {
-  position: relative;
-  display: inline-block;
-  text-decoration: underline dotted #fff 1.5px;
-}
-/* Tooltip text */
-.tooltip .tooltipText {
-  visibility: hidden;
-  width: 250px;
-  background-color: #404040;
-  color: #fff;
-  text-align: center;
-  border-radius: 3px;
-  padding: 5px 0;
-
-  /* Positioning the tooltop */
-  position: absolute;
-  z-index: 1;
-  bottom: 20px;
-  left: 0%;
-}
-/* Show tooltip when hovering */
-.tooltip:hover .tooltipText {
-  visibility: visible;
+.collapsible-button.opened::before {
+  content: \25be;
 }
 
 
@@ -220,7 +163,7 @@ blockquote::after {
 
  */
 
-.blockquoteSource::before {
+.blockquote-source::before {
   content: url('data:image/svg+xml,<svg width="300" height="16" xmlns="http://www.w3.org/2000/svg"><line x1="240" y1="8" x2="290" y2="8" style="stroke:rgb(255,255,255);stroke-width:2;" /></svg>');
 }
 
