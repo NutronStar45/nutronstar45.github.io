@@ -60,7 +60,7 @@ const params = [
 function matchArrayValue(array, value) {
   result = false;
   array.forEach(element => {
-    result ||= value == element;
+    result = result && (value == element);
   });
   return result;
 }
@@ -80,28 +80,21 @@ window.onload = () => {
   let hasValidTheme = false;
   params[0].values.forEach(element => {
     if (paramEntries.theme == element) {
-      document.getElementById('stylesheet-source').href = `/themes/${ element }.css`;
+      document.getElementById('stylesheet-source').href = `/themes/${element}.css`;
       hasValidTheme = true;
-    } if (!hasValidTheme) document.getElementById('stylesheet-source').href = `/themes/${ params[0].defaultValue }.css`;
+    } if (!hasValidTheme) document.getElementById('stylesheet-source').href = `/themes/${params[0].defaultValue}.css`;
   });
 
-  // Fill in internal script
+  // Search page in data
   pages.forEach(element => {
-    document.getElementById('script-internal').innerHTML =
-`
-function link(path) {
-  window.location.href = \`\${ path }?theme=\${ new URLSearchParams(window.location.search).get('theme') }\`;
-}
-`;
-
-    // If the page has toolbar enabled
     if (document.title == element.title) {
+      // If toolbar is enabled
       if (element.attributes.toolbar.enabled) {
         document.getElementById(element.attributes.toolbar.id).innerHTML =
-`
+          `
 <svg width="1000" height="50">
   <!-- Homepage icon -->
-  <a xlink:href="javascript:link('/');">
+  <a xlink:href="/">
     <rect width="50" height="50" style="fill:${
       paramEntries.theme == 'white' ? '#fff' : (
       paramEntries.theme == 'dimmedBlack' ? '#1f1f1f' : (
@@ -116,7 +109,7 @@ function link(path) {
     <polyline points="12,25 12,45 38,45 38,25" style="fill:none;stroke:#7f7f7f;stroke-width:3;" />
   </a>
   <!-- Projects -->
-  <a xlink:href="javascript:link('/projs');">
+  <a xlink:href="/projs">
     <text x="100" y="30" fill="${
       paramEntries.theme == 'white' ? '#000' : (
       paramEntries.theme == 'dimmedBlack' ? '#fff' : (
@@ -132,20 +125,17 @@ function link(path) {
   <div style="display:none;">
     <label for="select-theme">Theme</label>
     <select id="select-theme" name="select-theme">
-      <option${
-        (
+      <option${(
           !matchArrayValue(params[0].values, paramEntries.theme) &&
           params[0].defaultValue == 'white'
         ) || paramEntries.theme == 'white' ? ' selected' : ''
       }>White</option>
-      <option${
-        (
+      <option${(
           !matchArrayValue(params[0].values, paramEntries.theme) &&
           params[0].defaultValue == 'dimmedBlack'
         ) || paramEntries.theme == 'dimmedBlack' ? ' selected' : ''
       }>Dimmed Black</option>
-      <option${
-        (
+      <option${(
           !matchArrayValue(params[0].values, paramEntries.theme) &&
           params[0].defaultValue == 'black'
         ) || paramEntries.theme == 'black' ? ' selected' : ''
@@ -157,7 +147,7 @@ function link(path) {
       }
 
       // Collapsible
-      let colls = document.getElementsByClassName('collapsible-button');
+      let colls = document.querySelector('.collapsible-button');
       for (let coll = 0; coll < colls.length; coll++) {
         colls[coll].addEventListener('click', () => {
           let collContent = colls[coll].nextElementSibling;
@@ -171,7 +161,7 @@ function link(path) {
 
       // File missing location on HTTP404
       if (element.relationTree[0] == null)
-        document.getElementById('page-subtitle').innerHTML = `File or Site missing at <code>${ window.location.pathname }</code>`;
+        document.getElementById('page-subtitle').innerHTML = `File or Site missing at <code>${window.location.pathname}</code>`;
     }
   });
 
@@ -180,4 +170,9 @@ function link(path) {
   selectTheme.onchange = () => {
     window.location.href = '?theme=' + params[0].values[selectTheme.selectedIndex];
   }
+
+  // Fill links
+  document.querySelectorAll('[internal-link]').forEach(element => {
+    element.setAttribute('href', '/' + element.getAttribute('internal-link').split('-'))
+  });
 }
