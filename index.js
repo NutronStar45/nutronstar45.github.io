@@ -84,7 +84,10 @@ window.onload = () => {
       // Fill internal script
       document.querySelector('#script-internal').innerHTML = `
 document.querySelectorAll('[internal-link]').forEach(element => {
-  element.setAttribute('href', '/' + element.getAttribute('internal-link').split('-'));
+  if (element.getAttribute('internal-link') == '/')
+    element.setAttribute('href', '/');
+  else
+    element.setAttribute('href', '/' + element.getAttribute('internal-link').split('-'));
 });
 
 var colls = document.querySelectorAll('.collapsible-button');
