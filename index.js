@@ -2,7 +2,6 @@
 const pages = [
   {
     title: '404 Not Found',
-    relationTree: [null],
     attributes: {
       toolbar: {
         enabled: true,
@@ -12,7 +11,6 @@ const pages = [
   },
   {
     title: 'NutronStar45\'s Work',
-    relationTree: [],
     attributes: {
       toolbar: {
         enabled: true,
@@ -22,7 +20,6 @@ const pages = [
   },
   {
     title: 'Projects',
-    relationTree: ['Projects'],
     attributes: {
       toolbar: {
         enabled: true,
@@ -32,7 +29,6 @@ const pages = [
   },
   {
     title: 'NutronStar45\'s Discord Bot',
-    relationTree: ['Projects', 'NutronStar45\'s Discord Bot'],
     attributes: {
       toolbar: {
         enabled: true,
@@ -77,21 +73,21 @@ window.onload = () => {
   var hasValidTheme = false;
   params[0].values.forEach(element => {
     if (paramEntries.theme == element) {
-      document.getElementById('stylesheet-source').href = `/themes/${element}.css`;
+      document.querySelector('#stylesheet-source').href = `/themes/${element}.css`;
       hasValidTheme = true;
-    } if (!hasValidTheme) document.getElementById('stylesheet-source').href = `/themes/${params[0].defaultValue}.css`;
+    } if (!hasValidTheme) document.querySelector('#stylesheet-source').href = `/themes/${params[0].defaultValue}.css`;
   });
 
   // Search page in data
   pages.forEach(element => {
     if (document.title == element.title) {
       // Fill internal script
-      document.getElementById('script-internal').innerHTML = `
+      document.querySelector('#script-internal').innerHTML = `
 document.querySelectorAll('[internal-link]').forEach(element => {
   element.setAttribute('href', '/' + element.getAttribute('internal-link').split('-'));
 });
 
-var colls = document.querySelector('.collapsible-button');
+var colls = document.querySelectorAll('.collapsible-button');
 for (var coll = 0; coll < colls.length; coll++) {
   colls[coll].addEventListener('click', () => {
     var collContent = colls[coll].nextElementSibling;
@@ -163,13 +159,13 @@ for (var coll = 0; coll < colls.length; coll++) {
       }
 
       // File missing location on HTTP404
-      if (element.relationTree[0] == null)
-        document.getElementById('page-subtitle').innerHTML = `File or Site missing at <code>${window.location.pathname}</code>`;
+      if (element.title == '404 Not Found')
+        document.querySelector('#page-subtitle').innerHTML = `File or Site missing at <code>${window.location.pathname}</code>`;
     }
   });
 
   // When theme changed
-  var selectTheme = document.getElementById('select-theme');
+  var selectTheme = document.querySelector('#select-theme');
   selectTheme.onchange = () => {
     window.location.href = '?theme=' + params[0].values[selectTheme.selectedIndex];
   }

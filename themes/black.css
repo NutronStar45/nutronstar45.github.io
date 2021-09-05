@@ -204,8 +204,8 @@ code {
   margin: 0 5px 0 5px;
 }
 
-/* Superscript */
-sup {
+/* Superscript, subscript */
+sup, sub {
   font-size: smaller;
 }
 
