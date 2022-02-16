@@ -23,8 +23,6 @@ ul ::marker {
 
 
 
-
-
 /*
  * Toolbar
  */
@@ -49,8 +47,6 @@ ul ::marker {
 
 
 
-
-
 /*
  * Page title elements
  */
@@ -59,8 +55,6 @@ ul ::marker {
 .page-subtitle {
   font-size: 20px;
 }
-
-
 
 
 
@@ -82,8 +76,6 @@ ul ::marker {
 .div-group-line {
   margin-left: 20px;
 }
-
-
 
 
 
@@ -109,8 +101,6 @@ ul ::marker {
 .collapsible-button.opened::before {
   content: "\25be";
 }
-
-
 
 
 
@@ -169,8 +159,6 @@ blockquote::after {
 
 
 
-
-
 /*
  * Links
  */
@@ -187,8 +175,6 @@ a:visited {
   cursor: pointer;
   text-decoration: underline;
 }
-
-
 
 
 
@@ -214,6 +200,7 @@ h2 {
   font: bold 1.5em/160% Roboto;
 }
 
+/* Bold */
 b {
   font-weight: bold;
 }
