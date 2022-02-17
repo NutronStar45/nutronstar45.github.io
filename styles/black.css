@@ -6,7 +6,6 @@
 }
 
 /* 45 degrees rotated block
- * Unordered list markers/Before definition
  * Original SVG
 
 <svg width="17" height="13" xmlns="http://www.w3.org/2000/svg">
@@ -15,9 +14,6 @@
 
  */
 ul ::marker {
-  content: url('data:image/svg+xml,<svg width="17" height="13" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="4" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 8.5,6.5)" /></svg>');
-}
-.definition::before {
   content: url('data:image/svg+xml,<svg width="17" height="13" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="4" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 8.5,6.5)" /></svg>');
 }
 
