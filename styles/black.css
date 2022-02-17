@@ -1,7 +1,7 @@
 /* General style */
 * {
   font: 100%/160% Roboto;
-  background-color: #1f1f1f;
+  background-color: #000;
   color: #fff;
 }
 
@@ -23,8 +23,6 @@ ul ::marker {
 
 
 
-
-
 /*
  * Toolbar
  */
@@ -32,7 +30,7 @@ ul ::marker {
 /* Sticky toolbar */
 .toolbar-meta {
   position: sticky;
-  position: -webkit-sticky; /* Safari */
+  position: -webkit-sticky; /* WebKit (Safari) */
   top: 0;
 }
 
@@ -49,8 +47,6 @@ ul ::marker {
 
 
 
-
-
 /*
  * Page title elements
  */
@@ -59,8 +55,6 @@ ul ::marker {
 .page-subtitle {
   font-size: 20px;
 }
-
-
 
 
 
@@ -82,8 +76,6 @@ ul ::marker {
 .div-group-line {
   margin-left: 20px;
 }
-
-
 
 
 
@@ -109,8 +101,6 @@ ul ::marker {
 .collapsible-button.opened::before {
   content: "\25be";
 }
-
-
 
 
 
@@ -169,8 +159,6 @@ blockquote::after {
 
 
 
-
-
 /*
  * Links
  */
@@ -190,22 +178,20 @@ a:visited {
 
 
 
-
-
 /*
  * Misc style
  */
 
 /* Codespace */
 code {
-  background-color: #303030;
-  color: #10cfcf;
+  background-color: #101010;
+  color: #40ffff;
   font-family: 'Courier New';
   margin: 0 5px 0 5px;
 }
 
-/* Superscript, subscript */
-sup, sub {
+/* Superscript */
+sup {
   font-size: smaller;
 }
 
@@ -214,6 +200,7 @@ h2 {
   font: bold 1.5em/160% Roboto;
 }
 
+/* Bold */
 b {
   font-weight: bold;
 }
