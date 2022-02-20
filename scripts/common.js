@@ -11,10 +11,8 @@ pages.forEach(page => {
   if (document.title == page.title)
     // Fill internal script
     $('#script-internal').text(`
-$('.collapsible-button').click(e => {
-  this.toggleClass('opened');
-  if (this.hasClass('opened')) this.next().show();
-  else this.next().hide();
+$('.coll').click(() => {
+  $(this).toggleClass('opened');
 });
 `);
 
@@ -22,6 +20,25 @@ $('.collapsible-button').click(e => {
   if (page.is404)
     $('#page-subtitle').html(`File or Site missing at <code>${location.pathname}</code>`);
 });
+
+const sections = [];
+
+// Sections
+$('.section').each(() => {
+  sections.push({
+    title: $(this).children('.section-title').text(),
+    id: $(this).prop('id')
+  });
+});
+
+// Fixed toolbar
+fixedToolbar = '<a href="#">To top</a><br><p class="coll">Sections</p><div>'
+
+$.each(sections, (i, section) => {
+  fixedToolbar += `<a href="#${section.id}">${section.title}</a>${i < sections.length - 1 ? '<br>' : ''}`
+});
+
+fixedToolbar += '</div>'
 
 // Toolbar
 $('#toolbar-meta').html(`
@@ -41,6 +58,6 @@ $('#toolbar-meta').html(`
 
 <!-- Fixed toolbar -->
 <div class="toolbar-fixed">
-  <a href="#">To top</a>
+  ${fixedToolbar}
 </div>
 `);

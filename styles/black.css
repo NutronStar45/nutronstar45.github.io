@@ -59,17 +59,17 @@ ul ::marker {
  */
 
 /* Div group */
-.div-group {
+.section {
   border: 1px dashed #7f7f7f;
   margin: 0 8px 10px 0;
 }
 /* Div group title */
-.div-group-title {
+.section-title {
   font-size: 10px;
   margin-left: 10px;
 }
 /* Div group description line */
-.div-group-line {
+.section-line {
   margin-left: 20px;
 }
 
@@ -80,22 +80,26 @@ ul ::marker {
  */
 
 /* Button */
-.collapsible-button {
-  border: none;
+.coll {
   cursor: pointer;
-  display: block;
 }
 
-/* Closed button */
-.collapsible-button:not(.opened) {
+/* Closed */
+.coll:not(.opened) {
   margin-bottom: 10px;
 }
-
-.collapsible-button:not(.opened)::before {
+.coll:not(.opened)::before {
   content: "\25b4";
 }
-.collapsible-button.opened::before {
+
+/* Opened */
+.coll.opened::before {
   content: "\25be";
+}
+
+/* Next element */
+.coll:not(.opened) + * {
+  display: none;
 }
 
 
