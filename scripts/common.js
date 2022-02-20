@@ -7,11 +7,11 @@ const pages = [
 ];
 
 // Search through every page
-pages.forEach(page => {
+pages.forEach(function(page) {
   if (document.title == page.title)
     // Fill internal script
     $('#script-internal').text(`
-$('.coll').click(() => {
+$('.coll').click(function() {
   $(this).toggleClass('opened');
 });
 `);
@@ -24,7 +24,7 @@ $('.coll').click(() => {
 const sections = [];
 
 // Sections
-$('.section').each(() => {
+$('.section').each(function() {
   sections.push({
     title: $(this).children('.section-title').text(),
     id: $(this).prop('id')
@@ -32,9 +32,9 @@ $('.section').each(() => {
 });
 
 // Fixed toolbar
-fixedToolbar = '<a href="#">To top</a><br><p class="coll">Sections</p><div>'
+fixedToolbar = '<a href="#">To top</a><p class="coll">Sections</p><div>'
 
-$.each(sections, (i, section) => {
+$.each(sections, function(i, section) {
   fixedToolbar += `<a href="#${section.id}">${section.title}</a>${i < sections.length - 1 ? '<br>' : ''}`
 });
 
