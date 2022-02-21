@@ -33,7 +33,7 @@ $(function() {
   });
 
   // Fixed toolbar
-  fixedToolbar = '<a href="#">To top</a><p class="coll">Sections</p><div>'
+  let fixedToolbar = '<a href="#">To top</a><p class="coll">Sections</p><div>';
 
   $.each(sections, function(i, section) {
     fixedToolbar += `<a href="#${section.id}">${section.title}</a>${i < sections.length - 1 ? '<br>' : ''}`
