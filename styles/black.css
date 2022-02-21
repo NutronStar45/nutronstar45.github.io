@@ -41,6 +41,10 @@ ul ::marker {
   margin: 8px 8px 0 0;
 }
 
+.toolbar-fixed p {
+  margin: 0;
+}
+
 
 
 /*
