@@ -9,8 +9,10 @@ const pages = [
 $(function() {
 
   // Collapsible
-  $('.coll').click(function() {
-    $(this).toggleClass('opened');
+  $('.coll').load(function() {
+    $('.coll').click(function() {
+      $(this).toggleClass('opened');
+    });
   });
 
   // Search through every page
