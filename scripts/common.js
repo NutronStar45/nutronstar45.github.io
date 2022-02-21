@@ -6,18 +6,15 @@ const pages = [
   { title: 'NutronStar45\'s Discord Bot' }
 ];
 
-// Search through every page
-pages.forEach(function(page) {
-  if (document.title == page.title)
-    // Fill internal script
-    $('#script-internal').text(`
-$('.coll').click(function() {
+// Collapsible
+$('.coll').click(function () {
   $(this).toggleClass('opened');
 });
-`);
 
+// Search through every page
+pages.forEach(function(page) {
   // Location on 404 page
-  if (page.is404)
+  if (page.title == document.title && page.is404)
     $('#page-subtitle').html(`File or Site missing at <code>${location.pathname}</code>`);
 });
 
