@@ -9,12 +9,8 @@ const pages = [
 $(function() {
 
   // Collapsible
-  $('.coll').load(function() {
-    alert('collapsibles had loaded');
-    $('.coll').click(function() {
-      $(this).toggleClass('opened');
-      alert('collapsible had been toggled')
-    });
+  $('.coll').click(function() {
+    $(this).toggleClass('opened');
   });
 
   /*
