@@ -63,7 +63,7 @@ $(function() {
 
   <!-- Fixed toolbar -->
   <div class="toolbar-fixed">
-    ${'fixedToolbar'}
+    ${fixedToolbar}
   </div>
   `);
 
