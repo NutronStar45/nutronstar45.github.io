@@ -24,7 +24,7 @@ ul ::marker {
  */
 
 /* Sticky toolbar */
-.toolbar-meta {
+#toolbar-meta {
   position: sticky;
   position: -webkit-sticky; /* WebKit (Safari) */
   top: 0;
@@ -41,8 +41,8 @@ ul ::marker {
   margin: 8px 8px 0 0;
 }
 
-.toolbar-fixed p {
-  margin-top: 0;
+#sections {
+  margin: 0;
 }
 
 
@@ -52,7 +52,7 @@ ul ::marker {
  */
 
 /* Page subtitle */
-.page-subtitle {
+.subtitle {
   font-size: 20px;
 }
 

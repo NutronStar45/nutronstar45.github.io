@@ -1,19 +1,7 @@
-// Log every available pages
-const pages = [
-  { title: '404 Not Found', is404: true },
-  { title: 'NutronStar45\'s Work' },
-  { title: 'Projects' },
-  { title: 'NutronStar45\'s Discord Bot' }
-];
-
 $(function() {
 
-  // Search through every page
-  pages.forEach(function(page) {
-    // Location on 404 page
-    if (page.title == document.title && page.is404)
-      $('#page-subtitle').html(`File or Site missing at <code>${location.pathname}</code>`);
-  });
+  // Location on 404 page
+  $('#404-location').html(`File or Site missing at <code>${location.pathname}</code>`);
 
   const sections = [];
 
@@ -26,7 +14,7 @@ $(function() {
   });
 
   // Fixed toolbar
-  let fixedToolbar = '<a href="#">To top</a><p class="coll">Sections</p><div>';
+  let fixedToolbar = '<a href="#">To top</a><p id="sections" class="coll">Sections</p><div>';
 
   $.each(sections, function(i, section) {
     fixedToolbar += `<a href="#${section.id}">${section.title}</a>${i < sections.length - 1 ? '<br>' : ''}`
