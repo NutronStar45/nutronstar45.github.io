@@ -8,14 +8,16 @@ const pages = [
 
 $(function() {
 
-  /*
   // Collapsible
   $('.coll').load(function() {
+    alert('collapsibles had loaded');
     $('.coll').click(function() {
       $(this).toggleClass('opened');
+      alert('collapsible had been toggled')
     });
   });
 
+  /*
   // Search through every page
   pages.forEach(function(page) {
     // Location on 404 page
