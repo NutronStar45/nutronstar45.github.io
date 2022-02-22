@@ -8,6 +8,7 @@ const pages = [
 
 $(function() {
 
+  /*
   // Collapsible
   $('.coll').load(function() {
     $('.coll').click(function() {
@@ -31,6 +32,7 @@ $(function() {
       id: $(this).prop('id')
     });
   });
+  */
 
   // Fixed toolbar
   let fixedToolbar = '<a href="#">To top</a><p class="coll">Sections</p><div>';
