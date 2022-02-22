@@ -32,16 +32,18 @@ $(function() {
       id: $(this).prop('id')
     });
   });
+  */
 
   // Fixed toolbar
   let fixedToolbar = '<a href="#">To top</a><p class="coll">Sections</p><div>';
 
+  /*
   $.each(sections, function(i, section) {
     fixedToolbar += `<a href="#${section.id}">${section.title}</a>${i < sections.length - 1 ? '<br>' : ''}`
   });
+  */
 
   fixedToolbar += '</div>'
-  */
 
   // Toolbar
   $('#toolbar-meta').html(`
