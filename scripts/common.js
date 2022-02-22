@@ -32,7 +32,6 @@ $(function() {
       id: $(this).prop('id')
     });
   });
-  */
 
   // Fixed toolbar
   let fixedToolbar = '<a href="#">To top</a><p class="coll">Sections</p><div>';
@@ -42,6 +41,7 @@ $(function() {
   });
 
   fixedToolbar += '</div>'
+  */
 
   // Toolbar
   $('#toolbar-meta').html(`
@@ -61,7 +61,7 @@ $(function() {
 
   <!-- Fixed toolbar -->
   <div class="toolbar-fixed">
-    ${fixedToolbar}
+    ${'fixedToolbar'}
   </div>
   `);
 
