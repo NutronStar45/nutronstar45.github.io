@@ -8,11 +8,6 @@ const pages = [
 
 $(function() {
 
-  // Collapsible
-  $('.coll').click(function() {
-    $(this).toggleClass('opened');
-  });
-
   /*
   // Search through every page
   pages.forEach(function(page) {
@@ -64,5 +59,10 @@ $(function() {
     ${fixedToolbar}
   </div>
   `);
+
+  // Collapsible
+  $('.coll').click(function () {
+    $(this).toggleClass('opened');
+  });
 
 });
