@@ -14,7 +14,7 @@ $(function() {
   });
 
   // Fixed toolbar
-  let fixedToolbar = '<a href="#">To top</a><p id="sections" class="coll">Sections</p><div>';
+  let fixedToolbar = '<a href="#">To top</a><span class="coll">Sections</span><div>';
 
   $.each(sections, function(i, section) {
     fixedToolbar += `<a href="#${section.id}">${section.title}</a>${i < sections.length - 1 ? '<br>' : ''}`
@@ -34,12 +34,12 @@ $(function() {
     </a>
     <!-- Projects -->
     <a xlink:href="/projs">
-      <text x="100" y="30" fill="white">Projects</text>
+      <text x="100" y="30">Projects</text>
     </a>
   </svg>
 
   <!-- Fixed toolbar -->
-  <div class="toolbar-fixed">
+  <div id="fixed-toolbar">
     ${fixedToolbar}
   </div>
   `);

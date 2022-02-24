@@ -1,6 +1,6 @@
 /* General style */
 * {
-  font: 100%/160% Roboto;
+  font: 100%/160% 'Roboto', 'Noto Sans', sans-serif;
   background-color: #000;
   color: #fff;
 }
@@ -31,7 +31,7 @@ ul ::marker {
 }
 
 /* Top right fixed toolbar */
-.toolbar-fixed {
+#fixed-toolbar {
   position: fixed;
   top: 0;
   right: 0;
@@ -41,17 +41,13 @@ ul ::marker {
   margin: 8px 8px 0 0;
 }
 
-#sections {
-  margin: 0;
-}
-
 
 
 /*
  * Page title elements
  */
 
-/* Page subtitle */
+/* Subtitle */
 .subtitle {
   font-size: 20px;
 }
@@ -59,20 +55,20 @@ ul ::marker {
 
 
 /*
- * Div group elements
+ * Section elements
  */
 
-/* Div group */
+/* Section */
 .section {
   border: 1px dashed #7f7f7f;
   margin: 0 8px 10px 0;
 }
-/* Div group title */
+/* Title */
 .section-title {
   font-size: 10px;
   margin-left: 10px;
 }
-/* Div group description line */
+/* Line */
 .section-line {
   margin-left: 20px;
 }
