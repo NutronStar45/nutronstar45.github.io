@@ -34,7 +34,7 @@ $(function() {
     </a>
     <!-- Projects -->
     <a xlink:href="/projs">
-      <text x="100" y="30">Projects</text>
+      <text x="100" y="30" fill="white">Projects</text>
     </a>
   </svg>
 
