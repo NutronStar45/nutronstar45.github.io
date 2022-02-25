@@ -44,11 +44,11 @@ ul ::marker {
 
 
 /*
- * Page title elements
+ * Title elements
  */
 
 /* Subtitle */
-.subtitle {
+h3 {
   font-size: 20px;
 }
 
