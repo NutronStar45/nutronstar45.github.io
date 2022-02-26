@@ -9,7 +9,7 @@ $(function() {
   });
 
   $('#maze-enable-solving').change(function() {
-    console.log('Maze solving has been changed to ' + $(this).val())
+    console.log('Maze solving has been changed to ' + $(this).is(':checked'))
   });
 
 });
