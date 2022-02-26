@@ -14,13 +14,16 @@ $(function() {
   });
 
   // Fixed toolbar
-  let fixedToolbar = '<a href="#">To top</a><br><span class="coll">Sections</span><div>';
+  let fixedToolbar = '<a href="#">To top</a>';
 
-  $.each(sections, function(i, section) {
-    fixedToolbar += `<a href="#${section.id}">${section.title}</a>${i < sections.length - 1 ? '<br>' : ''}`
-  });
+  if (sections.length > 0) {
+    fixedToolbar += '<br><span class="coll">Sections</span><div>';
 
-  fixedToolbar += '</div>'
+    $.each(sections, function(i, section) {
+      fixedToolbar += `<a href="#${section.id}">${section.title}</a>${i < sections.length - 1 ? '<br>' : ''}`
+    });
+    fixedToolbar += '</div>'
+  }
 
   // Toolbar
   $('#toolbar-meta').html(`

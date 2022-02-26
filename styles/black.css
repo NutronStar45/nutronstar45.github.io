@@ -68,8 +68,8 @@ h3 {
   font-size: 10px;
   margin-left: 10px;
 }
-/* Line */
-.section-line {
+/* Other */
+.section :not(.section-title) {
   margin-left: 20px;
 }
 
