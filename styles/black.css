@@ -59,9 +59,13 @@ h3 {
  */
 
 /* Section */
-.section {
+.section, .non-text-section {
   border: 1px dashed #7f7f7f;
   margin: 0 8px 10px 0;
+}
+/* Non-text section */
+.non-text-section {
+  padding-bottom: 16px;
 }
 /* Title */
 .section-title {
@@ -69,7 +73,9 @@ h3 {
   margin-left: 10px;
 }
 /* Other */
-.section :not(.section-title) {
+.section-line,
+.section label,
+.non-text-section label {
   margin-left: 20px;
 }
 
