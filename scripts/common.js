@@ -6,7 +6,7 @@ $(function() {
   const sections = [];
 
   // Sections
-  $('.section').each(function() {
+  $('.section, .non-text-section').each(function() {
     sections.push({
       title: $(this).children('.section-title').text(),
       id: $(this).prop('id')
@@ -20,9 +20,9 @@ $(function() {
     fixedToolbar += '<br><span class="coll">Sections</span><div>';
 
     $.each(sections, function(i, section) {
-      fixedToolbar += `<a href="#${section.id}">${section.title}</a>${i < sections.length - 1 ? '<br>' : ''}`
+      fixedToolbar += `<a href="#${section.id}">${section.title}</a>${i < sections.length - 1 ? '<br>' : ''}`;
     });
-    fixedToolbar += '</div>'
+    fixedToolbar += '</div>';
   }
 
   // Toolbar
