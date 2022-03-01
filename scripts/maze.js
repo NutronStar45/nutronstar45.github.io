@@ -1,15 +1,20 @@
 $(function() {
 
-  $('#maze-width').change(function() {
-    console.log('Maze width has been changed to ' + +$(this).val())
-  });
-
-  $('#maze-height').change(function() {
-    console.log('Maze height has been changed to ' + +$(this).val())
-  });
+  $('#maze-solver-options').hide();
 
   $('#maze-enable-solving').change(function() {
-    console.log('Maze solving has been changed to ' + $(this).is(':checked'))
+    $('#maze-solver-options').toggle();
+  });
+
+  $('#maze-gen-maze').click(function() {
+    $(this).next().html(`
+Width: ${+$('#maze-width').val()} <br>
+Height: ${+$('#maze-height').val()} <br>
+Start X: ${+$('#maze-start-x').val()} <br>
+Start Y: ${+$('#maze-start-y').val()} <br>
+End X: ${+$('#maze-end-x').val()} <br>
+End Y: ${+$('#maze-end-y').val()}
+    `);
   });
 
 });

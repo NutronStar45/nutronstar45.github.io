@@ -17,7 +17,7 @@
 
   <h2>Maze Generator &amp; Solver</h2>
 
-  <div id="gen" class="non-text-section">
+  <div id="gen-options" class="non-text-section">
     <p class="section-title">Generator Options</p>
     <label>
       Width: <input id="maze-width" type="number" min="1">
@@ -27,7 +27,7 @@
     </label>
   </div>
 
-  <div id="solver" class="non-text-section">
+  <div id="solver-options" class="non-text-section">
     <p class="section-title">Solver Options</p>
     <label>
       <input id="maze-enable-solving" type="checkbox"> Enable Solving
@@ -50,8 +50,10 @@
     </div>
   </div>
 
-  <div id="maze" class="non-text-section">
+  <div id="gen-solver" class="section">
+    <p class="section-title">Generator &amp; Solver</p>
     <button id="maze-gen-maze">Generate Maze</button>
+    <p class="section-line"></p>
   </div>
 
   <script src="/scripts/common.js"></script>
