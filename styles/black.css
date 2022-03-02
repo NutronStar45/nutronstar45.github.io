@@ -72,9 +72,13 @@ h3 {
   font-size: 10px;
   margin-left: 10px;
 }
-/* Other */
+/* Labels & Buttons */
 .section-line,
-:is(.section, .non-text-section) :is(label, button) {
+:is(.section, .non-text-section) :is(
+  label,
+  :not(button) + button,
+  button:first-child
+) {
   margin-left: 20px;
 }
 
