@@ -1,6 +1,6 @@
 function generate(solving) {
   if (solving) {
-    $(this).next().html(`
+    $('#test').next().html(`
 Width: ${+$('#maze-width').val()} <br>
 Height: ${+$('#maze-height').val()} <br>
 Start X: ${+$('#maze-start-x').val()} <br>
@@ -9,7 +9,7 @@ End X: ${+$('#maze-end-x').val()} <br>
 End Y: ${+$('#maze-end-y').val()}
     `);
   } else {
-    $(this).next().html(`
+    $('#test').next().html(`
 Width: ${+$('#maze-width').val()} <br>
 Height: ${+$('#maze-height').val()}
     `);
