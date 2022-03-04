@@ -10,8 +10,6 @@ function validate(targets, alert = true) {
   for (let i = 0; i < targets.length; i++) {
     let target = targets[i];
 
-    if (target === '') return false;
-
     if (typeof target === 'string') {
       target = $(target);
     }
@@ -29,7 +27,7 @@ function validate(targets, alert = true) {
           if (validate([target.prop('min')], false)) {
             min = +$(target.prop('min')).val();
           }
-        } else {
+        } else if (target.prop('min') !== '') {
           min = +target.prop('min');
         }
 
@@ -38,7 +36,7 @@ function validate(targets, alert = true) {
           if (validate([target.prop('max')], false)) {
             max = +$(target.prop('max')).val();
           }
-        } else {
+        } else if (target.prop('max') !== '') {
           max = +target.prop('max');
         }
 
