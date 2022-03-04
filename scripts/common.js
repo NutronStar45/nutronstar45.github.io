@@ -5,8 +5,12 @@
  * @returns Whether `targets` are valid or not.
  */
 function validate(targets, alert = true) {
+  let validity = true;
+
   for (let i = 0; i < targets.length; i++) {
     let target = targets[i];
+
+    if (target === '') return false;
 
     if (typeof target === 'string') {
       target = $(target);
@@ -16,16 +20,14 @@ function validate(targets, alert = true) {
       // Invalid/empty
       if (target.val() === '') {
         alertInvalid(target, 'alert-invalid', 'Invalid/Empty', alert);
-        return false;
+        validity = false;
       } else {
-        let min, max;
+        let min = -Infinity, max = Infinity;
 
         // Calculate min
         if (isNaN(target.prop('min'))) {
           if (validate([target.prop('min')], false)) {
             min = +$(target.prop('min')).val();
-          } else {
-            min = -Infinity; // To avoid alerting
           }
         } else {
           min = +target.prop('min');
@@ -35,8 +37,6 @@ function validate(targets, alert = true) {
         if (isNaN(target.prop('max'))) {
           if (validate([target.prop('max')], false)) {
             max = +$(target.prop('max')).val();
-          } else {
-            max = Infinity; // To avoid alerting
           }
         } else {
           max = +target.prop('max');
@@ -45,19 +45,18 @@ function validate(targets, alert = true) {
         // Too small
         if (+target.val() < min) {
           alertInvalid(target, 'alert-small', 'Number too small', alert);
-          return false;
+          validity = false;
         }
         // Too big
         if (+target.val() > max) {
           alertInvalid(target, 'alert-big', 'Number too big', alert);
-          return false;
+          validity = false;
         }
       }
     }
   }
 
-  // All valid
-  return true;
+  return validity;
 }
 
 
