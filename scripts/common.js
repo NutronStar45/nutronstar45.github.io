@@ -19,6 +19,7 @@ function validate(targets, alert = true) {
       if (target.val() === '') {
         alertInvalid(target, 'alert-invalid', 'Invalid/Empty', alert);
         validity = false;
+        continue;
       } else {
         let min = -Infinity, max = Infinity;
 
@@ -44,14 +45,18 @@ function validate(targets, alert = true) {
         if (+target.val() < min) {
           alertInvalid(target, 'alert-small', 'Number too small', alert);
           validity = false;
+          continue;
         }
         // Too big
         if (+target.val() > max) {
           alertInvalid(target, 'alert-big', 'Number too big', alert);
           validity = false;
+          continue;
         }
       }
     }
+
+    target.next().remove(); // Remove potential alert
   }
 
   return validity;
