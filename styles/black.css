@@ -5,8 +5,7 @@
   color: #fff;
 }
 
-/* 45 degrees rotated block
- * Original SVG
+/* Bulleted list markers
 
 <svg width="17" height="13" xmlns="http://www.w3.org/2000/svg">
   <rect x="6" y="4" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 8.5,6.5)" />
@@ -24,14 +23,14 @@ ul ::marker {
  */
 
 /* Sticky toolbar */
-#toolbar-meta {
+div#toolbar {
   position: sticky;
   position: -webkit-sticky; /* WebKit (Safari) */
   top: 0;
 }
 
 /* Top right fixed toolbar */
-#fixed-toolbar {
+div#fixed-toolbar {
   position: fixed;
   top: 0;
   right: 0;
@@ -39,6 +38,24 @@ ul ::marker {
   padding: 0 5px;
   border: 2px solid #fff;
   margin: 8px 8px 0 0;
+}
+
+
+
+/*
+ * Input
+ */
+
+/* Required indicator */
+label.required::before {
+  content: "*";
+  color: red;
+}
+
+/* Invalid */
+span.invalid-input {
+  margin-left: 5px;
+  color: red;
 }
 
 
@@ -58,23 +75,23 @@ h3 {
  * Section elements
  */
 
-/* Section */
-.section, .non-text-section {
+/* Sections */
+div.section, div.non-text-section {
   border: 1px dashed #7f7f7f;
   margin: 0 8px 10px 0;
 }
-/* Non-text section */
-.non-text-section {
+/* Non-text sections */
+div.non-text-section {
   padding-bottom: 16px;
 }
 /* Title */
-.section-title {
+p.section-title {
   font-size: 10px;
   margin-left: 10px;
 }
 /* Labels & Buttons */
-.section-line,
-:is(.section, .non-text-section) :is(
+p.section-line,
+:is(div.section, div.non-text-section) :is(
   label,
   :not(button) + button,
   button:first-child
@@ -109,61 +126,6 @@ h3 {
 /* Next element */
 .coll:not(.opened) + * {
   display: none;
-}
-
-
-
-/*
- * Blockquotes
- */
-
-/* Blockquotes */
-blockquote {
-  display: block;
-}
-
-/* Quotation marks */
-/* Before/After blockquotes */
-/* Original SVG
-
-<svg width="20" height="14" xmlns="http://www.w3.org/2000/svg">
-  <g>
-    <rect x="9" y="5" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 11.5,7.5)" />
-    <polygon points="11.5,3.964 15.036,0.429 16.803,2.197 13.268,5.732" style="fill:rgb(255,255,255);" />
-    <rect x="1.929" y="5" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 4.429,7.5)" />
-    <polygon points="4.429,3.964 7.964,0.429 9.732,2.197 6.197,5.732" style="fill:rgb(255,255,255);" />
-  </g>
-</svg>
-
-<svg width="20" height="14" xmlns="http://www.w3.org/2000/svg">
-  <g transform="rotate(180 10,7)">
-    <rect x="9" y="5" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 11.5,7.5)" />
-    <polygon points="11.5,3.964 15.036,0.429 16.803,2.197 13.268,5.732" style="fill:rgb(255,255,255);" />
-    <rect x="1.929" y="5" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 4.429,7.5)" />
-    <polygon points="4.429,3.964 7.964,0.429 9.732,2.197 6.197,5.732" style="fill:rgb(255,255,255);" />
-  </g>
-</svg>
-
- */
-blockquote::before {
-  content: url('data:image/svg+xml,<svg width="20" height="14" xmlns="http://www.w3.org/2000/svg"><g><rect x="9" y="5" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 11.5,7.5)" /><polygon points="11.5,3.964 15.036,0.429 16.803,2.197 13.268,5.732" style="fill:rgb(255,255,255);" /><rect x="1.929" y="5" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 4.429,7.5)" /><polygon points="4.429,3.964 7.964,0.429 9.732,2.197 6.197,5.732" style="fill:rgb(255,255,255);" /></g></svg>');
-}
-blockquote::after {
-  content: url('data:image/svg+xml,<svg width="20" height="14" xmlns="http://www.w3.org/2000/svg"><g transform="rotate(180 10,7)"><rect x="9" y="5" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 11.5,7.5)" /><polygon points="11.5,3.964 15.036,0.429 16.803,2.197 13.268,5.732" style="fill:rgb(255,255,255);" /><rect x="1.929" y="5" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 4.429,7.5)" /><polygon points="4.429,3.964 7.964,0.429 9.732,2.197 6.197,5.732" style="fill:rgb(255,255,255);" /></g></svg>');
-}
-
-/* Quotation dash */
-/* Before blockquotes source */
-/* Original SVG
-
-<svg width="300" height="16" xmlns="http://www.w3.org/2000/svg">
-  <line x1="240" y1="8" x2="290" y2="8" style="stroke:rgb(255,255,255);stroke-width:2;" />
-</svg>
-
- */
-
-.blockquote-source::before {
-  content: url('data:image/svg+xml,<svg width="300" height="16" xmlns="http://www.w3.org/2000/svg"><line x1="240" y1="8" x2="290" y2="8" style="stroke:rgb(255,255,255);stroke-width:2;" /></svg>');
 }
 
 
@@ -204,9 +166,9 @@ sup {
   font-size: smaller;
 }
 
-/* Header 2 */
+/* Header */
 h2 {
-  font: bold 1.5em/160% Roboto;
+  font: bold 1.5em/160% 'Roboto';
 }
 
 /* Bold */

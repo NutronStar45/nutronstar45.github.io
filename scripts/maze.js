@@ -1,20 +1,25 @@
 function generate(solving) {
+  let targets = [
+    '#maze-width',
+    '#maze-height'
+  ];
   if (solving) {
-    $('#test').html(`
-Width: ${+$('#maze-width').val()} <br>
-Height: ${+$('#maze-height').val()} <br>
-Start X: ${+$('#maze-start-x').val()} <br>
-Start Y: ${+$('#maze-start-y').val()} <br>
-End X: ${+$('#maze-end-x').val()} <br>
-End Y: ${+$('#maze-end-y').val()}
-    `);
-  } else {
-    $('#test').html(`
-Width: ${+$('#maze-width').val()} <br>
-Height: ${+$('#maze-height').val()}
-    `);
+    targets.push(
+      '#maze-start-x',
+      '#maze-start-y',
+      '#maze-end-x',
+      '#maze-end-y'
+    );
   }
+
+  if (!validate(targets)) {
+    console.log('Invalid');
+    return;
+  }
+
+  console.log('Valid');
 }
+
 
 
 $(function() {

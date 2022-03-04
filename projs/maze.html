@@ -13,16 +13,16 @@
 </head>
 
 <body>
-  <div id="toolbar-meta"></div>
+  <div id="toolbar"></div>
 
   <h2>Maze Generator &amp; Solver</h2>
 
   <div id="gen-options" class="non-text-section">
     <p class="section-title">Generator Options</p>
-    <label>
+    <label class="required">
       Width: <input id="maze-width" type="number" min="1">
     </label> <br>
-    <label>
+    <label class="required">
       Height: <input id="maze-height" type="number" min="1">
     </label>
   </div>
@@ -34,18 +34,18 @@
     </label>
 
     <div id="maze-solver-options">
-      <label>Start: X
-        <input id="maze-start-x" type="number" min="1">
+      <label class="required">Start: X
+        <input id="maze-start-x" type="number" min="1" max="#maze-width">
       </label>
-      <label>Y
-        <input id="maze-start-y" type="number" min="1">
+      <label class="required">Y
+        <input id="maze-start-y" type="number" min="1" max="#maze-height">
       </label> <br>
 
-      <label>End: X
-        <input id="maze-end-x" type="number" min="1">
+      <label class="required">End: X
+        <input id="maze-end-x" type="number" min="1" max="#maze-width">
       </label>
-      <label>Y
-        <input id="maze-end-y" type="number" min="1">
+      <label class="required">Y
+        <input id="maze-end-y" type="number" min="1" max="#maze-height">
       </label>
     </div>
   </div>

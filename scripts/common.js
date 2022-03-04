@@ -1,3 +1,86 @@
+/**
+ * Validates one or more `<input>`s and returns the validity.
+ * @param {(string | $)[]} targets The validation targets.
+ * @param {boolean} alert Whether to alert invalid input or not, defaults to true.
+ * @returns Whether `targets` are valid or not.
+ */
+function validate(targets, alert = true) {
+  for (let i = 0; i < targets.length; i++) {
+    let target = targets[i];
+
+    if (typeof target === 'string') {
+      target = $(target);
+    }
+
+    if (target.prop('type') === 'number') {
+      // Invalid/empty
+      if (target.val() === '') {
+        alertInvalid(target, 'alert-invalid', 'Invalid/Empty', alert);
+        return false;
+      } else {
+        let min, max;
+
+        // Calculate min
+        if (isNaN(target.prop('min'))) {
+          if (validate([target.prop('min')], false)) {
+            min = +$(target.prop('min')).val();
+          } else {
+            min = -Infinity; // To avoid alerting
+          }
+        } else {
+          min = +target.prop('min');
+        }
+
+        // Calculate max
+        if (isNaN(target.prop('max'))) {
+          if (validate([target.prop('max')], false)) {
+            max = +$(target.prop('max')).val();
+          } else {
+            max = Infinity; // To avoid alerting
+          }
+        } else {
+          max = +target.prop('max');
+        }
+
+        // Too small
+        if (+target.val() < min) {
+          alertInvalid(target, 'alert-small', 'Number too small', alert);
+          return false;
+        }
+        // Too big
+        if (+target.val() > max) {
+          alertInvalid(target, 'alert-big', 'Number too big', alert);
+          return false;
+        }
+      }
+    }
+  }
+
+  // All valid
+  return true;
+}
+
+
+
+/**
+ * Place alert after `<input>`.
+ * @param {$} target The invalid `<input>`
+ * @param {string} propName The name of the property that contains a custom alert.
+ * @param {string} defMsg The default alert if custom alert is not defined.
+ * @param {boolean} alert Whether to alert or not.
+ */
+function alertInvalid(target, propName, defMsg, alert) {
+  if (alert) {
+    target.next().remove();
+    target.after($(`<span class="invalid-input">${target.prop(propName)
+        ? target.prop(propName)
+        : defMsg
+      }</span>`));
+  }
+}
+
+
+
 $(function() {
 
   // Location on 404 page
@@ -26,7 +109,7 @@ $(function() {
   }
 
   // Toolbar
-  $('#toolbar-meta').html(`
+  $('#toolbar').html(`
   <svg width="1000" height="50">
     <!-- Homepage icon -->
     <a xlink:href="/">
@@ -41,14 +124,13 @@ $(function() {
     </a>
   </svg>
 
-  <!-- Fixed toolbar -->
   <div id="fixed-toolbar">
     ${fixedToolbar}
   </div>
   `);
 
   // Collapsible
-  $('.coll').click(function () {
+  $('.coll').click(function() {
     $(this).toggleClass('opened');
   });
 
