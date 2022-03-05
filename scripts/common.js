@@ -85,8 +85,8 @@ function validate(targets, alert = true) {
 function alertInvalid(target, type, alert) {
   if (alert) {
     target.next().remove();
-    target.after($(`<span class="invalid-input">${target.prop('alert-' + type)
-        ? target.prop('alert' + type)
+    target.after($(`<span class="invalid-input">${target.attr('alert-' + type)
+        ? target.attr('alert-' + type)
         : alerts[type]
       }</span>`));
   }
