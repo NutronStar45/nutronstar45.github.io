@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Online maze generator & solver">
   <meta name="author" content="NutronStar45">
   <title>Maze Generator &amp; Solver</title>
 
@@ -19,11 +20,11 @@
 
   <div id="gen-options" class="non-text-section">
     <p class="section-title">Generator Options</p>
-    <label class="required">
-      Width: <input id="maze-width" type="number" min="1">
+    <label>
+      Width: <input id="maze-width" class="required" type="number" min="1">
     </label> <br>
-    <label class="required">
-      Height: <input id="maze-height" type="number" min="1">
+    <label>
+      Height: <input id="maze-height" class="required" type="number" min="1">
     </label>
   </div>
 
@@ -34,18 +35,18 @@
     </label>
 
     <div id="maze-solver-options">
-      <label class="required">
-        Start: X <input id="maze-start-x" type="number" min="1" max="#maze-width">
+      <label>
+        Start: X <input id="maze-start-x" class="required" type="number" min="1" max="#maze-width" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze">
       </label>
-      <label class="required">
-        Y <input id="maze-start-y" type="number" min="1" max="#maze-height">
+      <label>
+        Y <input id="maze-start-y" class="required" type="number" min="1" max="#maze-height" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze">
       </label> <br>
 
-      <label class="required">
-        End: X <input id="maze-end-x" type="number" min="1" max="#maze-width">
+      <label>
+        End: X <input id="maze-end-x" class="required" type="number" min="1" max="#maze-width" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze">
       </label>
-      <label class="required">
-        Y <input id="maze-end-y" type="number" min="1" max="#maze-height">
+      <label>
+        Y <input id="maze-end-y" class="required" type="number" min="1" max="#maze-height" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze">
       </label>
     </div>
   </div>

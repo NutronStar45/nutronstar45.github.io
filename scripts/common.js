@@ -1,3 +1,15 @@
+let commitVer = '2.9.4';
+
+
+
+let alerts = {
+  invalid: 'Invalid/Empty',
+  small: 'Number too small',
+  big: 'Number too big'
+};
+
+
+
 /**
  * Validates one or more `<input>`s and returns the validity.
  * @param {(string | $)[]} targets The validation targets.
@@ -17,7 +29,7 @@ function validate(targets, alert = true) {
     if (target.prop('type') === 'number') {
       // Invalid/empty
       if (target.val() === '') {
-        alertInvalid(target, 'alert-invalid', 'Invalid/Empty', alert);
+        alertInvalid(target, 'invalid', alert);
         validity = false;
         continue;
       } else {
@@ -43,13 +55,13 @@ function validate(targets, alert = true) {
 
         // Too small
         if (+target.val() < min) {
-          alertInvalid(target, 'alert-small', 'Number too small', alert);
+          alertInvalid(target, 'small', alert);
           validity = false;
           continue;
         }
         // Too big
         if (+target.val() > max) {
-          alertInvalid(target, 'alert-big', 'Number too big', alert);
+          alertInvalid(target, 'big', alert);
           validity = false;
           continue;
         }
@@ -67,16 +79,15 @@ function validate(targets, alert = true) {
 /**
  * Place alert after `<input>`.
  * @param {$} target The invalid `<input>`
- * @param {string} propName The name of the property that contains a custom alert.
- * @param {string} defMsg The default alert if custom alert is not defined.
+ * @param {string} type The type of the invalidity.
  * @param {boolean} alert Whether to alert or not.
  */
-function alertInvalid(target, propName, defMsg, alert) {
+function alertInvalid(target, type, alert) {
   if (alert) {
     target.next().remove();
-    target.after($(`<span class="invalid-input">${target.prop(propName)
-        ? target.prop(propName)
-        : defMsg
+    target.after($(`<span class="invalid-input">${target.prop('alert-' + type)
+        ? target.prop('alert' + type)
+        : alerts[type]
       }</span>`));
   }
 }
@@ -99,7 +110,7 @@ $(function() {
   });
 
   // Fixed toolbar
-  let fixedToolbar = '<a href="#">To top</a>';
+  let fixedToolbar = `<a href="#">To top</a><br><span>Commit ${commitVer}</span>`;
 
   if (sections.length > 0) {
     fixedToolbar += '<br><span class="coll">Sections</span><div>';

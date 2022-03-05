@@ -47,7 +47,7 @@ div#fixed-toolbar {
  */
 
 /* Required indicator */
-label.required::before {
+input.required::before {
   content: "*";
   color: red;
 }
