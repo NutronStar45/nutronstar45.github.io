@@ -12,12 +12,9 @@ function generate(solving) {
     );
   }
 
-  if (!validate(targets)) {
-    console.log('Invalid');
-    return;
-  }
+  if (!validate(targets)) return;
 
-  console.log('Valid');
+  // Generation code here
 }
 
 

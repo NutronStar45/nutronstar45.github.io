@@ -47,8 +47,7 @@ div#fixed-toolbar {
  */
 
 /* Required indicator */
-input.required::before {
-  content: "*";
+span.required-ind {
   color: red;
 }
 
@@ -153,6 +152,11 @@ a:visited {
 /*
  * Misc style
  */
+
+/* Buttons */
+button {
+  cursor: pointer;
+}
 
 /* Codespace */
 code {
