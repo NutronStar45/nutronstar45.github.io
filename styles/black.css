@@ -106,25 +106,26 @@ p.section-line,
  */
 
 /* Button */
-.coll {
-  cursor: pointer;
+button.coll {
+  padding: 0;
+  border: 0;
 }
 
 /* Closed */
-.coll:not(.opened) {
+button.coll:not(.opened) {
   margin-bottom: 10px;
 }
-.coll:not(.opened)::before {
+button.coll:not(.opened)::before {
   content: "\25b4";
 }
 
 /* Opened */
-.coll.opened::before {
+button.coll.opened::before {
   content: "\25be";
 }
 
 /* Next element */
-.coll:not(.opened) + * {
+button.coll:not(.opened) + * {
   display: none;
 }
 

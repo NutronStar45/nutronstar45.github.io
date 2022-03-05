@@ -1,4 +1,4 @@
-let commitVer = '2.9.4';
+let commitVer = '2.9.6';
 
 
 
@@ -102,9 +102,9 @@ $(function() {
   const sections = [];
 
   // Sections
-  $('.section, .non-text-section').each(function() {
+  $('div.section, div.non-text-section').each(function() {
     sections.push({
-      title: $(this).children('.section-title').text(),
+      title: $(this).children('p.section-title').text(),
       id: $(this).prop('id')
     });
   });
@@ -113,7 +113,7 @@ $(function() {
   let fixedToolbar = `<a href="#">To top</a><br><span>Commit ${commitVer}</span>`;
 
   if (sections.length > 0) {
-    fixedToolbar += '<br><span class="coll">Sections</span><div>';
+    fixedToolbar += '<br><button class="coll">Sections</button><div>';
 
     $.each(sections, function(i, section) {
       fixedToolbar += `<a href="#${section.id}">${section.title}</a>${i < sections.length - 1 ? '<br>' : ''}`;
@@ -143,7 +143,7 @@ $(function() {
   `);
 
   // Collapsible
-  $('.coll').click(function() {
+  $('button.coll').click(function() {
     $(this).toggleClass('opened');
   });
 
