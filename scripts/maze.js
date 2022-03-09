@@ -3,7 +3,7 @@
  * @returns A pseudo-random item from the array.
  */
 Array.prototype.random = function () {
-  return this[Math.round(Math.random() * this.length)];
+  return this[Math.floor(Math.random() * this.length)];
 }
 
 /**
