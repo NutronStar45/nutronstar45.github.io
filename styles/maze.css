@@ -1,6 +1,6 @@
 #maze-img .wall {
   stroke-width: 2;
-  stroke: black;
+  stroke: white;
   stroke-linecap: round;
 }
 

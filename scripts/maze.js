@@ -193,7 +193,7 @@ function generate(solving) {
     Math.round(now() - startTime, 2)
   }s (took ${
     Math.round(now() - startTime, 2)
-  }s)<br>`);
+  }s)`);
   let lastTimestamp = now();
 
 
@@ -214,11 +214,11 @@ function generate(solving) {
 
   svgWalls += '</g>';
 
-  writeStatus(`Walls rendering calculated at ${
+  writeStatus(`<br>Walls rendering calculated at ${
     Math.round(now() - startTime, 2)
   }s (took ${
     Math.round(now() - lastTimestamp, 2)
-  }s)<br>`);
+  }s)`);
   lastTimestamp = now();
 
 
@@ -263,11 +263,11 @@ function generate(solving) {
       }
     }
 
-    writeStatus(`Path generated at ${
+    writeStatus(`<br>Path generated at ${
       Math.round(now() - startTime, 2)
     }s (took ${
       Math.round(now() - lastTimestamp, 2)
-    }s)<br>`);
+    }s)`);
     lastTimestamp = now();
 
 
@@ -305,7 +305,7 @@ function generate(solving) {
 
     svgPath += '</g>';
 
-    writeStatus(`Path rendering calculated at ${
+    writeStatus(`<br>Path rendering calculated at ${
       Math.round(now() - startTime, 2)
     }s (took ${
       Math.round(now() - lastTimestamp, 2)
@@ -333,7 +333,7 @@ function generate(solving) {
       height: height * 20 + 2,
       rx: 5,
       fill: 'none',
-      stroke: 'white',
+      stroke: 'black',
       'stroke-width': 2,
       x: -1,
       y: -1
@@ -343,7 +343,7 @@ function generate(solving) {
       height: height * 20 - 2,
       rx: 3,
       fill: 'none',
-      stroke: 'black',
+      stroke: 'white',
       'stroke-width': 2,
       x: 1,
       y: 1
