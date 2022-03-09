@@ -10,6 +10,7 @@
   <title>Maze Generator &amp; Solver</title>
 
   <link rel="stylesheet" href="/styles/black.css" />
+  <link rel="stylesheet" href="/styles/maze.css" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 
@@ -18,42 +19,44 @@
 
   <h2>Maze Generator &amp; Solver</h2>
 
-  <div id="gen-options" class="non-text-section">
+  <div id="sec-gen-options" class="non-text-section">
     <p class="section-title">Generator Options</p>
     <label>
-      Width: <input id="maze-width" class="required" type="number" min="1">
+      Width: <input id="width" class="required" type="number" min="1">
     </label> <br>
     <label>
-      Height: <input id="maze-height" class="required" type="number" min="1">
+      Height: <input id="height" class="required" type="number" min="1">
     </label>
   </div>
 
-  <div id="solver-options" class="non-text-section">
+  <div id="sec-solver-options" class="non-text-section">
     <p class="section-title">Solver Options</p>
     <label>
-      <input id="maze-enable-solving" type="checkbox"> Enable Solving
+      <input id="enable-solving" type="checkbox"> Enable Solving
     </label>
 
-    <div id="maze-solver-options">
+    <div id="solver-options">
       <label>
-        Start: X <input id="maze-start-x" class="required" type="number" min="1" max="#maze-width" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze">
+        Start: X <input id="start-x" class="required" type="number" min="1" max="#width" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze">
       </label>
       <label>
-        Y <input id="maze-start-y" class="required" type="number" min="1" max="#maze-height" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze">
+        Y <input id="start-y" class="required" type="number" min="1" max="#height" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze">
       </label> <br>
 
       <label>
-        End: X <input id="maze-end-x" class="required" type="number" min="1" max="#maze-width" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze">
+        End: X <input id="end-x" class="required" type="number" min="1" max="#width" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze">
       </label>
       <label>
-        Y <input id="maze-end-y" class="required" type="number" min="1" max="#maze-height" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze">
+        Y <input id="end-y" class="required" type="number" min="1" max="#height" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze">
       </label>
     </div>
   </div>
 
-  <div id="gen-solver" class="section">
+  <div id="sec-gen-solver" class="non-text-section">
     <p class="section-title">Generator &amp; Solver</p>
-    <button id="maze-gen-solve">Generate</button>
+    <button id="gen-solve">Generate</button>
+    <p id="gen-status" class="section-line"></p>
+    <div id="maze-img"></div>
   </div>
 
   <script src="/scripts/common.js"></script>

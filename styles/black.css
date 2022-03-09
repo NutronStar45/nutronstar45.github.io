@@ -63,6 +63,12 @@ span.invalid-input {
  * Title elements
  */
 
+/* Header */
+h2 {
+  font-weight: bold;
+  font-size: 1.5em;
+}
+
 /* Subtitle */
 h3 {
   font-size: 20px;
@@ -161,7 +167,7 @@ button {
 /* Codespace */
 code {
   background-color: #101010;
-  color: #40ffff;
+  color: white;
   font-family: 'Courier New';
   margin: 0 5px 0 5px;
 }
@@ -169,11 +175,6 @@ code {
 /* Superscript */
 sup {
   font-size: smaller;
-}
-
-/* Header */
-h2 {
-  font: bold 1.5em/160% 'Roboto';
 }
 
 /* Bold */

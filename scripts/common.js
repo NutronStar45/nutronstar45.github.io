@@ -1,4 +1,4 @@
-let commitVer = '2.9.7';
+let commitVer = '2.10';
 
 
 
@@ -85,10 +85,11 @@ function validate(targets, alert = true) {
 function alertInvalid(target, type, alert) {
   if (alert) {
     target.next().remove();
-    target.after($(`<span class="invalid-input">${target.attr('alert-' + type)
+    target.after($(`<span class="invalid-input">${
+      target.attr('alert-' + type)
         ? target.attr('alert-' + type)
         : alerts[type]
-      }</span>`));
+    }</span>`));
   }
 }
 
@@ -96,10 +97,10 @@ function alertInvalid(target, type, alert) {
 
 $(function() {
 
-  // Location on 404 page
+  // Location in 404 page
   $('#404-location').html(`File or Site missing at <code>${location.pathname}</code>`);
 
-  const sections = [];
+  let sections = [];
 
   // Sections
   $('div.section, div.non-text-section').each(function() {
@@ -123,23 +124,23 @@ $(function() {
 
   // Toolbar
   $('#toolbar').html(`
-  <svg width="1000" height="50">
-    <!-- Homepage icon -->
-    <a xlink:href="/">
-      <rect width="50" height="50" style="fill:black" />
-      <polyline points="5,25 25,5 45,25" style="fill:none;stroke:#7f7f7f;stroke-width:3;" />
-      <rect y="25" width="50" height="25" style="black" />
-      <polyline points="12,25 12,45 38,45 38,25" style="fill:none;stroke:#7f7f7f;stroke-width:3;" />
-    </a>
-    <!-- Projects -->
-    <a xlink:href="/projs">
-      <text x="100" y="30" fill="white">Projects</text>
-    </a>
-  </svg>
+    <svg width="1000" height="50">
+      <!-- Homepage icon -->
+      <a xlink:href="/">
+        <rect width="50" height="50" style="fill:black" />
+        <polyline points="5,25 25,5 45,25" style="fill:none;stroke:#7f7f7f;stroke-width:3;" />
+        <rect y="25" width="50" height="25" style="black" />
+        <polyline points="12,25 12,45 38,45 38,25" style="fill:none;stroke:#7f7f7f;stroke-width:3;" />
+      </a>
+      <!-- Projects -->
+      <a xlink:href="/projs">
+        <text x="100" y="30" fill="white">Projects</text>
+      </a>
+    </svg>
 
-  <div id="fixed-toolbar">
-    ${fixedToolbar}
-  </div>
+    <div id="fixed-toolbar">
+      ${fixedToolbar}
+    </div>
   `);
 
   // Required indicator
