@@ -193,7 +193,7 @@ function generate(solving) {
     Math.round(now() - startTime, 2)
   }s (took ${
     Math.round(now() - startTime, 2)
-  }s)`);
+  }s)<br>`);
   let lastTimestamp = now();
 
 
@@ -218,7 +218,7 @@ function generate(solving) {
     Math.round(now() - startTime, 2)
   }s (took ${
     Math.round(now() - lastTimestamp, 2)
-  }s)`);
+  }s)<br>`);
   lastTimestamp = now();
 
 
@@ -267,7 +267,7 @@ function generate(solving) {
       Math.round(now() - startTime, 2)
     }s (took ${
       Math.round(now() - lastTimestamp, 2)
-    }s)`);
+    }s)<br>`);
     lastTimestamp = now();
 
 
@@ -310,7 +310,6 @@ function generate(solving) {
     }s (took ${
       Math.round(now() - lastTimestamp, 2)
     }s)`);
-    lastTimestamp = now();
   }
 
 
@@ -319,7 +318,7 @@ function generate(solving) {
    * Render
    */
 
-  let svg = $('<svg></svg>', {
+  let svg = $('<svg></svg>').attr({
     width: width * 20,
     height: height * 20
   });
@@ -329,7 +328,7 @@ function generate(solving) {
   }
 
   svg
-    .append(`<rect />`, {
+    .append($(`<rect />`).attr({
       width: width * 20 + 2,
       height: height * 20 + 2,
       rx: 5,
@@ -338,8 +337,8 @@ function generate(solving) {
       'stroke-width': 2,
       x: -1,
       y: -1
-    })
-    .append(`<rect />`, {
+    }))
+    .append($(`<rect />`).attr({
       width: width * 20 - 2,
       height: height * 20 - 2,
       rx: 3,
@@ -348,7 +347,7 @@ function generate(solving) {
       'stroke-width': 2,
       x: 1,
       y: 1
-    })
+    }))
     .append(svgWalls);
 
   $('#maze-img').empty().append(svg);
