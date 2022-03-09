@@ -318,10 +318,7 @@ function generate(solving) {
    * Render
    */
 
-  let svg = $('<svg></svg>').attr({
-    width: width * 20,
-    height: height * 20
-  });
+  let svg = $('<svg></svg>');
 
   if (solving) {
     svg.append(svgPath)
@@ -350,7 +347,9 @@ function generate(solving) {
     }))
     .append(svgWalls);
 
-  $('#maze-img').empty().append(svg);
+  $('#maze-img').empty()
+    .width(width * 20).height(height * 20)
+    .append(svg);
 }
 
 
