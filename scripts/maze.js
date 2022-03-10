@@ -357,6 +357,8 @@ function generate(solving) {
       .append(svgEndpoint);
 
   console.log(svg);
+  console.log(svgPath);
+  console.log(svgEndpoint);
 
   svg
     .append(svgNS('rect').attr({
