@@ -320,7 +320,7 @@ function generate(solving) {
    * Render
    */
 
-  let svg = $(document.createElementNS('http://www.w3.org/2000/svg', 'svg`')).attr({
+  let svg = $(document.createElementNS('http://www.w3.org/2000/svg', 'svg')).attr({
     width: width * 20,
     height: height * 20
   });
