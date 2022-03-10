@@ -349,6 +349,8 @@ function generate(solving) {
     }))
     .append(svgWalls);
 
+  console.log(svg);
+
   $('#maze-img').empty().append(svg);
 }
 
