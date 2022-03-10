@@ -149,20 +149,20 @@ function generate(solving) {
   let slotsFinished  = [];
 
   // Insert status
-  for (let slot = 0; slot < size.length; slot++) {
+  for (let slot = 0; slot < size; slot++) {
     slotsDefault.push(slot);
   }
 
   // Insert vertical walls
-  for (let vIndex = 0; vIndex < height.length; vIndex++) {
-    for (let hIndex = 0; hIndex < width.length - 1; hIndex++) {
+  for (let vIndex = 0; vIndex < height; vIndex++) {
+    for (let hIndex = 0; hIndex < width - 1; hIndex++) {
       vWalls.push(vIndex * width + hIndex);
     }
   }
 
   // Insert horizontal walls
-  for (let vIndex = 0; vIndex < height.length - 1; vIndex++) {
-    for (let hIndex = 0; hIndex < width.length; hIndex++) {
+  for (let vIndex = 0; vIndex < height - 1; vIndex++) {
+    for (let hIndex = 0; hIndex < width; hIndex++) {
       hWalls.push(vIndex * width + hIndex);
     }
   }
@@ -356,9 +356,6 @@ function generate(solving) {
       .append(svgPath)
       .append(svgEndpoint);
   }
-
-  console.log(svg);
-  console.log(svg.children());
 
   svg
     .append(svgNS('rect').attr({
