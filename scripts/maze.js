@@ -358,7 +358,7 @@ function generate(solving) {
   }
 
   console.log(svg);
-  console.log(svg.children);
+  console.log(svg.children());
 
   svg
     .append(svgNS('rect').attr({
