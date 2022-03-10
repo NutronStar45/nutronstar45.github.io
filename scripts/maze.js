@@ -320,7 +320,10 @@ function generate(solving) {
    * Render
    */
 
-  let svg = $(`<svg width="${width * 20}" height="${height * 20}></svg>`);
+  let svg = $(`<svg></svg>`).attr({
+    width: width * 20,
+    height: height * 20
+  });
 
   console.log(svg);
 
