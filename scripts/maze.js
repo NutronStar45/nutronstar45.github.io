@@ -322,6 +322,8 @@ function generate(solving) {
 
   let svg = $(`<svg width="${width * 20}" height="${height * 20}></svg>`);
 
+  console.log(svg);
+
   if (solving) {
     svg.append(svgPath)
   }
