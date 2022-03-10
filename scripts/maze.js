@@ -356,6 +356,8 @@ function generate(solving) {
       .append(svgPath)
       .append(svgEndpoint);
 
+  consolee.log(svg);
+
   svg
     .append(svgNS('rect').attr({
       width: width * 20 + 2,
