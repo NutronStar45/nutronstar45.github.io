@@ -351,14 +351,14 @@ function generate(solving) {
     height: height * 20
   });
 
-  if (solving)
+  if (solving) {
     svg
       .append(svgPath)
       .append(svgEndpoint);
+  }
 
   console.log(svg);
-  console.log(svgPath);
-  console.log(svgEndpoint);
+  console.log(svg.children);
 
   svg
     .append(svgNS('rect').attr({
