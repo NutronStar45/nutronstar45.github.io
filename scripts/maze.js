@@ -111,6 +111,8 @@ function generate(solving) {
   // 10 11 12 13 14
   // 15 16 17 18 19
 
+  $('#gen-status').empty();
+
 
 
   /*
@@ -318,7 +320,7 @@ function generate(solving) {
    * Render
    */
 
-  let svg = $('<svg></svg>');
+  let svg = $(`<svg width="${width * 20}" height="${height * 20}></svg>`);
 
   if (solving) {
     svg.append(svgPath)
@@ -347,9 +349,7 @@ function generate(solving) {
     }))
     .append(svgWalls);
 
-  $('#maze-img').empty()
-    .width(width * 20).height(height * 20)
-    .append(svg);
+  $('#maze-img').empty().append(svg);
 }
 
 
