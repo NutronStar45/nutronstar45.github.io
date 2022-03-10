@@ -1,4 +1,4 @@
-let commitVer = '2.10.4.7';
+let commitVer = '2.10.4.8';
 
 
 

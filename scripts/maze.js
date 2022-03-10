@@ -215,17 +215,25 @@ function generate(solving) {
    * Walls Rendering
    */
 
-  let svgWalls = '<g class="wall">';
+  let svgWalls = svgNS('g').addClass('wall');
 
   for (let wall of vWalls) {
-    svgWalls += `<line x1="${wall % width * 20 + 20}" y1="${Math.floor(wall / width) * 20}" x2="${wall % width * 20 + 20}" y2="${Math.floor(wall / width) * 20 + 20}"/>`;
+    svgWalls.append(svgNS('line').attr({
+      x1: wall % width * 20 + 20,
+      y1: Math.floor(wall / width) * 20,
+      x2: wall % width * 20 + 20,
+      y2: Math.floor(wall / width) * 20 + 20
+    }));
   }
 
   for (let wall of hWalls) {
-    svgWalls += `<line x1="${wall % width * 20}" y1="${Math.floor(wall / width) * 20 + 20}" x2="${wall % width * 20 + 20}" y2="${Math.floor(wall / width) * 20 + 20}"/>`;
+    svgWalls.append(svgNS('line').attr({
+      x1: wall % width * 20,
+      y1: Math.floor(wall / width) * 20 + 20,
+      x2: wall % width * 20 + 20,
+      y2: Math.floor(wall / width) * 20 + 20
+    }));
   }
-
-  svgWalls += '</g>';
 
   writeStatus(`<br>Walls rendering calculated at ${
     Math.round(now() - startTime, 2)
@@ -239,6 +247,9 @@ function generate(solving) {
   /*
    * Path Rendering
    */
+
+  let svgPath     = svgNS('g').addClass('path');
+  let svgEndpoint = svgNS('g').addClass('endpoint');
 
   if (solving) {
     let startX = $('#start-x').val(),
@@ -296,27 +307,31 @@ function generate(solving) {
       }
     }
 
-    let svgPath = '<g class="path">';
-
     // Path rendering
     for (let slot of slotsPath) {
       let slotX = slot % width;
       let slotY = Math.floor(slot / width);
 
-      svgPath += `<rect width="20" height="20" x="${slotX * 20}" y="${slotY * 20}"/>`;
+      svgPath.append(svgNS('rect').attr({
+        width: 20,
+        height: 20,
+        x: slotX * 20,
+        y: slotY * 20
+      }));
     }
-
-    svgPath += '</g><g class="endpoint">';
 
     // Endpoint rendering
     for (let slot of slotsEndpoint) {
       let slotX = slot % width;
       let slotY = Math.floor(slot / width);
 
-      svgPath += `<rect width="20" height="20" x="${slotX * 20}" y="${slotY * 20}"/>`;
+      svgPath.append(svgNS('rect').attr({
+        width: 20,
+        height: 20,
+        x: slotX * 20,
+        y: slotY * 20
+      }));
     }
-
-    svgPath += '</g>';
 
     writeStatus(`<br>Path rendering calculated at ${
       Math.round(now() - startTime, 2)
@@ -336,11 +351,10 @@ function generate(solving) {
     height: height * 20
   });
 
-  console.log(svg);
-
-  if (solving) {
-    svg.append(svgPath)
-  }
+  if (solving)
+    svg
+      .append(svgPath)
+      .append(svgEndpoint);
 
   svg
     .append(svgNS('rect').attr({
@@ -364,8 +378,6 @@ function generate(solving) {
       y: 1
     }))
     .append(svgWalls);
-
-  console.log(svg);
 
   $('#maze-img').empty().append(svg);
 }

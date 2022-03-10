@@ -94,12 +94,13 @@ p.section-title {
   font-size: 10px;
   margin-left: 10px;
 }
-/* Labels & Buttons */
+/* Labels & Buttons & SVGs */
 p.section-line,
 :is(div.section, div.non-text-section) :is(
   label,
   :not(button) + button,
-  button:first-child
+  button:first-child,
+  svg
 ) {
   margin-left: 20px;
 }
