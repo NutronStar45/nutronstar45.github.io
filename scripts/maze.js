@@ -101,6 +101,17 @@ function slotAction(slot, action, width, size, hWalls, vWalls, endpoints) {
 
 
 /**
+ * Creates an element with SVG namespace.
+ * @param {string} name The name of the tag.
+ * @returns The element with SVG namespace in JQuery.
+ */
+function svgNS(name) {
+  return $(document.createElementNS('http://www.w3.org/2000/svg', name))
+}
+
+
+
+/**
  * Generates, solves and renders a maze
  * @param {boolean} solving Whether to solve the generated maze or not.
  */
@@ -320,7 +331,7 @@ function generate(solving) {
    * Render
    */
 
-  let svg = $(document.createElementNS('http://www.w3.org/2000/svg', 'svg')).attr({
+  let svg = svgNS('svg').attr({
     width: width * 20,
     height: height * 20
   });
@@ -332,7 +343,7 @@ function generate(solving) {
   }
 
   svg
-    .append($(`<rect />`).attr({
+    .append(svgNS('rect').attr({
       width: width * 20 + 2,
       height: height * 20 + 2,
       rx: 5,
@@ -342,7 +353,7 @@ function generate(solving) {
       x: -1,
       y: -1
     }))
-    .append($(`<rect />`).attr({
+    .append(svgNS('rect').attr({
       width: width * 20 - 2,
       height: height * 20 - 2,
       rx: 3,
