@@ -80,22 +80,22 @@ function getNeighbors(slot, filter, width, size) {
  * @returns The bitwise connectivity if the action was 0, or IS PATH if it was 1.
  */
 function slotAction(slot, action, width, size, hWalls, vWalls, endpoints) {
-  let connected = 15;
+  let connectivity = 15;
 
   // Up
-  if (hWalls.includes(slot - width) || slot - width < 0)         connected -= 1;
+  if (hWalls.includes(slot - width) || slot - width < 0)         connectivity -= 1;
   // Down
-  if (hWalls.includes(slot)         || slot + width >= size)     connected -= 2;
+  if (hWalls.includes(slot)         || slot + width >= size)     connectivity -= 2;
   // Left
-  if (vWalls.includes(slot - 1)     || slot % width === 0)       connected -= 4;
+  if (vWalls.includes(slot - 1)     || slot % width === 0)       connectivity -= 4;
   // Right
-  if (vWalls.includes(slot)         || (slot + 1) % width === 0) connected -= 8;
+  if (vWalls.includes(slot)         || (slot + 1) % width === 0) connectivity -= 8;
 
-  if (action === 0)
+  if (action === 0) {
     if (!endpoints.includes(slot))
-      return connected
-  else
-    return connected > 0;
+      return connectivity;
+  }
+  return connectivity > 0;
 }
 
 
@@ -264,24 +264,24 @@ function generate(solving) {
 
     // Detect deadends
     for (let slot = 0; slot < size; slot++) {
-      let connected = slotAction(slot, 0, width, size, hWalls, vWalls, endpoints);
+      let connectivity = slotAction(slot, 0, width, size, hWalls, vWalls, endpoints);
       let tempSlot = slot;
-      while ([1, 2, 4, 8].includes(connected)) {
-        if (connected === 1) {
+      while ([1, 2, 4, 8].includes(connectivity)) {
+        if (connectivity === 1) {
           hWalls.push(tempSlot - width);
-          connected = slotAction(tempSlot - width, 0, width, size, hWalls, vWalls, endpoints);
+          connectivity = slotAction(tempSlot - width, 0, width, size, hWalls, vWalls, endpoints);
           tempSlot -= width;
-        } if (connected === 2) {
+        } if (connectivity === 2) {
           hWalls.push(tempSlot);
-          connected = slotAction(tempSlot + width, 0, width, size, hWalls, vWalls, endpoints);
+          connectivity = slotAction(tempSlot + width, 0, width, size, hWalls, vWalls, endpoints);
           tempSlot += width;
-        } if (connected === 4) {
+        } if (connectivity === 4) {
           vWalls.push(tempSlot - 1);
-          connected = slotAction(tempSlot - 1, 0, width, size, hWalls, vWalls, endpoints);
+          connectivity = slotAction(tempSlot - 1, 0, width, size, hWalls, vWalls, endpoints);
           tempSlot -= 1;
-        } if (connected === 8) {
+        } if (connectivity === 8) {
           vWalls.push(tempSlot);
-          connected = slotAction(tempSlot + 1, 0, width, size, hWalls, vWalls, endpoints);
+          connectivity = slotAction(tempSlot + 1, 0, width, size, hWalls, vWalls, endpoints);
           tempSlot += 1;
         }
       }
@@ -325,7 +325,7 @@ function generate(solving) {
       let slotX = slot % width;
       let slotY = Math.floor(slot / width);
 
-      svgPath.append(svgNS('rect').attr({
+      svgEndpoint.append(svgNS('rect').attr({
         width: 20,
         height: 20,
         x: slotX * 20,
