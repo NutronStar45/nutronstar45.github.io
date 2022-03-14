@@ -40,7 +40,7 @@ function now() {
  * @param {string} text The text to write.
  */
 function writeStatus(text) {
-  $('#gen-status').append(text);
+  $('p#gen-status').append(text);
 }
 
 /**
@@ -59,9 +59,8 @@ function getNeighbors(slot, filter, width, size) {
   if (slot % width != 0)       results.push([slot - 1,     1]); // Left
   if ((slot + 1) % width != 0) results.push([slot + 1,     1]); // Right
 
-  if (filter) {
+  if (filter)
     results = results.filter(item => filter.includes(item[0]));
-  }
 
   return results;
 }
@@ -116,13 +115,14 @@ function svgNS(name) {
  * @param {boolean} solving Whether to solve the generated maze or not.
  */
 function generate(solving) {
+  // Using Prim's Algorithm to generate a perfect maze
   // Left-to-right, top-to-bottom, 0-based numbering, like
   //  0  1  2  3  4
   //  5  6  7  8  9
   // 10 11 12 13 14
   // 15 16 17 18 19
 
-  $('#gen-status').empty();
+  $('p#gen-status').empty();
 
 
 
@@ -131,8 +131,8 @@ function generate(solving) {
    */
 
   // Size
-  let width  = +$('#width').val(),
-      height = +$('#height').val();
+  let width  = +$('input#width').val(),
+      height = +$('input#height').val();
 
   // Starting time
   let startTime = now();
@@ -252,10 +252,10 @@ function generate(solving) {
   let svgEndpoint = svgNS('g').addClass('endpoint');
 
   if (solving) {
-    let startX = $('#start-x').val(),
-        startY = $('#start-y').val(),
-        endX   = $('#end-x').val(),
-        endY   = $('#end-y').val();
+    let startX = $('input#start-x').val(),
+        startY = $('input#start-y').val(),
+        endX   = $('input#end-x').val(),
+        endY   = $('input#end-y').val();
 
     let start = (startY - 1) * width + (startX - 1),
         end   = (endY   - 1) * width + (endX   - 1);
@@ -380,34 +380,43 @@ function generate(solving) {
     }))
     .append(svgWalls);
 
-  $('#maze-img').empty().append(svg);
+  $('div#maze-img').empty().append(svg);
+  $('button#toggle-path')
+    .toggle(solving)
+    .text('Hide Path');
 }
 
 
 
 $(() => {
 
-  $('#solver-options').hide();
+  $('div#solver-options').hide();
+  $('button#toggle-path').hide();
 
-  $('#enable-solving').change(function() {
-    $('#solver-options').toggle();
-    if ($(this).is(':checked')) $('#gen-solve').text('Generate & Solve');
-    else                        $('#gen-solve').text('Generate');
+  $('input#enable-solving').change(function() {
+    $('div#solver-options').toggle();
+    if ($(this).is(':checked')) $('button#gen-solve').text('Generate & Solve');
+    else                        $('button#gen-solve').text('Generate');
   });
 
-  $('#gen-solve').click(() => {
-    let solving = $('#enable-solving').is(':checked'); // Is solving enabled
+  $('button#toggle-path').click(function() {
+    $(this).text($(this).text() === 'Hide Path' ? 'Show Path' : 'Hide Path');
+    $('div#maze-img g.path').toggle();
+  });
+
+  $('button#gen-solve').click(() => {
+    let solving = $('input#enable-solving').is(':checked'); // Is solving enabled
 
     let targets = [
-      '#width',
-      '#height'
+      'input#width',
+      'input#height'
     ];
     if (solving) {
       targets.push(
-        '#start-x',
-        '#start-y',
-        '#end-x',
-        '#end-y'
+        'input#start-x',
+        'input#start-y',
+        'input#end-x',
+        'input#end-y'
       );
     }
 

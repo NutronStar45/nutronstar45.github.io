@@ -1,4 +1,4 @@
-let commitVer = '2.11';
+let commitVer = '2.12';
 
 
 
@@ -85,20 +85,20 @@ function validate(targets, alert = true) {
 function alertInvalid(target, type, alert) {
   if (alert) {
     target.next().remove();
-    target.after($(`<span class="invalid-input">${
+    target.after(`<span class="invalid-input">${
       target.attr('alert-' + type)
         ? target.attr('alert-' + type)
         : alerts[type]
-    }</span>`));
+    }</span>`);
   }
 }
 
 
 
-$(function() {
+$(() => {
 
   // Location in 404 page
-  $('#404-location').html(`File or Site missing at <code>${location.pathname}</code>`);
+  $('h3#404-location').html(`File or Site missing at <code>${location.pathname}</code>`);
 
   let sections = [];
 
@@ -123,7 +123,7 @@ $(function() {
   }
 
   // Toolbar
-  $('#toolbar').html(`
+  $('div#toolbar').html(`
     <svg width="1000" height="50">
       <!-- Homepage icon -->
       <a xlink:href="/">
