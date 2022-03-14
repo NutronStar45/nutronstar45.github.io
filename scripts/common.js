@@ -1,4 +1,4 @@
-let commitVer = '2.12';
+let commitVer = '2.12.1';
 
 
 
@@ -144,7 +144,7 @@ $(() => {
   `);
 
   // Required indicator
-  $('input.required').before('<span class="required-ind">* </span>');
+  $('input[required]').before('<span class="required-ind">* </span>');
 
   // Collapsible
   $('button.coll').click(function() {

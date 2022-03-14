@@ -22,10 +22,10 @@
   <div id="sec-gen-options" class="non-text-section">
     <p class="section-title">Generator Options</p>
     <label>
-      Width: <input id="width" class="required" type="number" min="1">
+      Width: <input id="width" type="number" min="1" required>
     </label> <br>
     <label>
-      Height: <input id="height" class="required" type="number" min="1">
+      Height: <input id="height" type="number" min="1" required>
     </label>
   </div>
 
@@ -37,17 +37,17 @@
 
     <div id="solver-options">
       <label>
-        Start: X <input id="start-x" class="required" type="number" min="1" max="#width" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze">
+        Start: X <input id="start-x" type="number" min="1" max="#width" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze" required>
       </label>
       <label>
-        Y <input id="start-y" class="required" type="number" min="1" max="#height" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze">
+        Y <input id="start-y" type="number" min="1" max="#height" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze" required>
       </label> <br>
 
       <label>
-        End: X <input id="end-x" class="required" type="number" min="1" max="#width" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze">
+        End: X <input id="end-x" type="number" min="1" max="#width" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze" required>
       </label>
       <label>
-        Y <input id="end-y" class="required" type="number" min="1" max="#height" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze">
+        Y <input id="end-y" type="number" min="1" max="#height" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze" required>
       </label>
     </div>
   </div>
@@ -55,7 +55,7 @@
   <div id="sec-gen-solver" class="non-text-section">
     <p class="section-title">Generator &amp; Solver</p>
     <button id="gen-solve">Generate</button>
-    <button id="toggle-path">Hide Path</button>
+    <button id="toggle-path"></button>
     <p id="gen-status" class="section-line"></p>
     <div id="maze-img"></div>
   </div>

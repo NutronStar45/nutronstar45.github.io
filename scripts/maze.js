@@ -381,9 +381,10 @@ function generate(solving) {
     .append(svgWalls);
 
   $('div#maze-img').empty().append(svg);
+  $('div#maze-img g.path').hide();
   $('button#toggle-path')
     .toggle(solving)
-    .text('Hide Path');
+    .text('Show Path');
 }
 
 
@@ -400,7 +401,7 @@ $(() => {
   });
 
   $('button#toggle-path').click(function() {
-    $(this).text($(this).text() === 'Hide Path' ? 'Show Path' : 'Hide Path');
+    $(this).text($(this).text() === 'Show Path' ? 'Hide Path' : 'Show Path');
     $('div#maze-img g.path').toggle();
   });
 
