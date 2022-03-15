@@ -381,10 +381,10 @@ function generate(solving) {
     .append(svgWalls);
 
   $('div#maze-img').empty().append(svg);
-  $('div#maze-img g.path').hide();
+  $('div#maze-img g.path').toggle(!$('#hide-path-after-render').is(':checked'));
   $('button#toggle-path')
     .toggle(solving)
-    .text('Show Path');
+    .text($('#hide-path-after-render').is(':checked') ? 'Show Path' : 'Hide Path');
 }
 
 
@@ -396,8 +396,8 @@ $(() => {
 
   $('input#enable-solving').change(function() {
     $('div#solver-options').toggle();
-    if ($(this).is(':checked')) $('button#gen-solve').text('Generate & Solve');
-    else                        $('button#gen-solve').text('Generate');
+    if (this.checked) $('button#gen-solve').text('Generate & Solve');
+    else              $('button#gen-solve').text('Generate');
   });
 
   $('button#toggle-path').click(function() {

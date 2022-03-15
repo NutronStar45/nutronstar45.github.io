@@ -1,4 +1,4 @@
-let commitVer = '2.12.1';
+let commitVer = '2.12.2';
 
 
 
@@ -37,18 +37,16 @@ function validate(targets, alert = true) {
 
         // Calculate min
         if (isNaN(target.prop('min'))) {
-          if (validate([target.prop('min')], false)) {
+          if (validate([target.prop('min')], false))
             min = +$(target.prop('min')).val();
-          }
         } else if (target.prop('min') !== '') {
           min = +target.prop('min');
         }
 
         // Calculate max
         if (isNaN(target.prop('max'))) {
-          if (validate([target.prop('max')], false)) {
+          if (validate([target.prop('max')], false))
             max = +$(target.prop('max')).val();
-          }
         } else if (target.prop('max') !== '') {
           max = +target.prop('max');
         }
