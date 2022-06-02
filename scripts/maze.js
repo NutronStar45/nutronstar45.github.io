@@ -391,6 +391,7 @@ function generate(solving) {
 
 $(() => {
 
+  $('input#enable-solving').prop('clicked', false);
   $('div#solver-options').hide();
   $('button#toggle-path').hide();
 

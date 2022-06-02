@@ -4,8 +4,8 @@ let commitVer = '2.12.2';
 
 let alerts = {
   invalid: 'Invalid/Empty',
-  small: 'Number too small',
-  big: 'Number too big'
+  small: 'Too small',
+  big: 'Too big'
 };
 
 
@@ -26,11 +26,13 @@ function validate(targets, alert = true) {
       target = $(target);
     }
 
-    if (target.prop('type') === 'number') {
+    if (target.is('[type=number]')) {
       // Invalid/empty
       if (target.val() === '') {
-        alertInvalid(target, 'invalid', alert);
-        validity = false;
+        if (target.prop('required')){
+          alertInvalid(target, 'invalid', alert);
+          validity = false;
+        }
         continue;
       } else {
         let min = -Infinity, max = Infinity;
@@ -66,7 +68,7 @@ function validate(targets, alert = true) {
       }
     }
 
-    target.next().remove(); // Remove potential alert
+    target.parent().next('span.invalid-input').remove(); // Remove potential alert
   }
 
   return validity;
@@ -82,8 +84,8 @@ function validate(targets, alert = true) {
  */
 function alertInvalid(target, type, alert) {
   if (alert) {
-    target.next().remove();
-    target.after(`<span class="invalid-input">${
+    target.parent().next('span.invalid-input').remove();
+    target.parent().after(`<span class="invalid-input">${
       target.attr('alert-' + type)
         ? target.attr('alert-' + type)
         : alerts[type]
@@ -101,7 +103,7 @@ $(() => {
   let sections = [];
 
   // Sections
-  $('div.section, div.non-text-section').each(function() {
+  $('body div:is(.section, .non-text-section)').each(function() {
     sections.push({
       title: $(this).children('p.section-title').text(),
       id: $(this).prop('id')
