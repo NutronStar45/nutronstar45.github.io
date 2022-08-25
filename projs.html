@@ -1,65 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Some of my amazing projects" />
+    <meta name="author" content="NutronStar45" />
+    <title>Projects</title>
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Some of my amazing projects">
-  <meta name="author" content="NutronStar45">
-  <title>Projects</title>
+    <link rel="stylesheet" href="/styles/black.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  </head>
 
-  <link rel="stylesheet" href="/styles/black.css" />
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-</head>
+  <body>
+    <div id="toolbar"></div>
 
-<body>
-  <div id="toolbar"></div>
+    <h2>Projects</h2>
 
-  <h2>Projects</h2>
+    <div id="sec-ongoing" class="section">
+      <p class="section-title">Ongoing</p>
+      <ul>
+        <li>
+          NutronStar45's Work
+          <sup
+            >[<a
+              href="https://github.com/NutronStar45/nutronstar45.github.io"
+              target="_blank"
+              >Source</a
+            >]</sup
+          >
+          <ul>
+            <li>The website you're currently seeing</li>
+            <li>
+              Hosted by
+              <a href="https://github.io" target="_blank">GitHub Pages</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="projs/maze">Maze Generator Online</a>
+          <ul>
+            <li>The web version of Maze Generator</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
 
-  <div id="sec-ongoing" class="section">
-    <p class="section-title">Ongoing</p>
-    <ul>
-      <li>
-        NutronStar45's Work <sup>[<a href="https://github.com/NutronStar45/nutronstar45.github.io" target="_blank">Source</a>]</sup>
-        <ul>
-          <li>The website you're currently seeing</li>
-          <li>Hosted by <a href="https://github.io" target="_blank">GitHub Pages</a></li>
-        </ul>
-      </li>
-      <li>
-        <a href="projs/maze">Maze Generator Online</a>
-        <ul>
-          <li>The web version of Maze Generator</li>
-        </ul>
-      </li>
-    </ul>
-  </div>
+    <div id="sec-finished" class="section">
+      <p class="section-title">Finished</p>
+      <ul>
+        <li>
+          <a
+            href="https://gist.github.com/NutronStar45/7696cf79b7027e7e0dd2d29abc903cd1"
+            target="_blank"
+            >Tic Tac Toe AI</a
+          >
+          <ul>
+            <li>Written in Python</li>
+            <li>
+              Collects the data of the AI ("Machine") playing against a simpler
+              bot, and use the data to imporve the AI
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a
+            href="https://gist.github.com/NutronStar45/202b189525da4418f17e898abf96466e"
+            target="_blank"
+            >Maze Generator</a
+          >
+          <ul>
+            <li>Written in Python</li>
+            <li>
+              Using Prim's algorithm to generate a non-interactive block-based
+              perfect maze and exports the maze to an SVG file
+            </li>
+            <li>
+              Using dead-end filling algorithm to solve the maze and exports the
+              maze overlayed with the path to another SVG file
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
 
-  <div id="sec-finished" class="section">
-    <p class="section-title">Finished</p>
-    <ul>
-      <li>
-        <a href="https://gist.github.com/NutronStar45/7696cf79b7027e7e0dd2d29abc903cd1" target="_blank">Tic Tac Toe AI</a>
-        <ul>
-          <li>Written in Python</li>
-          <li>Collects the data of the AI ("Machine") playing against a simpler bot, and use the data to imporve the AI</li>
-        </ul>
-      </li>
-      <li>
-        <a href="https://gist.github.com/NutronStar45/202b189525da4418f17e898abf96466e" target="_blank">Maze Generator</a>
-        <ul>
-          <li>Written in Python</li>
-          <li>Using Prim's algorithm to generate a non-interactive block-based perfect maze and exports the maze to an SVG file</li>
-          <li>Using dead-end filling algorithm to solve the maze and exports the maze overlayed with the path to another SVG file</li>
-        </ul>
-      </li>
-    </ul>
-  </div>
-
-  <!-- Scripts -->
-  <script src="/scripts/common.js"></script>
-</body>
-
+    <!-- Scripts -->
+    <script src="/scripts/common.js"></script>
+  </body>
 </html>

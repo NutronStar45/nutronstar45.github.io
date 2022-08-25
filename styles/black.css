@@ -1,6 +1,6 @@
 /* General style */
 * {
-  font: 100%/160% 'Roboto', 'Noto Sans', sans-serif;
+  font: 100%/160% "Roboto", "Noto Sans", sans-serif;
   background-color: #000;
   color: #fff;
 }
@@ -15,8 +15,6 @@
 ul ::marker {
   content: url('data:image/svg+xml,<svg width="17" height="13" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="4" width="5" height="5" style="fill:rgb(255,255,255);" transform="rotate(45 8.5,6.5)" /></svg>');
 }
-
-
 
 /*
  * Toolbar
@@ -40,8 +38,6 @@ div#fixed-toolbar {
   margin: 8px 8px 0 0;
 }
 
-
-
 /*
  * Input
  */
@@ -55,8 +51,6 @@ span.required-ind {
 span.invalid-input {
   color: red;
 }
-
-
 
 /*
  * Title elements
@@ -73,14 +67,13 @@ h3 {
   font-size: 20px;
 }
 
-
-
 /*
  * Section elements
  */
 
 /* Sections */
-div.section, div.non-text-section {
+div.section,
+div.non-text-section {
   border: 1px dashed #7f7f7f;
   margin: 0 8px 10px 0;
 }
@@ -95,16 +88,10 @@ p.section-title {
 }
 /* Labels & Buttons & SVGs */
 p.section-line,
-:is(div.section, div.non-text-section) :is(
-  label,
-  :not(button) + button,
-  button:first-child,
-  svg
-) {
+:is(div.section, div.non-text-section)
+  :is(label, :not(button) + button, button:first-child, svg) {
   margin-left: 20px;
 }
-
-
 
 /*
  * Collapsible
@@ -134,8 +121,6 @@ button.coll:not(.opened) + * {
   display: none;
 }
 
-
-
 /*
  * Links
  */
@@ -152,8 +137,6 @@ a:visited {
   cursor: pointer;
   text-decoration: underline;
 }
-
-
 
 /*
  * Misc style
@@ -173,7 +156,7 @@ button + button {
 code {
   background-color: #101010;
   color: white;
-  font-family: 'Courier New';
+  font-family: "Courier New";
   margin: 0 5px 0 5px;
 }
 

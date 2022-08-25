@@ -1,71 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Online maze generator & solver" />
+    <meta name="author" content="NutronStar45" />
+    <title>Maze Generator &amp; Solver</title>
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Online maze generator & solver">
-  <meta name="author" content="NutronStar45">
-  <title>Maze Generator &amp; Solver</title>
+    <link rel="stylesheet" href="/styles/black.css" />
+    <link rel="stylesheet" href="/styles/maze.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  </head>
 
-  <link rel="stylesheet" href="/styles/black.css" />
-  <link rel="stylesheet" href="/styles/maze.css" />
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-</head>
+  <body>
+    <div id="toolbar"></div>
 
-<body>
-  <div id="toolbar"></div>
+    <h2>Maze Generator &amp; Solver</h2>
 
-  <h2>Maze Generator &amp; Solver</h2>
-
-  <div id="sec-gen-options" class="non-text-section">
-    <p class="section-title">Generator Options</p>
-    <label>
-      Width: <input id="width" type="number" min="1" required>
-    </label> <br>
-    <label>
-      Height: <input id="height" type="number" min="1" required>
-    </label>
-  </div>
-
-  <div id="sec-solver-options" class="non-text-section">
-    <p class="section-title">Solver Options</p>
-    <label>
-      <input id="enable-solving" type="checkbox"> Enable Solving
-    </label>
-
-    <div id="solver-options">
+    <div id="sec-gen-options" class="non-text-section">
+      <p class="section-title">Generator Options</p>
       <label>
-        <input id="hide-path-after-render" type="checkbox"> Hide Path After Rendering
-      </label> <br>
-
-      <label>
-        Start: X <input id="start-x" type="number" min="1" max="#width" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze" required>
+        Width: <input id="width" type="number" min="1" required />
       </label>
+      <br />
       <label>
-        Y <input id="start-y" type="number" min="1" max="#height" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze" required>
-      </label> <br>
-
-      <label>
-        End: X <input id="end-x" type="number" min="1" max="#width" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze" required>
-      </label>
-      <label>
-        Y <input id="end-y" type="number" min="1" max="#height" alert-small="Coordinate outside maze" alert-big="Coordinate outside maze" required>
+        Height: <input id="height" type="number" min="1" required />
       </label>
     </div>
-  </div>
 
-  <div id="sec-gen-solver" class="non-text-section">
-    <p class="section-title">Generator &amp; Solver</p>
-    <button id="gen-solve">Generate</button>
-    <button id="toggle-path"></button>
-    <p id="gen-status" class="section-line"></p>
-    <div id="maze-img"></div>
-  </div>
+    <div id="sec-solver-options" class="non-text-section">
+      <p class="section-title">Solver Options</p>
+      <label>
+        <input id="enable-solving" type="checkbox" /> Enable Solving
+      </label>
 
-  <script src="/scripts/common.js"></script>
-  <script src="/scripts/maze.js"></script>
-</body>
+      <div id="solver-options">
+        <label>
+          <input id="hide-path-after-render" type="checkbox" /> Hide Path After
+          Rendering
+        </label>
+        <br />
 
+        <label>
+          Start: X
+          <input
+            id="start-x"
+            type="number"
+            min="1"
+            max="#width"
+            alert-small="Coordinate outside maze"
+            alert-big="Coordinate outside maze"
+            required
+          />
+        </label>
+        <label>
+          Y
+          <input
+            id="start-y"
+            type="number"
+            min="1"
+            max="#height"
+            alert-small="Coordinate outside maze"
+            alert-big="Coordinate outside maze"
+            required
+          />
+        </label>
+        <br />
+
+        <label>
+          End: X
+          <input
+            id="end-x"
+            type="number"
+            min="1"
+            max="#width"
+            alert-small="Coordinate outside maze"
+            alert-big="Coordinate outside maze"
+            required
+          />
+        </label>
+        <label>
+          Y
+          <input
+            id="end-y"
+            type="number"
+            min="1"
+            max="#height"
+            alert-small="Coordinate outside maze"
+            alert-big="Coordinate outside maze"
+            required
+          />
+        </label>
+      </div>
+    </div>
+
+    <div id="sec-gen-solver" class="non-text-section">
+      <p class="section-title">Generator &amp; Solver</p>
+      <button id="gen-solve">Generate</button>
+      <button id="toggle-path"></button>
+      <p id="gen-status" class="section-line"></p>
+      <div id="maze-img"></div>
+    </div>
+
+    <script src="/scripts/common.js"></script>
+    <script src="/scripts/maze.js"></script>
+  </body>
 </html>

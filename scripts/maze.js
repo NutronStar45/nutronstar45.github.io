@@ -4,13 +4,13 @@
  */
 Array.prototype.random = function () {
   return this[Math.floor(Math.random() * this.length)];
-}
+};
 
 /**
  * Removes the first occurrence of `value` in an array.
  * @param {*} value The target value.
  */
-Array.prototype.remove = function(value) {
+Array.prototype.remove = function (value) {
   this.splice(this.indexOf(value), 1);
 };
 
@@ -21,11 +21,9 @@ let round = Math.round;
  * @param {number} precision Number of decimal places.
  * @returns The rounded value.
  */
-Math.round = function(x, precision = 0) {
+Math.round = function (x, precision = 0) {
   return round(x * Math.pow(10, precision)) / Math.pow(10, precision);
-}
-
-
+};
 
 /**
  * Get the time passed since the UNIX Epoch.
@@ -40,7 +38,7 @@ function now() {
  * @param {string} text The text to write.
  */
 function writeStatus(text) {
-  $('p#gen-status').append(text);
+  $("p#gen-status").append(text);
 }
 
 /**
@@ -54,13 +52,12 @@ function writeStatus(text) {
 function getNeighbors(slot, filter, width, size) {
   let results = [];
 
-  if (slot - width >= 0)       results.push([slot - width, 0]); // Up
-  if (slot + width < size)     results.push([slot + width, 0]); // Down
-  if (slot % width != 0)       results.push([slot - 1,     1]); // Left
-  if ((slot + 1) % width != 0) results.push([slot + 1,     1]); // Right
+  if (slot - width >= 0) results.push([slot - width, 0]); // Up
+  if (slot + width < size) results.push([slot + width, 0]); // Down
+  if (slot % width != 0) results.push([slot - 1, 1]); // Left
+  if ((slot + 1) % width != 0) results.push([slot + 1, 1]); // Right
 
-  if (filter)
-    results = results.filter(item => filter.includes(item[0]));
+  if (filter) results = results.filter((item) => filter.includes(item[0]));
 
   return results;
 }
@@ -82,22 +79,19 @@ function slotAction(slot, action, width, size, hWalls, vWalls, endpoints) {
   let connectivity = 15;
 
   // Up
-  if (hWalls.includes(slot - width) || slot - width < 0)         connectivity -= 1;
+  if (hWalls.includes(slot - width) || slot - width < 0) connectivity -= 1;
   // Down
-  if (hWalls.includes(slot)         || slot + width >= size)     connectivity -= 2;
+  if (hWalls.includes(slot) || slot + width >= size) connectivity -= 2;
   // Left
-  if (vWalls.includes(slot - 1)     || slot % width === 0)       connectivity -= 4;
+  if (vWalls.includes(slot - 1) || slot % width === 0) connectivity -= 4;
   // Right
-  if (vWalls.includes(slot)         || (slot + 1) % width === 0) connectivity -= 8;
+  if (vWalls.includes(slot) || (slot + 1) % width === 0) connectivity -= 8;
 
   if (action === 0) {
-    if (!endpoints.includes(slot))
-      return connectivity;
+    if (!endpoints.includes(slot)) return connectivity;
   }
   return connectivity > 0;
 }
-
-
 
 /**
  * Creates an element with SVG namespace.
@@ -105,10 +99,8 @@ function slotAction(slot, action, width, size, hWalls, vWalls, endpoints) {
  * @returns The element with SVG namespace in JQuery.
  */
 function svgNS(name) {
-  return $(document.createElementNS('http://www.w3.org/2000/svg', name))
+  return $(document.createElementNS("http://www.w3.org/2000/svg", name));
 }
-
-
 
 /**
  * Generates, solves and renders a maze
@@ -122,17 +114,15 @@ function generate(solving) {
   // 10 11 12 13 14
   // 15 16 17 18 19
 
-  $('p#gen-status').empty();
-
-
+  $("p#gen-status").empty();
 
   /*
    * Maze Structure
    */
 
   // Size
-  let width  = +$('input#width').val(),
-      height = +$('input#height').val();
+  let width = +$("input#width").val(),
+    height = +$("input#height").val();
 
   // Starting time
   let startTime = now();
@@ -144,9 +134,9 @@ function generate(solving) {
   let hWalls = []; // Horizontal walls
 
   // Initialize slots status
-  let slotsDefault   = [];
+  let slotsDefault = [];
   let slotsSearching = [];
-  let slotsFinished  = [];
+  let slotsFinished = [];
 
   // Insert status
   for (let slot = 0; slot < size; slot++) {
@@ -167,8 +157,6 @@ function generate(solving) {
     }
   }
 
-
-
   let slot = Math.floor(Math.random() * size);
   let neighbors = getNeighbors(slot, null, width, size);
 
@@ -180,8 +168,6 @@ function generate(solving) {
     slotsSearching.push(neighbor[0]);
   }
 
-
-
   while (slotsSearching.length > 0) {
     let slot = slotsSearching.random();
     let neighbors = getNeighbors(slot, slotsFinished, width, size);
@@ -190,7 +176,7 @@ function generate(solving) {
     let wall = Math.min(slot, randomNeighbor[0]);
 
     if (randomNeighbor[1] === 0) hWalls.remove(wall);
-    else                         vWalls.remove(wall);
+    else vWalls.remove(wall);
 
     slotsSearching.remove(slot);
     slotsFinished.push(slot);
@@ -202,99 +188,143 @@ function generate(solving) {
     }
   }
 
-  writeStatus(`Maze structure generated at ${
-    Math.round(now() - startTime, 2)
-  }s (took ${
-    Math.round(now() - startTime, 2)
-  }s)`);
+  writeStatus(
+    `Maze structure generated at ${Math.round(
+      now() - startTime,
+      2
+    )}s (took ${Math.round(now() - startTime, 2)}s)`
+  );
   let lastTimestamp = now();
-
-
 
   /*
    * Walls Rendering
    */
 
-  let svgWalls = svgNS('g').addClass('wall');
+  let svgWalls = svgNS("g").addClass("wall");
 
   for (let wall of vWalls) {
-    svgWalls.append(svgNS('line').attr({
-      x1: wall % width * 20 + 20,
-      y1: Math.floor(wall / width) * 20,
-      x2: wall % width * 20 + 20,
-      y2: Math.floor(wall / width) * 20 + 20
-    }));
+    svgWalls.append(
+      svgNS("line").attr({
+        x1: (wall % width) * 20 + 20,
+        y1: Math.floor(wall / width) * 20,
+        x2: (wall % width) * 20 + 20,
+        y2: Math.floor(wall / width) * 20 + 20,
+      })
+    );
   }
 
   for (let wall of hWalls) {
-    svgWalls.append(svgNS('line').attr({
-      x1: wall % width * 20,
-      y1: Math.floor(wall / width) * 20 + 20,
-      x2: wall % width * 20 + 20,
-      y2: Math.floor(wall / width) * 20 + 20
-    }));
+    svgWalls.append(
+      svgNS("line").attr({
+        x1: (wall % width) * 20,
+        y1: Math.floor(wall / width) * 20 + 20,
+        x2: (wall % width) * 20 + 20,
+        y2: Math.floor(wall / width) * 20 + 20,
+      })
+    );
   }
 
-  writeStatus(`<br>Walls rendering calculated at ${
-    Math.round(now() - startTime, 2)
-  }s (took ${
-    Math.round(now() - lastTimestamp, 2)
-  }s)`);
+  writeStatus(
+    `<br>Walls rendering calculated at ${Math.round(
+      now() - startTime,
+      2
+    )}s (took ${Math.round(now() - lastTimestamp, 2)}s)`
+  );
   lastTimestamp = now();
-
-
 
   /*
    * Path Rendering
    */
 
-  let svgPath     = svgNS('g').addClass('path');
-  let svgEndpoint = svgNS('g').addClass('endpoint');
+  let svgPath = svgNS("g").addClass("path");
+  let svgEndpoint = svgNS("g").addClass("endpoint");
 
   if (solving) {
-    let startX = $('input#start-x').val(),
-        startY = $('input#start-y').val(),
-        endX   = $('input#end-x').val(),
-        endY   = $('input#end-y').val();
+    let startX = $("input#start-x").val(),
+      startY = $("input#start-y").val(),
+      endX = $("input#end-x").val(),
+      endY = $("input#end-y").val();
 
     let start = (startY - 1) * width + (startX - 1),
-        end   = (endY   - 1) * width + (endX   - 1);
+      end = (endY - 1) * width + (endX - 1);
 
     let endpoints = [start, end];
 
     // Detect deadends
     for (let slot = 0; slot < size; slot++) {
-      let connectivity = slotAction(slot, 0, width, size, hWalls, vWalls, endpoints);
+      let connectivity = slotAction(
+        slot,
+        0,
+        width,
+        size,
+        hWalls,
+        vWalls,
+        endpoints
+      );
       let tempSlot = slot;
       while ([1, 2, 4, 8].includes(connectivity)) {
         if (connectivity === 1) {
           hWalls.push(tempSlot - width);
-          connectivity = slotAction(tempSlot - width, 0, width, size, hWalls, vWalls, endpoints);
+          connectivity = slotAction(
+            tempSlot - width,
+            0,
+            width,
+            size,
+            hWalls,
+            vWalls,
+            endpoints
+          );
           tempSlot -= width;
-        } if (connectivity === 2) {
+        }
+        if (connectivity === 2) {
           hWalls.push(tempSlot);
-          connectivity = slotAction(tempSlot + width, 0, width, size, hWalls, vWalls, endpoints);
+          connectivity = slotAction(
+            tempSlot + width,
+            0,
+            width,
+            size,
+            hWalls,
+            vWalls,
+            endpoints
+          );
           tempSlot += width;
-        } if (connectivity === 4) {
+        }
+        if (connectivity === 4) {
           vWalls.push(tempSlot - 1);
-          connectivity = slotAction(tempSlot - 1, 0, width, size, hWalls, vWalls, endpoints);
+          connectivity = slotAction(
+            tempSlot - 1,
+            0,
+            width,
+            size,
+            hWalls,
+            vWalls,
+            endpoints
+          );
           tempSlot -= 1;
-        } if (connectivity === 8) {
+        }
+        if (connectivity === 8) {
           vWalls.push(tempSlot);
-          connectivity = slotAction(tempSlot + 1, 0, width, size, hWalls, vWalls, endpoints);
+          connectivity = slotAction(
+            tempSlot + 1,
+            0,
+            width,
+            size,
+            hWalls,
+            vWalls,
+            endpoints
+          );
           tempSlot += 1;
         }
       }
     }
 
-    writeStatus(`<br>Path generated at ${
-      Math.round(now() - startTime, 2)
-    }s (took ${
-      Math.round(now() - lastTimestamp, 2)
-    }s)`);
+    writeStatus(
+      `<br>Path generated at ${Math.round(
+        now() - startTime,
+        2
+      )}s (took ${Math.round(now() - lastTimestamp, 2)}s)`
+    );
     lastTimestamp = now();
-
-
 
     let slotsPath = [];
     let slotsEndpoint = [];
@@ -303,7 +333,7 @@ function generate(solving) {
     for (let slot = 0; slot < size; slot++) {
       if (slotAction(slot, 1, width, size, hWalls, vWalls, endpoints)) {
         if (endpoints.includes(slot)) slotsEndpoint.push(slot);
-        else                          slotsPath.push(slot);
+        else slotsPath.push(slot);
       }
     }
 
@@ -312,12 +342,14 @@ function generate(solving) {
       let slotX = slot % width;
       let slotY = Math.floor(slot / width);
 
-      svgPath.append(svgNS('rect').attr({
-        width: 20,
-        height: 20,
-        x: slotX * 20,
-        y: slotY * 20
-      }));
+      svgPath.append(
+        svgNS("rect").attr({
+          width: 20,
+          height: 20,
+          x: slotX * 20,
+          y: slotY * 20,
+        })
+      );
     }
 
     // Endpoint rendering
@@ -325,104 +357,102 @@ function generate(solving) {
       let slotX = slot % width;
       let slotY = Math.floor(slot / width);
 
-      svgEndpoint.append(svgNS('rect').attr({
-        width: 20,
-        height: 20,
-        x: slotX * 20,
-        y: slotY * 20
-      }));
+      svgEndpoint.append(
+        svgNS("rect").attr({
+          width: 20,
+          height: 20,
+          x: slotX * 20,
+          y: slotY * 20,
+        })
+      );
     }
 
-    writeStatus(`<br>Path rendering calculated at ${
-      Math.round(now() - startTime, 2)
-    }s (took ${
-      Math.round(now() - lastTimestamp, 2)
-    }s)`);
+    writeStatus(
+      `<br>Path rendering calculated at ${Math.round(
+        now() - startTime,
+        2
+      )}s (took ${Math.round(now() - lastTimestamp, 2)}s)`
+    );
   }
-
-
 
   /*
    * Render
    */
 
-  let svg = svgNS('svg').attr({
+  let svg = svgNS("svg").attr({
     width: width * 20,
-    height: height * 20
+    height: height * 20,
   });
 
   if (solving) {
-    svg
-      .append(svgPath)
-      .append(svgEndpoint);
+    svg.append(svgPath).append(svgEndpoint);
   }
 
   svg
-    .append(svgNS('rect').attr({
-      width: width * 20 + 2,
-      height: height * 20 + 2,
-      rx: 5,
-      fill: 'none',
-      stroke: 'black',
-      'stroke-width': 2,
-      x: -1,
-      y: -1
-    }))
-    .append(svgNS('rect').attr({
-      width: width * 20 - 2,
-      height: height * 20 - 2,
-      rx: 3,
-      fill: 'none',
-      stroke: 'white',
-      'stroke-width': 2,
-      x: 1,
-      y: 1
-    }))
+    .append(
+      svgNS("rect").attr({
+        width: width * 20 + 2,
+        height: height * 20 + 2,
+        rx: 5,
+        fill: "none",
+        stroke: "black",
+        "stroke-width": 2,
+        x: -1,
+        y: -1,
+      })
+    )
+    .append(
+      svgNS("rect").attr({
+        width: width * 20 - 2,
+        height: height * 20 - 2,
+        rx: 3,
+        fill: "none",
+        stroke: "white",
+        "stroke-width": 2,
+        x: 1,
+        y: 1,
+      })
+    )
     .append(svgWalls);
 
-  $('div#maze-img').empty().append(svg);
-  $('div#maze-img g.path').toggle(!$('#hide-path-after-render').is(':checked'));
-  $('button#toggle-path')
+  $("div#maze-img").empty().append(svg);
+  $("div#maze-img g.path").toggle(!$("#hide-path-after-render").is(":checked"));
+  $("button#toggle-path")
     .toggle(solving)
-    .text($('#hide-path-after-render').is(':checked') ? 'Show Path' : 'Hide Path');
+    .text(
+      $("#hide-path-after-render").is(":checked") ? "Show Path" : "Hide Path"
+    );
 }
 
-
-
 $(() => {
+  $("input#enable-solving").prop("clicked", false);
+  $("div#solver-options").hide();
+  $("button#toggle-path").hide();
 
-  $('input#enable-solving').prop('clicked', false);
-  $('div#solver-options').hide();
-  $('button#toggle-path').hide();
-
-  $('input#enable-solving').change(function() {
-    $('div#solver-options').toggle();
-    if (this.checked) $('button#gen-solve').text('Generate & Solve');
-    else              $('button#gen-solve').text('Generate');
+  $("input#enable-solving").change(function () {
+    $("div#solver-options").toggle();
+    if (this.checked) $("button#gen-solve").text("Generate & Solve");
+    else $("button#gen-solve").text("Generate");
   });
 
-  $('button#toggle-path').click(function() {
-    $(this).text($(this).text() === 'Show Path' ? 'Hide Path' : 'Show Path');
-    $('div#maze-img g.path').toggle();
+  $("button#toggle-path").click(function () {
+    $(this).text($(this).text() === "Show Path" ? "Hide Path" : "Show Path");
+    $("div#maze-img g.path").toggle();
   });
 
-  $('button#gen-solve').click(() => {
-    let solving = $('input#enable-solving').is(':checked'); // Is solving enabled
+  $("button#gen-solve").click(() => {
+    let solving = $("input#enable-solving").is(":checked"); // Is solving enabled
 
-    let targets = [
-      'input#width',
-      'input#height'
-    ];
+    let targets = ["input#width", "input#height"];
     if (solving) {
       targets.push(
-        'input#start-x',
-        'input#start-y',
-        'input#end-x',
-        'input#end-y'
+        "input#start-x",
+        "input#start-y",
+        "input#end-x",
+        "input#end-y"
       );
     }
 
     if (validate(targets)) generate(solving);
   });
-
 });
