@@ -1,0 +1,267 @@
+<svg width="700" height="400" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        g.overlay text {
+            fill: red;
+        }
+
+        g.display {
+            stroke: black;
+            stroke-width: 1;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        g.example {
+            fill: white;
+        }
+
+        g.numbers {
+            fill: red;
+        }
+
+        g.numbers path.bg {
+            fill: #200;
+        }
+
+        text {
+            font-family: 'Courier New', monospace;
+            fill: white;
+        }
+    </style>
+
+    <title>Do Segment Display</title>
+
+    <rect width="700" height="400" />
+    <text x="7" y="37" font-size="40">Do Segment Display with bg</text>
+
+    <g transform="translate(20, 60)" class="display example">
+        <!--  8.090 ~=   2.5 + sqrt(5) * 2.5 -->
+        <!-- 21.180 ~=  10   + sqrt(5) * 5 -->
+        <!-- 21.910 ~=  27.5 - sqrt(5) * 2.5 -->
+        <!-- 38.090 ~=  32.5 + sqrt(5) * 2.5 -->
+        <!-- 48.820 ~=  60   - sqrt(5) * 5 -->
+        <!-- 51.910 ~=  57.5 - sqrt(5) * 2.5 -->
+        <!-- 71.180 ~=  60   + sqrt(5) * 5 -->
+        <!-- 98.820 ~= 110   - sqrt(5) * 5 -->
+        <path d="M-5 -5 L65 -5 L60 0 L51.910 5 L8.090 5 L0 0 Z" />
+        <path d="M65 -5 L65 60 L60 60 L55 55 L55 21.180 L60 0 Z" />
+        <path d="M65 60 L65 125 L60 120 L55 98.820 L55 65 L60 60 Z" />
+        <path d="M65 125 L-5 125 L0 120 L8.090 115 L51.910 115 L60 120 Z" />
+        <path d="M-5 125 L-5 60 L0 60 L5 65 L5 98.820 L0 120 Z" />
+        <path d="M-5 60 L-5 -5 L0 0 L5 21.180 L5 55 L 0 60 Z" />
+        <path d="M0 0 L8.090 5 L30 48.820 L30 60 L21.910 55 L5 21.180 Z" />
+        <path d="M60 0 L55 21.180 L38.090 55 L30 60 L30 48.820 L51.910 5 Z" />
+        <path d="M60 60 L55 65 L38.090 65 L30 60 L38.090 55 L55 55 Z" />
+        <path d="M60 120 L51.910 115 L30 71.180 L30 60 L38.090 65 L55 98.820 Z" />
+        <path d="M0 120 L5 98.820 L21.910 65 L30 60 L30 71.180 L8.090 115 Z" />
+        <path d="M0 60 L5 55 L21.910 55 L30 60 L21.910 65 L5 65 Z" />
+    </g>
+
+    <g transform="translate(20, 200)" class="display example">
+        <path d="M-5 -5 L65 -5 L60 0 L51.910 5 L8.090 5 L0 0 Z" />
+        <path d="M65 -5 L65 60 L60 60 L55 55 L55 21.180 L60 0 Z" />
+        <path d="M65 60 L65 125 L60 120 L55 98.820 L55 65 L60 60 Z" />
+        <path d="M65 125 L-5 125 L0 120 L8.090 115 L51.910 115 L60 120 Z" />
+        <path d="M-5 125 L-5 60 L0 60 L5 65 L5 98.820 L0 120 Z" />
+        <path d="M-5 60 L-5 -5 L0 0 L5 21.180 L5 55 L 0 60 Z" />
+        <path d="M0 0 L8.090 5 L30 48.820 L30 60 L21.910 55 L5 21.180 Z" />
+        <path d="M60 0 L55 21.180 L38.090 55 L30 60 L30 48.820 L51.910 5 Z" />
+        <path d="M60 60 L55 65 L38.090 65 L30 60 L38.090 55 L55 55 Z" />
+        <path d="M60 120 L51.910 115 L30 71.180 L30 60 L38.090 65 L55 98.820 Z" />
+        <path d="M0 120 L5 98.820 L21.910 65 L30 60 L30 71.180 L8.090 115 Z" />
+        <path d="M0 60 L5 55 L21.910 55 L30 60 L21.910 65 L5 65 Z" />
+    </g>
+    <g class="overlay">
+        <text x="43" y="209" font-size="25">0</text>
+        <text x="74" y="239" font-size="25">1</text>
+        <text x="74" y="300" font-size="25">2</text>
+        <text x="43" y="330" font-size="25">3</text>
+        <text x="13" y="300" font-size="25">4</text>
+        <text x="13" y="239" font-size="25">5</text>
+        <text x="30" y="242" font-size="25">6</text>
+        <text x="57" y="242" font-size="25">7</text>
+        <text x="59" y="269" font-size="25">8</text>
+        <text x="57" y="297" font-size="25">9</text>
+        <text x="28" y="297" font-size="25">X</text>
+        <text x="26" y="269" font-size="25">E</text>
+    </g>
+
+    <g class="display numbers" transform="translate(150, 60)">
+        <g>
+            <path d="M-5 -5 L65 -5 L60 0 L51.910 5 L8.090 5 L0 0 Z" />
+            <path d="M65 -5 L65 60 L60 60 L55 55 L55 21.180 L60 0 Z" />
+            <path d="M65 60 L65 125 L60 120 L55 98.820 L55 65 L60 60 Z" />
+            <path d="M65 125 L-5 125 L0 120 L8.090 115 L51.910 115 L60 120 Z" />
+            <path d="M-5 125 L-5 60 L0 60 L5 65 L5 98.820 L0 120 Z" />
+            <path d="M-5 60 L-5 -5 L0 0 L5 21.180 L5 55 L 0 60 Z" />
+            <path d="M0 0 L8.090 5 L30 48.820 L30 60 L21.910 55 L5 21.180 Z" class="bg" />
+            <path d="M60 0 L55 21.180 L38.090 55 L30 60 L30 48.820 L51.910 5 Z" />
+            <path d="M60 60 L55 65 L38.090 65 L30 60 L38.090 55 L55 55 Z" class="bg" />
+            <path d="M60 120 L51.910 115 L30 71.180 L30 60 L38.090 65 L55 98.820 Z" class="bg" />
+            <path d="M0 120 L5 98.820 L21.910 65 L30 60 L30 71.180 L8.090 115 Z" />
+            <path d="M0 60 L5 55 L21.910 55 L30 60 L21.910 65 L5 65 Z" class="bg" />
+        </g>
+        <g transform="translate(80, 0)">
+            <path d="M-5 -5 L65 -5 L60 0 L51.910 5 L8.090 5 L0 0 Z" class="bg" />
+            <path d="M65 -5 L65 60 L60 60 L55 55 L55 21.180 L60 0 Z" />
+            <path d="M65 60 L65 125 L60 120 L55 98.820 L55 65 L60 60 Z" />
+            <path d="M65 125 L-5 125 L0 120 L8.090 115 L51.910 115 L60 120 Z" class="bg" />
+            <path d="M-5 125 L-5 60 L0 60 L5 65 L5 98.820 L0 120 Z" class="bg" />
+            <path d="M-5 60 L-5 -5 L0 0 L5 21.180 L5 55 L 0 60 Z" class="bg" />
+            <path d="M0 0 L8.090 5 L30 48.820 L30 60 L21.910 55 L5 21.180 Z" class="bg" />
+            <path d="M60 0 L55 21.180 L38.090 55 L30 60 L30 48.820 L51.910 5 Z" />
+            <path d="M60 60 L55 65 L38.090 65 L30 60 L38.090 55 L55 55 Z" class="bg" />
+            <path d="M60 120 L51.910 115 L30 71.180 L30 60 L38.090 65 L55 98.820 Z" class="bg" />
+            <path d="M0 120 L5 98.820 L21.910 65 L30 60 L30 71.180 L8.090 115 Z" class="bg" />
+            <path d="M0 60 L5 55 L21.910 55 L30 60 L21.910 65 L5 65 Z" class="bg" />
+        </g>
+        <g transform="translate(160, 0)">
+            <path d="M-5 -5 L65 -5 L60 0 L51.910 5 L8.090 5 L0 0 Z" />
+            <path d="M65 -5 L65 60 L60 60 L55 55 L55 21.180 L60 0 Z" />
+            <path d="M65 60 L65 125 L60 120 L55 98.820 L55 65 L60 60 Z" class="bg" />
+            <path d="M65 125 L-5 125 L0 120 L8.090 115 L51.910 115 L60 120 Z" />
+            <path d="M-5 125 L-5 60 L0 60 L5 65 L5 98.820 L0 120 Z" class="bg" />
+            <path d="M-5 60 L-5 -5 L0 0 L5 21.180 L5 55 L 0 60 Z" class="bg" />
+            <path d="M0 0 L8.090 5 L30 48.820 L30 60 L21.910 55 L5 21.180 Z" class="bg" />
+            <path d="M60 0 L55 21.180 L38.090 55 L30 60 L30 48.820 L51.910 5 Z" class="bg" />
+            <path d="M60 60 L55 65 L38.090 65 L30 60 L38.090 55 L55 55 Z" />
+            <path d="M60 120 L51.910 115 L30 71.180 L30 60 L38.090 65 L55 98.820 Z" class="bg" />
+            <path d="M0 120 L5 98.820 L21.910 65 L30 60 L30 71.180 L8.090 115 Z" />
+            <path d="M0 60 L5 55 L21.910 55 L30 60 L21.910 65 L5 65 Z" class="bg" />
+        </g>
+        <g transform="translate(240, 0)">
+            <path d="M-5 -5 L65 -5 L60 0 L51.910 5 L8.090 5 L0 0 Z" />
+            <path d="M65 -5 L65 60 L60 60 L55 55 L55 21.180 L60 0 Z" class="bg" />
+            <path d="M65 60 L65 125 L60 120 L55 98.820 L55 65 L60 60 Z" class="bg" />
+            <path d="M65 125 L-5 125 L0 120 L8.090 115 L51.910 115 L60 120 Z" />
+            <path d="M-5 125 L-5 60 L0 60 L5 65 L5 98.820 L0 120 Z" class="bg" />
+            <path d="M-5 60 L-5 -5 L0 0 L5 21.180 L5 55 L 0 60 Z" class="bg" />
+            <path d="M0 0 L8.090 5 L30 48.820 L30 60 L21.910 55 L5 21.180 Z" class="bg" />
+            <path d="M60 0 L55 21.180 L38.090 55 L30 60 L30 48.820 L51.910 5 Z" />
+            <path d="M60 60 L55 65 L38.090 65 L30 60 L38.090 55 L55 55 Z" class="bg" />
+            <path d="M60 120 L51.910 115 L30 71.180 L30 60 L38.090 65 L55 98.820 Z" />
+            <path d="M0 120 L5 98.820 L21.910 65 L30 60 L30 71.180 L8.090 115 Z" class="bg" />
+            <path d="M0 60 L5 55 L21.910 55 L30 60 L21.910 65 L5 65 Z" class="bg" />
+        </g>
+
+        <g transform="translate(320, 0)">
+            <path d="M-5 -5 L65 -5 L60 0 L51.910 5 L8.090 5 L0 0 Z" class="bg" />
+            <path d="M65 -5 L65 60 L60 60 L55 55 L55 21.180 L60 0 Z" />
+            <path d="M65 60 L65 125 L60 120 L55 98.820 L55 65 L60 60 Z" />
+            <path d="M65 125 L-5 125 L0 120 L8.090 115 L51.910 115 L60 120 Z" class="bg" />
+            <path d="M-5 125 L-5 60 L0 60 L5 65 L5 98.820 L0 120 Z" class="bg" />
+            <path d="M-5 60 L-5 -5 L0 0 L5 21.180 L5 55 L 0 60 Z" class="bg" />
+            <path d="M0 0 L8.090 5 L30 48.820 L30 60 L21.910 55 L5 21.180 Z" />
+            <path d="M60 0 L55 21.180 L38.090 55 L30 60 L30 48.820 L51.910 5 Z" class="bg" />
+            <path d="M60 60 L55 65 L38.090 65 L30 60 L38.090 55 L55 55 Z" />
+            <path d="M60 120 L51.910 115 L30 71.180 L30 60 L38.090 65 L55 98.820 Z" class="bg" />
+            <path d="M0 120 L5 98.820 L21.910 65 L30 60 L30 71.180 L8.090 115 Z" class="bg" />
+            <path d="M0 60 L5 55 L21.910 55 L30 60 L21.910 65 L5 65 Z" class="bg" />
+        </g>
+        <g transform="translate(400, 0)">
+            <path d="M-5 -5 L65 -5 L60 0 L51.910 5 L8.090 5 L0 0 Z" />
+            <path d="M65 -5 L65 60 L60 60 L55 55 L55 21.180 L60 0 Z" class="bg" />
+            <path d="M65 60 L65 125 L60 120 L55 98.820 L55 65 L60 60 Z" class="bg" />
+            <path d="M65 125 L-5 125 L0 120 L8.090 115 L51.910 115 L60 120 Z" />
+            <path d="M-5 125 L-5 60 L0 60 L5 65 L5 98.820 L0 120 Z" class="bg" />
+            <path d="M-5 60 L-5 -5 L0 0 L5 21.180 L5 55 L 0 60 Z" />
+            <path d="M0 0 L8.090 5 L30 48.820 L30 60 L21.910 55 L5 21.180 Z" class="bg" />
+            <path d="M60 0 L55 21.180 L38.090 55 L30 60 L30 48.820 L51.910 5 Z" class="bg" />
+            <path d="M60 60 L55 65 L38.090 65 L30 60 L38.090 55 L55 55 Z" class="bg" />
+            <path d="M60 120 L51.910 115 L30 71.180 L30 60 L38.090 65 L55 98.820 Z" />
+            <path d="M0 120 L5 98.820 L21.910 65 L30 60 L30 71.180 L8.090 115 Z" class="bg" />
+            <path d="M0 60 L5 55 L21.910 55 L30 60 L21.910 65 L5 65 Z" />
+        </g>
+        <g transform="translate(0, 140)">
+            <path d="M-5 -5 L65 -5 L60 0 L51.910 5 L8.090 5 L0 0 Z" />
+            <path d="M65 -5 L65 60 L60 60 L55 55 L55 21.180 L60 0 Z" class="bg" />
+            <path d="M65 60 L65 125 L60 120 L55 98.820 L55 65 L60 60 Z" class="bg" />
+            <path d="M65 125 L-5 125 L0 120 L8.090 115 L51.910 115 L60 120 Z" />
+            <path d="M-5 125 L-5 60 L0 60 L5 65 L5 98.820 L0 120 Z" />
+            <path d="M-5 60 L-5 -5 L0 0 L5 21.180 L5 55 L 0 60 Z" />
+            <path d="M0 0 L8.090 5 L30 48.820 L30 60 L21.910 55 L5 21.180 Z" class="bg" />
+            <path d="M60 0 L55 21.180 L38.090 55 L30 60 L30 48.820 L51.910 5 Z" class="bg" />
+            <path d="M60 60 L55 65 L38.090 65 L30 60 L38.090 55 L55 55 Z" class="bg" />
+            <path d="M60 120 L51.910 115 L30 71.180 L30 60 L38.090 65 L55 98.820 Z" />
+            <path d="M0 120 L5 98.820 L21.910 65 L30 60 L30 71.180 L8.090 115 Z" class="bg" />
+            <path d="M0 60 L5 55 L21.910 55 L30 60 L21.910 65 L5 65 Z" />
+        </g>
+        <g transform="translate(80, 140)">
+            <path d="M-5 -5 L65 -5 L60 0 L51.910 5 L8.090 5 L0 0 Z" />
+            <path d="M65 -5 L65 60 L60 60 L55 55 L55 21.180 L60 0 Z" class="bg" />
+            <path d="M65 60 L65 125 L60 120 L55 98.820 L55 65 L60 60 Z" class="bg" />
+            <path d="M65 125 L-5 125 L0 120 L8.090 115 L51.910 115 L60 120 Z" class="bg" />
+            <path d="M-5 125 L-5 60 L0 60 L5 65 L5 98.820 L0 120 Z" class="bg" />
+            <path d="M-5 60 L-5 -5 L0 0 L5 21.180 L5 55 L 0 60 Z" class="bg" />
+            <path d="M0 0 L8.090 5 L30 48.820 L30 60 L21.910 55 L5 21.180 Z" class="bg" />
+            <path d="M60 0 L55 21.180 L38.090 55 L30 60 L30 48.820 L51.910 5 Z" />
+            <path d="M60 60 L55 65 L38.090 65 L30 60 L38.090 55 L55 55 Z" class="bg" />
+            <path d="M60 120 L51.910 115 L30 71.180 L30 60 L38.090 65 L55 98.820 Z" class="bg" />
+            <path d="M0 120 L5 98.820 L21.910 65 L30 60 L30 71.180 L8.090 115 Z" />
+            <path d="M0 60 L5 55 L21.910 55 L30 60 L21.910 65 L5 65 Z" class="bg" />
+        </g>
+
+        <g transform="translate(160, 140)">
+            <path d="M-5 -5 L65 -5 L60 0 L51.910 5 L8.090 5 L0 0 Z" />
+            <path d="M65 -5 L65 60 L60 60 L55 55 L55 21.180 L60 0 Z" class="bg" />
+            <path d="M65 60 L65 125 L60 120 L55 98.820 L55 65 L60 60 Z" class="bg" />
+            <path d="M65 125 L-5 125 L0 120 L8.090 115 L51.910 115 L60 120 Z" />
+            <path d="M-5 125 L-5 60 L0 60 L5 65 L5 98.820 L0 120 Z" class="bg" />
+            <path d="M-5 60 L-5 -5 L0 0 L5 21.180 L5 55 L 0 60 Z" class="bg" />
+            <path d="M0 0 L8.090 5 L30 48.820 L30 60 L21.910 55 L5 21.180 Z" />
+            <path d="M60 0 L55 21.180 L38.090 55 L30 60 L30 48.820 L51.910 5 Z" />
+            <path d="M60 60 L55 65 L38.090 65 L30 60 L38.090 55 L55 55 Z" class="bg" />
+            <path d="M60 120 L51.910 115 L30 71.180 L30 60 L38.090 65 L55 98.820 Z" />
+            <path d="M0 120 L5 98.820 L21.910 65 L30 60 L30 71.180 L8.090 115 Z" />
+            <path d="M0 60 L5 55 L21.910 55 L30 60 L21.910 65 L5 65 Z" class="bg" />
+        </g>
+        <g transform="translate(240, 140)">
+            <path d="M-5 -5 L65 -5 L60 0 L51.910 5 L8.090 5 L0 0 Z" />
+            <path d="M65 -5 L65 60 L60 60 L55 55 L55 21.180 L60 0 Z" />
+            <path d="M65 60 L65 125 L60 120 L55 98.820 L55 65 L60 60 Z" />
+            <path d="M65 125 L-5 125 L0 120 L8.090 115 L51.910 115 L60 120 Z" class="bg" />
+            <path d="M-5 125 L-5 60 L0 60 L5 65 L5 98.820 L0 120 Z" class="bg" />
+            <path d="M-5 60 L-5 -5 L0 0 L5 21.180 L5 55 L 0 60 Z" class="bg" />
+            <path d="M0 0 L8.090 5 L30 48.820 L30 60 L21.910 55 L5 21.180 Z" />
+            <path d="M60 0 L55 21.180 L38.090 55 L30 60 L30 48.820 L51.910 5 Z" class="bg" />
+            <path d="M60 60 L55 65 L38.090 65 L30 60 L38.090 55 L55 55 Z" />
+            <path d="M60 120 L51.910 115 L30 71.180 L30 60 L38.090 65 L55 98.820 Z" class="bg" />
+            <path d="M0 120 L5 98.820 L21.910 65 L30 60 L30 71.180 L8.090 115 Z" class="bg" />
+            <path d="M0 60 L5 55 L21.910 55 L30 60 L21.910 65 L5 65 Z" class="bg" />
+        </g>
+        <g transform="translate(320, 140)">
+            <path d="M-5 -5 L65 -5 L60 0 L51.910 5 L8.090 5 L0 0 Z" class="bg" />
+            <path d="M65 -5 L65 60 L60 60 L55 55 L55 21.180 L60 0 Z" class="bg" />
+            <path d="M65 60 L65 125 L60 120 L55 98.820 L55 65 L60 60 Z" class="bg" />
+            <path d="M65 125 L-5 125 L0 120 L8.090 115 L51.910 115 L60 120 Z" class="bg" />
+            <path d="M-5 125 L-5 60 L0 60 L5 65 L5 98.820 L0 120 Z" class="bg" />
+            <path d="M-5 60 L-5 -5 L0 0 L5 21.180 L5 55 L 0 60 Z" class="bg" />
+            <path d="M0 0 L8.090 5 L30 48.820 L30 60 L21.910 55 L5 21.180 Z" />
+            <path d="M60 0 L55 21.180 L38.090 55 L30 60 L30 48.820 L51.910 5 Z" />
+            <path d="M60 60 L55 65 L38.090 65 L30 60 L38.090 55 L55 55 Z" class="bg" />
+            <path d="M60 120 L51.910 115 L30 71.180 L30 60 L38.090 65 L55 98.820 Z" />
+            <path d="M0 120 L5 98.820 L21.910 65 L30 60 L30 71.180 L8.090 115 Z" />
+            <path d="M0 60 L5 55 L21.910 55 L30 60 L21.910 65 L5 65 Z" class="bg" />
+        </g>
+        <g transform="translate(400, 140)">
+            <path d="M-5 -5 L65 -5 L60 0 L51.910 5 L8.090 5 L0 0 Z" />
+            <path d="M65 -5 L65 60 L60 60 L55 55 L55 21.180 L60 0 Z" class="bg" />
+            <path d="M65 60 L65 125 L60 120 L55 98.820 L55 65 L60 60 Z" class="bg" />
+            <path d="M65 125 L-5 125 L0 120 L8.090 115 L51.910 115 L60 120 Z" />
+            <path d="M-5 125 L-5 60 L0 60 L5 65 L5 98.820 L0 120 Z" class="bg" />
+            <path d="M-5 60 L-5 -5 L0 0 L5 21.180 L5 55 L 0 60 Z" class="bg" />
+            <path d="M0 0 L8.090 5 L30 48.820 L30 60 L21.910 55 L5 21.180 Z" />
+            <path d="M60 0 L55 21.180 L38.090 55 L30 60 L30 48.820 L51.910 5 Z" class="bg" />
+            <path d="M60 60 L55 65 L38.090 65 L30 60 L38.090 55 L55 55 Z" class="bg" />
+            <path d="M60 120 L51.910 115 L30 71.180 L30 60 L38.090 65 L55 98.820 Z" class="bg" />
+            <path d="M0 120 L5 98.820 L21.910 65 L30 60 L30 71.180 L8.090 115 Z" />
+            <path d="M0 60 L5 55 L21.910 55 L30 60 L21.910 65 L5 65 Z" class="bg" />
+        </g>
+    </g>
+
+    <text x="7" y="360" font-size="25">
+        10<tspan baseline-shift="sub" font-size="20">doz</tspan>-segment display for dozenal numbers
+    </text>
+
+    <text x="583" y="388" font-size="15">NutronStar45</text>
+</svg>
