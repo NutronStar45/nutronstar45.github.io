@@ -20,7 +20,7 @@
         }
 
         text {
-            font-family: 'Courier New', sans-serif;
+            font-family: 'Courier New', monospace;
             fill: white;
         }
     </style>

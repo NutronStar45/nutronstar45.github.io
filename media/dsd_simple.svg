@@ -1,0 +1,72 @@
+<svg width="700" height="400" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        g.overlay text {
+            fill: red;
+        }
+
+        .display {
+            stroke-width: 5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        path.example {
+            stroke: white;
+        }
+
+        g.numbers {
+            stroke: red;
+        }
+
+        text {
+            font-family: 'Courier New', monospace;
+            fill: white;
+        }
+    </style>
+
+    <title>Do Segment Display (Simple)</title>
+
+    <rect width="700" height="400" />
+    <text x="7" y="37" font-size="40">Do Segment Display (Simple)</text>
+
+    <path d="M0 0 h60 v120 h-60 v-120 l60 120 m-60 -60 h60 m0 -60 l-60 120" transform="translate(20, 60)"
+        class="display example" />
+
+    <path d="M0 0 h60 v120 h-60 v-120 l60 120 m-60 -60 h60 m0 -60 l-60 120" transform="translate(20, 200)"
+        class="display example" />
+    <g class="overlay">
+        <text x="43" y="209" font-size="25">0</text>
+        <text x="74" y="239" font-size="25">1</text>
+        <text x="74" y="300" font-size="25">2</text>
+        <text x="43" y="330" font-size="25">3</text>
+        <text x="13" y="300" font-size="25">4</text>
+        <text x="13" y="239" font-size="25">5</text>
+        <text x="30" y="242" font-size="25">6</text>
+        <text x="57" y="242" font-size="25">7</text>
+        <text x="59" y="269" font-size="25">8</text>
+        <text x="57" y="297" font-size="25">9</text>
+        <text x="28" y="297" font-size="25">X</text>
+        <text x="26" y="269" font-size="25">E</text>
+    </g>
+
+    <g class="display numbers" transform="translate(150, 60)">
+        <path d="M60 0 v120 h-60 v-120 Z l-60 120" />
+        <path d="M30 60 l30 -60 v120" transform="translate(80, 0)" />
+        <path d="M0 0 h60 v60 h-30 l-30 60 h60" transform="translate(160, 0)" />
+        <path d="M0 0 h60 l-30 60 l30 60 h-60" transform="translate(240, 0)" />
+        <path d="M0 0 l30 60 h30 m0 -60 v120" transform="translate(320, 0)" />
+        <path d="M60 0 h-60 v60 h30 l30 60 h-60" transform="translate(400, 0)" />
+        <path d="M60 0 h-60 v120 h60 l-30 -60 h-30" transform="translate(0, 140)" />
+        <path d="M0 0 h60 l-60 120" transform="translate(80, 140)" />
+        <path d="M0 0 h60 l-60 120 h60 Z" transform="translate(160, 140)" />
+        <path d="M60 120 v-120 h-60 l30 60 h30" transform="translate(240, 140)" />
+        <path d="M0 0 l60 120 m0 -120 l-60 120" transform="translate(320, 140)" />
+        <path d="M60 0 h-60 l30 60 l-30 60 h60" transform="translate(400, 140)" />
+    </g>
+
+    <text x="7" y="360" font-size="25">
+        10<tspan baseline-shift="sub" font-size="20">doz</tspan>-segment display for dozenal numbers
+    </text>
+
+    <text x="583" y="388" font-size="15">NutronStar45</text>
+</svg>
