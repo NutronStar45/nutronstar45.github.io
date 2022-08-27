@@ -1,14 +1,19 @@
-let commitVer = '2.13.4';
-
-
+let commitVer = "2.13.5";
 
 let alerts = {
-  invalid: 'Invalid/Empty',
-  small: 'Too small',
-  big: 'Too big'
+  invalid: "Invalid/Empty",
+  small: "Too small",
+  big: "Too big",
 };
 
-
+/**
+ * Creates an element with SVG namespace.
+ * @param {string} name The name of the tag.
+ * @returns The element with SVG namespace in JQuery.
+ */
+function svgNS(name) {
+  return $(document.createElementNS("http://www.w3.org/2000/svg", name));
+}
 
 /**
  * Validates one or more `<input>`s and returns the validity.
@@ -22,59 +27,58 @@ function validate(targets, alert = true) {
   for (let i = 0; i < targets.length; i++) {
     let target = targets[i];
 
-    if (typeof target === 'string') {
+    if (typeof target === "string") {
       target = $(target);
     }
 
-    if (target.is('[type=number]')) {
+    if (target.is("[type=number]")) {
       // Invalid/empty
-      if (target.val() === '') {
-        if (target.prop('required')){
-          alertInvalid(target, 'invalid', alert);
+      if (target.val() === "") {
+        if (target.prop("required")) {
+          alertInvalid(target, "invalid", alert);
           validity = false;
         }
         continue;
       } else {
-        let min = -Infinity, max = Infinity;
+        let min = -Infinity,
+          max = Infinity;
 
         // Calculate min
-        if (isNaN(target.prop('min'))) {
-          if (validate([target.prop('min')], false))
-            min = +$(target.prop('min')).val();
-        } else if (target.prop('min') !== '') {
-          min = +target.prop('min');
+        if (isNaN(target.prop("min"))) {
+          if (validate([target.prop("min")], false))
+            min = +$(target.prop("min")).val();
+        } else if (target.prop("min") !== "") {
+          min = +target.prop("min");
         }
 
         // Calculate max
-        if (isNaN(target.prop('max'))) {
-          if (validate([target.prop('max')], false))
-            max = +$(target.prop('max')).val();
-        } else if (target.prop('max') !== '') {
-          max = +target.prop('max');
+        if (isNaN(target.prop("max"))) {
+          if (validate([target.prop("max")], false))
+            max = +$(target.prop("max")).val();
+        } else if (target.prop("max") !== "") {
+          max = +target.prop("max");
         }
 
         // Too small
         if (+target.val() < min) {
-          alertInvalid(target, 'small', alert);
+          alertInvalid(target, "small", alert);
           validity = false;
           continue;
         }
         // Too big
         if (+target.val() > max) {
-          alertInvalid(target, 'big', alert);
+          alertInvalid(target, "big", alert);
           validity = false;
           continue;
         }
       }
     }
 
-    target.parent().next('span.invalid-input').remove(); // Remove potential alert
+    target.parent().next("span.invalid-input").remove(); // Remove potential alert
   }
 
   return validity;
 }
-
-
 
 /**
  * Place alert after `<input>`.
@@ -84,29 +88,32 @@ function validate(targets, alert = true) {
  */
 function alertInvalid(target, type, alert) {
   if (alert) {
-    target.parent().next('span.invalid-input').remove();
-    target.parent().after(`<span class="invalid-input">${
-      target.attr('alert-' + type)
-        ? target.attr('alert-' + type)
-        : alerts[type]
-    }</span>`);
+    target.parent().next("span.invalid-input").remove();
+    target
+      .parent()
+      .after(
+        `<span class="invalid-input">${
+          target.attr("alert-" + type)
+            ? target.attr("alert-" + type)
+            : alerts[type]
+        }</span>`
+      );
   }
 }
 
-
-
 $(() => {
-
   // Location in 404 page
-  $('h3#404-location').html(`File or Site missing at <code>${location.pathname}</code>`);
+  $("h3#404-location").html(
+    `File or Site missing at <code>${location.pathname}</code>`
+  );
 
   let sections = [];
 
   // Sections
-  $('body div:is(.section, .non-text-section)').each(function() {
+  $("body div:is(.section, .non-text-section)").each(function () {
     sections.push({
-      title: $(this).children('p.section-title').text(),
-      id: $(this).prop('id')
+      title: $(this).children("p.section-title").text(),
+      id: $(this).prop("id"),
     });
   });
 
@@ -116,14 +123,16 @@ $(() => {
   if (sections.length > 0) {
     fixedToolbar += '<br><button class="coll">Sections</button><div>';
 
-    $.each(sections, function(i, section) {
-      fixedToolbar += `<a href="#${section.id}">${section.title}</a>${i < sections.length - 1 ? '<br>' : ''}`;
+    $.each(sections, function (i, section) {
+      fixedToolbar += `<a href="#${section.id}">${section.title}</a>${
+        i < sections.length - 1 ? "<br>" : ""
+      }`;
     });
-    fixedToolbar += '</div>';
+    fixedToolbar += "</div>";
   }
 
   // Toolbar
-  $('div#toolbar').html(`
+  $("div#toolbar").html(`
     <svg width="1000" height="50">
       <!-- Homepage icon -->
       <a xlink:href="/">
@@ -136,6 +145,10 @@ $(() => {
       <a xlink:href="/projs">
         <text x="100" y="30" fill="white">Projects</text>
       </a>
+      <!-- Gallery -->
+      <a xlink:href="/gallery">
+        <text x="200" y="30" fill="white">Gallery</text>
+      </a>
     </svg>
 
     <div id="fixed-toolbar">
@@ -144,11 +157,10 @@ $(() => {
   `);
 
   // Required indicator
-  $('input[required]').before('<span class="required-ind">* </span>');
+  $("input[required]").before('<span class="required-ind">* </span>');
 
   // Collapsible
-  $('button.coll').click(function() {
-    $(this).toggleClass('opened');
+  $("button.coll").click(function () {
+    $(this).toggleClass("opened");
   });
-
 });

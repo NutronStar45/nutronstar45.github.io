@@ -89,7 +89,7 @@ p.section-title {
 /* Labels & Buttons & SVGs */
 p.section-line,
 :is(div.section, div.non-text-section)
-  :is(label, :not(button) + button, button:first-child, svg) {
+  :is(label, :not(button) + button, button:first-child, svg, textarea) {
   margin-left: 20px;
 }
 
@@ -145,6 +145,11 @@ a:visited {
 /* Buttons */
 button {
   cursor: pointer;
+  border: 3px outset gray;
+}
+
+button:active {
+  border-style: inset;
 }
 
 /* Buttons after button */

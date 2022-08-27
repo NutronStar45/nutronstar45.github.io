@@ -94,15 +94,6 @@ function slotAction(slot, action, width, size, hWalls, vWalls, endpoints) {
 }
 
 /**
- * Creates an element with SVG namespace.
- * @param {string} name The name of the tag.
- * @returns The element with SVG namespace in JQuery.
- */
-function svgNS(name) {
-  return $(document.createElementNS("http://www.w3.org/2000/svg", name));
-}
-
-/**
  * Generates, solves and renders a maze
  * @param {boolean} solving Whether to solve the generated maze or not.
  */
