@@ -1,4 +1,4 @@
-let commitVer = "2.13.5";
+let commitVer = "2.14";
 
 let alerts = {
   invalid: "Invalid/Empty",
@@ -89,22 +89,20 @@ function validate(targets, alert = true) {
 function alertInvalid(target, type, alert) {
   if (alert) {
     target.parent().next("span.invalid-input").remove();
-    target
-      .parent()
-      .after(
-        `<span class="invalid-input">${
-          target.attr("alert-" + type)
-            ? target.attr("alert-" + type)
-            : alerts[type]
-        }</span>`
-      );
+    target.parent().after(
+      `<span class="invalid-input">${
+        target.attr("alert-" + type)
+          ? target.attr("alert-" + type) // Use the alert text if provided
+          : alerts[type] // Default alert text
+      }</span>`
+    );
   }
 }
 
 $(() => {
   // Location in 404 page
   $("h3#404-location").html(
-    `File or Site missing at <code>${location.pathname}</code>`
+    `The page <code>${location.pathname}</code> doens't exist`
   );
 
   let sections = [];
@@ -131,30 +129,26 @@ $(() => {
     fixedToolbar += "</div>";
   }
 
-  // Toolbar
-  $("div#toolbar").html(`
-    <svg width="1000" height="50">
-      <!-- Homepage icon -->
-      <a xlink:href="/">
-        <rect width="50" height="50" style="fill:black" />
-        <polyline points="5,25 25,5 45,25" style="fill:none;stroke:#7f7f7f;stroke-width:3;" />
-        <rect y="25" width="50" height="25" style="black" />
-        <polyline points="12,25 12,45 38,45 38,25" style="fill:none;stroke:#7f7f7f;stroke-width:3;" />
-      </a>
-      <!-- Projects -->
-      <a xlink:href="/projs">
-        <text x="100" y="30" fill="white">Projects</text>
-      </a>
-      <!-- Gallery -->
-      <a xlink:href="/gallery">
-        <text x="200" y="30" fill="white">Gallery</text>
-      </a>
-    </svg>
+  let nav = `<svg width="1000" height="50">
+  <!-- Homepage icon -->
+  <a xlink:href="/">
+    <rect width="50" height="50" style="fill:black" />
+    <polyline points="5,25 25,5 45,25" style="fill:none;stroke:#7f7f7f;stroke-width:3;" />
+    <rect y="25" width="50" height="25" style="black" />
+    <polyline points="12,25 12,45 38,45 38,25" style="fill:none;stroke:#7f7f7f;stroke-width:3;" />
+  </a>
+  <!-- Projects -->
+  <a xlink:href="/projs">
+    <text x="100" y="30" fill="white">Projects</text>
+  </a>
+  <!-- Gallery -->
+  <a xlink:href="/gallery">
+    <text x="200" y="30" fill="white">Gallery</text>
+  </a>
+</svg>`;
 
-    <div id="fixed-toolbar">
-      ${fixedToolbar}
-    </div>
-  `);
+  // Toolbar
+  $("div#toolbar").html(nav + `<div id="fixed-toolbar">${fixedToolbar}</div>`);
 
   // Required indicator
   $("input[required]").before('<span class="required-ind">* </span>');

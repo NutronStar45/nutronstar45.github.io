@@ -1,13 +1,15 @@
+// svgNS is defined in common.js
+
 /**
- * Choose a pseudo-random item from the array.
- * @returns A pseudo-random item from the array.
+ * Choose a random element from the array.
+ * @returns A random element from the array.
  */
 Array.prototype.random = function () {
   return this[Math.floor(Math.random() * this.length)];
 };
 
 /**
- * Removes the first occurrence of `value` in an array.
+ * Remove the first occurrence of `value` in an array.
  * @param {*} value The target value.
  */
 Array.prototype.remove = function (value) {
@@ -26,8 +28,7 @@ Math.round = function (x, precision = 0) {
 };
 
 /**
- * Get the time passed since the UNIX Epoch.
- * @returns Seconds passed since Jan 1 1970.
+ * @returns Time passed since 0:00:00, January 1, 1970 in seconds.
  */
 function now() {
   return Date.now() / 1000;
@@ -38,7 +39,7 @@ function now() {
  * @param {string} text The text to write.
  */
 function writeStatus(text) {
-  $("p#gen-status").append(text);
+  $("p#gen-status").html(text);
 }
 
 /**
@@ -47,15 +48,15 @@ function writeStatus(text) {
  * @param {number[] | null} filter Slots won't be returned if it's not in this array.
  * @param {number} width The width of the maze.
  * @param {number} size The size of the maze.
- * @returns The surrounding slots around `slot` in the format of `[[num, type], ...]` where `num` is the neighboring slot and `type` is the relationship between `slot` and `num`, `0` is vertical and `1` is horizontal.
+ * @returns The surrounding slots around `slot` in the format of `[[num, type], ...]` where `num` is the slot and `type` is the relation between `slot` and `num`, `0` is vertical and `1` is horizontal.
  */
 function getNeighbors(slot, filter, width, size) {
   let results = [];
 
   if (slot - width >= 0) results.push([slot - width, 0]); // Up
   if (slot + width < size) results.push([slot + width, 0]); // Down
-  if (slot % width != 0) results.push([slot - 1, 1]); // Left
-  if ((slot + 1) % width != 0) results.push([slot + 1, 1]); // Right
+  if (slot % width !== 0) results.push([slot - 1, 1]); // Left
+  if ((slot + 1) % width !== 0) results.push([slot + 1, 1]); // Right
 
   if (filter) results = results.filter((item) => filter.includes(item[0]));
 
@@ -64,16 +65,16 @@ function getNeighbors(slot, filter, width, size) {
 
 /**
  * Performs a certain action on a certain slot. \
- * Action 0: CHECK CONNECTIVITY \
- * Action 1: IS PATH
+ * 0: Check connectivity \
+ * 1: Check if the slot is connected to at least one neighbor.
  * @param {number} slot The slot to perform the action.
- * @param {number} action The action to perform, 0 is CHECK CONNECTIVITY, 1 is IS PATH.
+ * @param {number} action The action to perform.
  * @param {number} width The width of the maze.
  * @param {number} size The size of the maze.
  * @param {number[]} hWalls The horizontal walls of the maze.
  * @param {number[]} vWalls The vertical walls of the maze.
  * @param {number[]} endpoints The start- and end-points of the maze.
- * @returns The bitwise connectivity if the action was 0, or IS PATH if it was 1.
+ * @returns An integer or a boolean, depending on the action.
  */
 function slotAction(slot, action, width, size, hWalls, vWalls, endpoints) {
   let connectivity = 15;
@@ -95,10 +96,10 @@ function slotAction(slot, action, width, size, hWalls, vWalls, endpoints) {
 
 /**
  * Generates, solves and renders a maze
- * @param {boolean} solving Whether to solve the generated maze or not.
+ * @param {boolean} solving If true, solve the maze.
  */
 function generate(solving) {
-  // Using Prim's Algorithm to generate a perfect maze
+  // Uses Prim's Algorithm to generate a perfect maze
   // Left-to-right, top-to-bottom, 0-based numbering, like
   //  0  1  2  3  4
   //  5  6  7  8  9
@@ -106,6 +107,7 @@ function generate(solving) {
   // 15 16 17 18 19
 
   $("p#gen-status").empty();
+  let gen_status = "";
 
   /*
    * Maze Structure
@@ -179,12 +181,10 @@ function generate(solving) {
     }
   }
 
-  writeStatus(
-    `Maze structure generated at ${Math.round(
-      now() - startTime,
-      2
-    )}s (took ${Math.round(now() - startTime, 2)}s)`
-  );
+  gen_status += `Maze structure generated at ${Math.round(
+    now() - startTime,
+    2
+  )}s (took ${Math.round(now() - startTime, 2)}s)`;
   let lastTimestamp = now();
 
   /*
@@ -215,12 +215,10 @@ function generate(solving) {
     );
   }
 
-  writeStatus(
-    `<br>Walls rendering calculated at ${Math.round(
-      now() - startTime,
-      2
-    )}s (took ${Math.round(now() - lastTimestamp, 2)}s)`
-  );
+  gen_status += `<br>Walls rendering calculated at ${Math.round(
+    now() - startTime,
+    2
+  )}s (took ${Math.round(now() - lastTimestamp, 2)}s)`;
   lastTimestamp = now();
 
   /*
@@ -309,12 +307,10 @@ function generate(solving) {
       }
     }
 
-    writeStatus(
-      `<br>Path generated at ${Math.round(
-        now() - startTime,
-        2
-      )}s (took ${Math.round(now() - lastTimestamp, 2)}s)`
-    );
+    gen_status += `<br>Path generated at ${Math.round(
+      now() - startTime,
+      2
+    )}s (took ${Math.round(now() - lastTimestamp, 2)}s)`;
     lastTimestamp = now();
 
     let slotsPath = [];
@@ -358,13 +354,13 @@ function generate(solving) {
       );
     }
 
-    writeStatus(
-      `<br>Path rendering calculated at ${Math.round(
-        now() - startTime,
-        2
-      )}s (took ${Math.round(now() - lastTimestamp, 2)}s)`
-    );
+    gen_status += `<br>Path rendering calculated at ${Math.round(
+      now() - startTime,
+      2
+    )}s (took ${Math.round(now() - lastTimestamp, 2)}s)`;
   }
+
+  writeStatus(gen_status);
 
   /*
    * Render
