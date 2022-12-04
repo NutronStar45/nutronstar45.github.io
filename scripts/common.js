@@ -1,32 +1,66 @@
-let commitVer = "2.14";
+let commitVer = "2.15";
+
 
 let alerts = {
   invalid: "Invalid/Empty",
   small: "Too small",
   big: "Too big",
+  short: "Too short",
+  long: "Too long"
 };
 
+
 /**
- * Creates an element with SVG namespace.
- * @param {string} name The name of the tag.
- * @returns The element with SVG namespace in JQuery.
+ * Choose a pseudorandom element from the array
+ * @returns A random element from the array
+ */
+Array.prototype.random = function () {
+  return this[Math.floor(Math.random() * this.length)];
+};
+
+
+/**
+ * Remove the first occurrence of `value` in an array
+ * @param {*} value The value to remove from the array
+ */
+Array.prototype.remove = function (value) {
+  if (this.includes(value))
+    this.splice(this.indexOf(value), 1);
+};
+
+
+let round = Math.round;
+/**
+ * Rounds a number to a specific precision
+ * @param {number} x The number to be rounded
+ * @param {number} precision Number of decimal places
+ * @returns {number} The rounded value
+ */
+Math.round = function (x, precision = 0) {
+  return round(x * Math.pow(10, precision)) / Math.pow(10, precision);
+};
+
+
+/**
+ * Creates an element with SVG namespace
+ * @param {string} name The name of the tag
+ * @returns {$} The element with SVG namespace in JQuery
  */
 function svgNS(name) {
   return $(document.createElementNS("http://www.w3.org/2000/svg", name));
 }
 
+
 /**
- * Validates one or more `<input>`s and returns the validity.
- * @param {(string | $)[]} targets The validation targets.
- * @param {boolean} alert Whether to alert invalid input or not, defaults to true.
- * @returns Whether `targets` are valid or not.
+ * Validates one or more `<input>`s and returns the validity
+ * @param {(string | $)[]} targets The validation targets
+ * @param {boolean} alert Whether to alert invalid input or not, defaults to true
+ * @returns {boolean} Whether `targets` are valid or not
  */
 function validate(targets, alert = true) {
   let validity = true;
 
-  for (let i = 0; i < targets.length; i++) {
-    let target = targets[i];
-
+  for (let target of targets.length) {
     if (typeof target === "string") {
       target = $(target);
     }
@@ -40,8 +74,7 @@ function validate(targets, alert = true) {
         }
         continue;
       } else {
-        let min = -Infinity,
-          max = Infinity;
+        let min = -Infinity, max = Infinity;
 
         // Calculate min
         if (isNaN(target.prop("min"))) {
@@ -65,11 +98,88 @@ function validate(targets, alert = true) {
           validity = false;
           continue;
         }
+
         // Too big
         if (+target.val() > max) {
           alertInvalid(target, "big", alert);
           validity = false;
           continue;
+        }
+      }
+    }
+
+    if (target.is("[type=text]")) {
+      if (target.is("[ctype=numbers]")) {
+        let values = target.val().replace(/ /g, "").split(",");
+        let min = -Infinity, max = Infinity, lmin = 0, lmax = Infinity
+
+        // Calculate min
+        if (isNaN(target.attr("min"))) {
+          if (validate([target.attr("min")], false))
+            min = +$(target.attr("min")).val();
+        } else if (target.attr("min") !== "" && target.attr("min") !== undefined) {
+          min = +target.attr("min");
+        }
+
+        // Calculate max
+        if (isNaN(target.attr("max"))) {
+          if (validate([target.attr("max")], false))
+            max = +$(target.attr("max")).val();
+        } else if (target.attr("max") !== "" && target.attr("max") !== undefined) {
+          max = +target.attr("max");
+        }
+
+        // Calculate min length
+        if (isNaN(target.attr("lmin"))) {
+          if (validate([target.attr("lmin")], false))
+            lmin = +$(target.attr("lmin")).val();
+        } else if (target.attr("lmin") !== "" && target.attr("lmin") !== undefined) {
+          lmin = +target.attr("lmin");
+        }
+
+        // Calculate max length
+        if (isNaN(target.attr("lmax"))) {
+          if (validate([target.attr("lmax")], false))
+            lmax = +$(target.attr("lmax")).val();
+        } else if (target.attr("lmax") !== "" && target.attr("lmax") !== undefined) {
+          lmax = +target.attr("lmax");
+        }
+
+        // Too short
+        if (values.length < lmin) {
+          alertInvalid(target, "short", alert);
+          validity = false;
+          continue;
+        }
+
+        // Too long
+        if (values.length > lmax) {
+          alertInvalid(target, "long", alert);
+          validity = false;
+          continue;
+        }
+
+        for (let value of values.length) {
+          // Invalid
+          if (value === "" || isNaN(value)) {
+            alertInvalid(target, "invalid", alert);
+            validity = false;
+            break;
+          }
+
+          // Too small
+          if (+value < min) {
+            alertInvalid(target, "small", alert);
+            validity = false;
+            break;
+          }
+
+          // Too big
+          if (+value > max) {
+            alertInvalid(target, "big", alert);
+            validity = false;
+            break;
+          }
         }
       }
     }
@@ -80,11 +190,12 @@ function validate(targets, alert = true) {
   return validity;
 }
 
+
 /**
- * Place alert after `<input>`.
+ * Place alert after `<input>`
  * @param {$} target The invalid `<input>`
- * @param {string} type The type of the invalidity.
- * @param {boolean} alert Whether to alert or not.
+ * @param {string} type The type of the invalidity
+ * @param {boolean} alert Whether to alert or not
  */
 function alertInvalid(target, type, alert) {
   if (alert) {
@@ -98,6 +209,7 @@ function alertInvalid(target, type, alert) {
     );
   }
 }
+
 
 $(() => {
   // Location in 404 page

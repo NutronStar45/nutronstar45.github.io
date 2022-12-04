@@ -1,54 +1,33 @@
+// Array.prototype.random is defined in common.js
+// Array.prototype.remove is defined in common.js
+// Math.round is defined in common.js
 // svgNS is defined in common.js
 
-/**
- * Choose a random element from the array.
- * @returns A random element from the array.
- */
-Array.prototype.random = function () {
-  return this[Math.floor(Math.random() * this.length)];
-};
 
 /**
- * Remove the first occurrence of `value` in an array.
- * @param {*} value The target value.
- */
-Array.prototype.remove = function (value) {
-  this.splice(this.indexOf(value), 1);
-};
-
-let round = Math.round;
-/**
- * Rounds a number to a specific precision.
- * @param {number} x The number to be rounded.
- * @param {number} precision Number of decimal places.
- * @returns The rounded value.
- */
-Math.round = function (x, precision = 0) {
-  return round(x * Math.pow(10, precision)) / Math.pow(10, precision);
-};
-
-/**
- * @returns Time passed since 0:00:00, January 1, 1970 in seconds.
+ * @returns {number} Time passed since 0:00:00, January 1, 1970 in seconds
  */
 function now() {
   return Date.now() / 1000;
 }
 
+
 /**
- * Write to p#gen-status
- * @param {string} text The text to write.
+ * Write to `p#gen-status`
+ * @param {string} text The text to write
  */
 function writeStatus(text) {
   $("p#gen-status").html(text);
 }
 
+
 /**
- * Get the surrounding slots around a slot.
- * @param {number} slot The target slot.
- * @param {number[] | null} filter Slots won't be returned if it's not in this array.
- * @param {number} width The width of the maze.
- * @param {number} size The size of the maze.
- * @returns The surrounding slots around `slot` in the format of `[[num, type], ...]` where `num` is the slot and `type` is the relation between `slot` and `num`, `0` is vertical and `1` is horizontal.
+ * Get the surrounding slots around a slot
+ * @param {number} slot The target slot
+ * @param {number[] | null} filter Slots won't be returned if it's not in this array
+ * @param {number} width The width of the maze
+ * @param {number} size The size of the maze
+ * @returns {number[][]} The surrounding slots around `slot` in the format of `[[num, type], ...]` where `num` is the slot and `type` is the relation between `slot` and `num`, `0` is vertical and `1` is horizontal
  */
 function getNeighbors(slot, filter, width, size) {
   let results = [];
@@ -58,23 +37,24 @@ function getNeighbors(slot, filter, width, size) {
   if (slot % width !== 0) results.push([slot - 1, 1]); // Left
   if ((slot + 1) % width !== 0) results.push([slot + 1, 1]); // Right
 
-  if (filter) results = results.filter((item) => filter.includes(item[0]));
+  if (filter) results = results.filter(item => filter.includes(item[0]));
 
   return results;
 }
 
+
 /**
- * Performs a certain action on a certain slot. \
+ * Performs a certain action on a certain slot \
  * 0: Check connectivity \
- * 1: Check if the slot is connected to at least one neighbor.
- * @param {number} slot The slot to perform the action.
- * @param {number} action The action to perform.
- * @param {number} width The width of the maze.
- * @param {number} size The size of the maze.
- * @param {number[]} hWalls The horizontal walls of the maze.
- * @param {number[]} vWalls The vertical walls of the maze.
- * @param {number[]} endpoints The start- and end-points of the maze.
- * @returns An integer or a boolean, depending on the action.
+ * 1: Check if the slot is connected to at least one neighbor
+ * @param {number} slot The slot to perform the action
+ * @param {number} action The action to perform
+ * @param {number} width The width of the maze
+ * @param {number} size The size of the maze
+ * @param {number[]} hWalls The horizontal walls of the maze
+ * @param {number[]} vWalls The vertical walls of the maze
+ * @param {number[]} endpoints The start- and end-points of the maze
+ * @returns {number | boolean} An integer or a boolean, depending on the action
  */
 function slotAction(slot, action, width, size, hWalls, vWalls, endpoints) {
   let connectivity = 15;
@@ -94,9 +74,10 @@ function slotAction(slot, action, width, size, hWalls, vWalls, endpoints) {
   return connectivity > 0;
 }
 
+
 /**
  * Generates, solves and renders a maze
- * @param {boolean} solving If true, solve the maze.
+ * @param {boolean} solving If true, solve the maze
  */
 function generate(solving) {
   // Uses Prim's Algorithm to generate a perfect maze
@@ -114,8 +95,7 @@ function generate(solving) {
    */
 
   // Size
-  let width = +$("input#width").val(),
-    height = +$("input#height").val();
+  let width = +$("input#width").val(), height = +$("input#height").val();
 
   // Starting time
   let startTime = now();
@@ -410,6 +390,7 @@ function generate(solving) {
       $("#hide-path-after-render").is(":checked") ? "Show Path" : "Hide Path"
     );
 }
+
 
 $(() => {
   $("input#enable-solving").prop("clicked", false);

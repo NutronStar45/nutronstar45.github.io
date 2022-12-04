@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The game of nim">
+  <meta name="author" content="NutronStar45">
+  <title>Nim</title>
+
+  <link rel="stylesheet" href="/styles/black.css">
+  <link rel="stylesheet" href="/styles/nim.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body>
+  <div id="toolbar"></div>
+
+  <h2>Nim</h2>
+
+  <div id="sec-about" class="section">
+    <p class="section-title">About</p>
+    <p class="section-paragraph">
+      Nim is a game in which two players take turns removing objects from distinct heaps or piles.
+      <sup>[<a href="https://en.wikipedia.org/wiki/Nim" target="_blank">wiki</a>]</sup>
+    </p>
+    <div id="sec-gameplay" class="section">
+      <p class="section-title">Gameplay</p>
+      <p class="section-paragraph">
+        The game starts with two or more heaps, and every heap contains at least one object. <br>
+        Player 1 takes one or more objects from one heap, Player 2 takes one or more objects from one heap, and so on.
+        <br>
+        In a normal play, the player who picks up the last object wins;
+        in a misère play, the player who picks up the last object loses.
+      </p>
+    </div>
+    <div id="sec-howtoplay" class="section">
+      <p class="section-title">How to Play</p>
+      <p class="section-paragraph">
+        The available game options are: Type, Mode, Heap Sizes, Difficulty (PvC only), and First (PvC only). <br>
+        Type: PvP (Player vs Player) or PvC (Player vs Computer). <br>
+        Mode: in a normal play, the player who picks up the last object wins;
+        in a misère play, the player who picks up the last object loses. <br>
+        Heap Sizes: Determines the sizes of the heaps, in the format of <code>3,4,5</code>. <br>
+        Difficulty (PvC only): determines how difficult you want the game to be,
+        options are: Easy, Medium, Hard, and Extreme. <br>
+        First (PvC only): determines the first player.
+      </p>
+    </div>
+  </div>
+
+  <div id="sec-play" class="non-text-section">
+    <p class="section-title">Play Nim</p>
+    <label>
+      Type: <select id="type">
+        <option value="pvp" selected>PvP</option>
+        <option value="pvc">PvC</option>
+      </select>
+    </label>
+    <label>
+      Mode: <select id="mode">
+        <option value="normal" selected>Normal</option>
+        <option value="misere">Misère</option>
+      </select>
+    </label>
+    <label>
+      Heap Sizes:
+      <input id="heap-sizes" type="text" ctype="numbers" size="10" value="3,4,5"
+        min="1" max="20" lmin="2" lmax="20"
+        alert-small="Every heap must contain at least one object"
+        alert-big="Every heap must contain at most 20 objects"
+        alert-short="There must be at least two heaps"
+        alert-long="There must be at most 20 heaps" required>
+    </label>
+    <div id="pvc-only">
+      <label>
+        Difficulty: <select id="difficulty">
+          <option value="easy" selected>Easy</option>
+          <option value="medium" disabled>Medium (WIP)</option>
+          <option value="hard" disabled>Hard (WIP)</option>
+          <option value="extreme" disabled>Extreme (WIP)</option>
+        </select>
+      </label>
+      <label>
+        First: <select id="first">
+          <option value="player" selected>Player</option>
+          <option value="computer">Computer</option>
+        </select>
+      </label>
+    </div>
+    <br>
+    <button id="play">Play</button>
+    <br>
+    <textarea id="game-status" rows="3" cols="40" disabled></textarea>
+    <div id="game"></div>
+  </div>
+
+  <script src="/scripts/common.js"></script>
+  <script src="/scripts/nim.js"></script>
+</body>
+
+</html>

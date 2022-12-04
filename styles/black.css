@@ -71,6 +71,10 @@ div.non-text-section {
   border: 1px dashed #7f7f7f;
   margin: 0 8px 10px 0;
 }
+/* Sections inside sections */
+div.section div.section {
+  margin-left: 2px;
+}
 /* Non-text sections */
 div.non-text-section {
   padding-bottom: 16px;
@@ -81,7 +85,7 @@ p.section-title {
   margin-left: 10px;
 }
 /* Labels & Buttons & SVGs */
-p.section-line,
+p.section-paragraph,
 :is(div.section, div.non-text-section)
   :is(label, :not(button) + button, button:first-child, svg, textarea) {
   margin-left: 20px;
@@ -146,7 +150,7 @@ button:active {
   border-style: inset;
 }
 
-/* Buttons after button */
+/* Buttons after buttons */
 button + button {
   margin-left: 7px;
 }
