@@ -249,48 +249,49 @@ $(() => {
   });
 
   $("div.heap svg").click(function () {
-    if (type === "pvp" || turn === 0) {
-      let heapIndex = $(this).parent().index();
-      let objectIndex = $(this).index();
-      let removeAmount = heapSizes[heapIndex] - objectIndex;
+    console.log(type, turn);
+    // if (type === "pvp" || turn === 0) {
+    //   let heapIndex = $(this).parent().index();
+    //   let objectIndex = $(this).index();
+    //   let removeAmount = heapSizes[heapIndex] - objectIndex;
 
-      console.log(heapIndex, objectIndex, removeAmount);
-      // heapSizes[heapIndex] = objectIndex;
-      // if (objectIndex === 0) {
-      //   remainingHeaps.remove(heapIndex);
-      // }
-      // updateGame(heapSizes);
-      // status = writeStatusRemove(type, turn, removeAmount, heapIndex, status);
-      // if (type === "pvp") {
-      //   if (remainingHeaps.length > 0) {
-      //     // Switch turns
-      //     turn = 1 - turn;
-      //     status = writeStatusTurn("pvp", turn, status);
-      //   } else {
-      //     // Write result
-      //     status = writeStatusWin(type, mode, turn, status);
-      //   }
-      // } else {
-      //   if (remainingHeaps.length > 0) {
-      //     // Switch turns
-      //     turn = 1;
-      //     status = writeStatusTurn("pvc", 1, status);
-      //     // Computer plays
-      //     [heapSizes, remainingHeaps, status]
-      //       = computer(mode, heapSizes, difficulty, status, remainingHeaps);
-      //     if (remainingHeaps.length > 0) {
-      //       // Switch turns
-      //       turn = 0
-      //       status = writeStatusTurn("pvc", 0, status);
-      //     } else {
-      //       // Write result
-      //       status = writeStatusWin("pvc", mode, 1, status);
-      //     }
-      //   } else {
-      //     // Write result
-      //     status = writeStatusWin("pvc", mode, 0, status);
-      //   }
-      // }
-    }
+    //   console.log(heapIndex, objectIndex, removeAmount);
+    //   heapSizes[heapIndex] = objectIndex;
+    //   if (objectIndex === 0) {
+    //     remainingHeaps.remove(heapIndex);
+    //   }
+    //   updateGame(heapSizes);
+    //   status = writeStatusRemove(type, turn, removeAmount, heapIndex, status);
+    //   if (type === "pvp") {
+    //     if (remainingHeaps.length > 0) {
+    //       // Switch turns
+    //       turn = 1 - turn;
+    //       status = writeStatusTurn("pvp", turn, status);
+    //     } else {
+    //       // Write result
+    //       status = writeStatusWin(type, mode, turn, status);
+    //     }
+    //   } else {
+    //     if (remainingHeaps.length > 0) {
+    //       // Switch turns
+    //       turn = 1;
+    //       status = writeStatusTurn("pvc", 1, status);
+    //       // Computer plays
+    //       [heapSizes, remainingHeaps, status]
+    //         = computer(mode, heapSizes, difficulty, status, remainingHeaps);
+    //       if (remainingHeaps.length > 0) {
+    //         // Switch turns
+    //         turn = 0
+    //         status = writeStatusTurn("pvc", 0, status);
+    //       } else {
+    //         // Write result
+    //         status = writeStatusWin("pvc", mode, 1, status);
+    //       }
+    //     } else {
+    //       // Write result
+    //       status = writeStatusWin("pvc", mode, 0, status);
+    //     }
+    //   }
+    // }
   });
 });
