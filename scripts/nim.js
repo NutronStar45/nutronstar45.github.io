@@ -226,7 +226,7 @@ $(() => {
     if (validate(["input#heap-sizes"])) {
       type = $("select#type").val();
       mode = $("select#mode").val();
-      heapSizes = $("select#heap-sizes").val()
+      heapSizes = $("input#heap-sizes").val()
         .replace(/ /g, "")
         .split(",")
         .map(val => +val);
@@ -235,7 +235,7 @@ $(() => {
 
       remainingHeaps = [...heapSizes.keys()]; // Indices of all remaining heaps
 
-      [turn, status] = gameSetup(type, heapSizes, first); // Set up the game
+      [turn, status] = gameSetup(type, heapSizes, first, status); // Set up the game
       status = writeStatusTurn(type, turn, status); // Write turn
       if (type === "pvc" && turn === 1) {
         // Computer plays

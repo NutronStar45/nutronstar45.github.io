@@ -1,4 +1,4 @@
-let commitVer = "2.15";
+let commitVer = "2.15.0.1";
 
 
 let alerts = {
@@ -60,7 +60,7 @@ function svgNS(name) {
 function validate(targets, alert = true) {
   let validity = true;
 
-  for (let target of targets.length) {
+  for (let target of targets) {
     if (typeof target === "string") {
       target = $(target);
     }
@@ -159,7 +159,7 @@ function validate(targets, alert = true) {
           continue;
         }
 
-        for (let value of values.length) {
+        for (let value of values) {
           // Invalid
           if (value === "" || isNaN(value)) {
             alertInvalid(target, "invalid", alert);
@@ -235,7 +235,7 @@ $(() => {
 
     $.each(sections, function (i, section) {
       fixedToolbar += `<a href="#${section.id}">${section.title}</a>${
-        i < sections.length - 1 ? "<br>" : ""
+        i < (sections.length - 1) ? "<br>" : ""
       }`;
     });
     fixedToolbar += "</div>";
