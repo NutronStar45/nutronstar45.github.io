@@ -155,7 +155,6 @@ function updateGame(type, mode, heapSizes, difficulty, turn, status, remainingHe
       if (objectIndex === 0) {
         remainingHeaps.remove(heapIndex);
       }
-      updateGame(type, mode, heapSizes, difficulty, turn, status, remainingHeaps);
       status = writeStatusRemove(type, turn, removeAmount, heapIndex, status);
       if (type === "pvp") {
         if (remainingHeaps.length > 0) {
@@ -173,7 +172,7 @@ function updateGame(type, mode, heapSizes, difficulty, turn, status, remainingHe
           status = writeStatusTurn("pvc", 1, status);
           // Computer plays
           [heapSizes, remainingHeaps, status]
-            = computer(type, mode, heapSizes, difficulty, turn, status, remainingHeaps);
+          = computer(type, mode, heapSizes, difficulty, turn, status, remainingHeaps);
           if (remainingHeaps.length > 0) {
             //switch turns
             turn = 0
@@ -190,6 +189,7 @@ function updateGame(type, mode, heapSizes, difficulty, turn, status, remainingHe
     }
     $("span#remove-object-event").text(`${heapSizes.join(",")};${turn};${status.join(",")};${remainingHeaps.join(",")}`);
     $("span#remove-object-event").change(); // trigger change event
+    updateGame(type, mode, heapSizes, difficulty, turn, status, remainingHeaps);
   });
 }
 
