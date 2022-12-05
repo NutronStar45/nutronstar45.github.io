@@ -155,7 +155,7 @@ function updateGame(type, mode, heapSizes, difficulty, turn, status, remainingHe
       if (objectIndex === 0) {
         remainingHeaps.remove(heapIndex);
       }
-      updateGame(heapSizes);
+      updateGame(type, mode, heapSizes, difficulty, turn, status, remainingHeaps);
       status = writeStatusRemove(type, turn, removeAmount, heapIndex, status);
       if (type === "pvp") {
         if (remainingHeaps.length > 0) {
@@ -173,7 +173,7 @@ function updateGame(type, mode, heapSizes, difficulty, turn, status, remainingHe
           status = writeStatusTurn("pvc", 1, status);
           // Computer plays
           [heapSizes, remainingHeaps, status]
-            = computer(mode, heapSizes, difficulty, status, remainingHeaps);
+            = computer(type, mode, heapSizes, difficulty, turn, status, remainingHeaps);
           if (remainingHeaps.length > 0) {
             //switch turns
             turn = 0
@@ -197,17 +197,21 @@ function updateGame(type, mode, heapSizes, difficulty, turn, status, remainingHe
 /**
  * Set up the game
  * @param {string} type `pvp` or `pvc`
+ * @param {string} mode `normal` or `misere`
  * @param {number[]} heapSizes Sizes of heaps
+ * @param {string} difficulty `easy`, `medium`, `hard`, or `extreme`
+ * @param {number} turn `0` if it's Player 1's or Player's turn, `1` if it's Player 2's or Computer's turn
  * @param {string} first `player` or `computer`
  * @param {string[]} status The current status
+ * @param {number[]} remainingHeaps The indices of the remaining heaps
  * @returns {[number, string[]]} The first element is `0` if it's Player 1's or Player's turn, `1` if it's Player 2's or Computer's turn \
  * The second element is the updated status
  */
-function gameSetup(type, heapSizes, first, status) {
+function gameSetup(type, mode, heapSizes, difficulty, turn, first, status, remainingHeaps) {
   // 0: Player 1 or Player
   // 1: Player 2 or Computer
   let turn = (type === "pvp" || first === "player") ? 0 : 1;
-  updateGame(heapSizes);
+  updateGame(type, mode, heapSizes, difficulty, turn, status, remainingHeaps);
   status = writeStatus("Game initialized", status);
   return [turn, status];
 }
@@ -215,20 +219,24 @@ function gameSetup(type, heapSizes, first, status) {
 
 /**
  * Computer plays a random move
+ * @param {string} type `pvp` or `pvc`
+ * @param {string} mode `normal` or `misere`
  * @param {number[]} heapSizes Sizes of heaps
+ * @param {string} difficulty `easy`, `medium`, `hard`, or `extreme`
+ * @param {number} turn `0` if it's Player 1's or Player's turn, `1` if it's Player 2's or Computer's turn
  * @param {string[]} status The current status
  * @param {number[]} remainingHeaps The indices of the remaining heaps
  * @returns {[number[], number[], string[]]} The first element is the updated heap sizes \
  * The second element is the indices of the remaining heaps \
  * The third element is the updated status
  */
-function computerRandom(heapSizes, status, remainingHeaps) {
+function computerRandom(type, mode, heapSizes, difficulty, turn, status, remainingHeaps) {
   let choosingFromHeap = remainingHeaps.random(); // choose from this heap
   let objectsOfHeap = heapSizes[choosingFromHeap]; // how many objects are in the heap
   let removeAmount = Math.floor(Math.random() * objectsOfHeap) + 1; // remove this much objects from the heap
 
   heapSizes[choosingFromHeap] -= removeAmount;
-  updateGame(heapSizes);
+  updateGame(type, mode, heapSizes, difficulty, turn, status, remainingHeaps);
   if (heapSizes[choosingFromHeap] === 0) {
     remainingHeaps.remove(choosingFromHeap);
   }
@@ -239,18 +247,20 @@ function computerRandom(heapSizes, status, remainingHeaps) {
 
 /**
  * Computer plays
+ * @param {string} type `pvp` or `pvc`
  * @param {string} mode `normal` or `misere`
  * @param {number[]} heapSizes Sizes of heaps
  * @param {string} difficulty `easy`, `medium`, `hard`, or `extreme`
+ * @param {number} turn `0` if it's Player 1's or Player's turn, `1` if it's Player 2's or Computer's turn
  * @param {string[]} status The current status
  * @param {number[]} remainingHeaps The indices of the remaining heaps
  * @returns {[number[], number[], string[]]} The first element is the updated heap sizes \
  * The second element is the indices of the remaining heaps \
  * The third element is the updated status
  */
-function computer(mode, heapSizes, difficulty, status, remainingHeaps) {
+function computer(type, mode, heapSizes, difficulty, turn, status, remainingHeaps) {
   if (difficulty === "easy") {
-    return computerRandom(heapSizes, status, remainingHeaps);
+    return computerRandom(type, mode, heapSizes, difficulty, turn, status, remainingHeaps);
   }
   //TODO add more difficulty options
 }
@@ -291,13 +301,13 @@ $(() => {
 
       remainingHeaps = [...heapSizes.keys()]; // indices of all remaining heaps
 
-      [turn, status] = gameSetup(type, heapSizes, first, status); // set up the game
+      [turn, status] = gameSetup(type, mode, heapSizes, difficulty, turn, first, status, remainingHeaps); // set up the game
       status = writeStatusTurn(type, turn, status); // write turn
 
       if (type === "pvc" && turn === 1) {
         // Computer plays
         [heapSizes, remainingHeaps, status]
-          = computer(mode, heapSizes, difficulty, status, remainingHeaps);
+          = computer(type, mode, heapSizes, difficulty, turn, status, remainingHeaps);
         // Player's turn
         status = writeStatusTurn("pvc", 0, status);
         turn = 0;

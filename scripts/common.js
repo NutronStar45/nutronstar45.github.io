@@ -1,4 +1,4 @@
-let commitVer = "2.15.0.6";
+let commitVer = "2.15.0.7";
 
 
 let alerts = {
