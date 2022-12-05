@@ -200,14 +200,13 @@ function updateGame(type, mode, heapSizes, difficulty, turn, status, remainingHe
  * @param {string} mode `normal` or `misere`
  * @param {number[]} heapSizes Sizes of heaps
  * @param {string} difficulty `easy`, `medium`, `hard`, or `extreme`
- * @param {number} turn `0` if it's Player 1's or Player's turn, `1` if it's Player 2's or Computer's turn
  * @param {string} first `player` or `computer`
  * @param {string[]} status The current status
  * @param {number[]} remainingHeaps The indices of the remaining heaps
  * @returns {[number, string[]]} The first element is `0` if it's Player 1's or Player's turn, `1` if it's Player 2's or Computer's turn \
  * The second element is the updated status
  */
-function gameSetup(type, mode, heapSizes, difficulty, turn, first, status, remainingHeaps) {
+function gameSetup(type, mode, heapSizes, difficulty, first, status, remainingHeaps) {
   // 0: Player 1 or Player
   // 1: Player 2 or Computer
   let turn = (type === "pvp" || first === "player") ? 0 : 1;
@@ -301,7 +300,7 @@ $(() => {
 
       remainingHeaps = [...heapSizes.keys()]; // indices of all remaining heaps
 
-      [turn, status] = gameSetup(type, mode, heapSizes, difficulty, turn, first, status, remainingHeaps); // set up the game
+      [turn, status] = gameSetup(type, mode, heapSizes, difficulty, first, status, remainingHeaps); // set up the game
       status = writeStatusTurn(type, turn, status); // write turn
 
       if (type === "pvc" && turn === 1) {
