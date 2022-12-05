@@ -1,4 +1,4 @@
-let commitVer = "2.15.0.5";
+let commitVer = "2.15.0.6";
 
 
 let alerts = {
@@ -214,7 +214,7 @@ function alertInvalid(target, type, alert) {
 $(() => {
   // Location in 404 page
   $("h3#404-location").html(
-    `The page <code>${location.pathname}</code> doens't exist`
+    `The page <code>${location.pathname}</code> doesn't exist`
   );
 
   let sections = [];

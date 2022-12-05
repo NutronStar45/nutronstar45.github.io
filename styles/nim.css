@@ -3,6 +3,10 @@ textarea#game-status {
   margin-top: 10px;
 }
 
+span#remove-object-event {
+  display: none;
+}
+
 div#game {
   margin-top: 10px;
 }

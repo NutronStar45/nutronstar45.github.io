@@ -5,12 +5,13 @@
  * @returns {string[]} The updated status
  */
 function writeStatus(text, status) {
-  if (status.length < 3) {
+  if (status.length < 4) {
     status.push(text);
   } else {
     status[0] = status[1];
     status[1] = status[2];
-    status[2] = text;
+    status[2] = status[3];
+    status[3] = text;
   }
   $("textarea#game-status").text(status.join("\n"));
   return status;
@@ -123,10 +124,17 @@ function writeStatusWin(type, mode, turn, status) {
 
 
 /**
- * Update `div#game`
+ * Update `div#game` and write to `span#remove-object-event` \
+ * heapSizes(,);turn;status(,);remainingHeaps(,)
+ * @param {string} type `pvp` or `pvc`
+ * @param {string} mode `normal` or `misere`
  * @param {number[]} heapSizes Sizes of heaps
+ * @param {string} difficulty `easy`, `medium`, `hard`, or `extreme`
+ * @param {number} turn `0` if it's Player 1's or Player's turn, `1` if it's Player 2's or Computer's turn
+ * @param {string[]} status The current status
+ * @param {number[]} remainingHeaps The indices of the remaining heaps
  */
-function updateGame(heapSizes) {
+function updateGame(type, mode, heapSizes, difficulty, turn, status, remainingHeaps) {
   $("div#game").empty();
   let circleSvg = '<svg width="20" height="20"><circle cx="10" cy="10" r="10" fill="white"/></svg>';
 
@@ -135,6 +143,54 @@ function updateGame(heapSizes) {
     heapDiv.append($(circleSvg.repeat(heapSize)));
     $("div#game").append(heapDiv);
   }
+
+  // click event handler for objects
+  $("div.heap svg").click(function () {
+    if (type === "pvp" || turn === 0) {
+      let heapIndex = $(this).parent().index();
+      let objectIndex = $(this).index();
+      let removeAmount = heapSizes[heapIndex] - objectIndex;
+
+      heapSizes[heapIndex] = objectIndex;
+      if (objectIndex === 0) {
+        remainingHeaps.remove(heapIndex);
+      }
+      updateGame(heapSizes);
+      status = writeStatusRemove(type, turn, removeAmount, heapIndex, status);
+      if (type === "pvp") {
+        if (remainingHeaps.length > 0) {
+          // switch turns
+          turn = 1 - turn;
+          status = writeStatusTurn("pvp", turn, status);
+        } else {
+          // write result
+          status = writeStatusWin(type, mode, turn, status);
+        }
+      } else {
+        if (remainingHeaps.length > 0) {
+          // switch turns
+          turn = 1;
+          status = writeStatusTurn("pvc", 1, status);
+          // Computer plays
+          [heapSizes, remainingHeaps, status]
+            = computer(mode, heapSizes, difficulty, status, remainingHeaps);
+          if (remainingHeaps.length > 0) {
+            //switch turns
+            turn = 0
+            status = writeStatusTurn("pvc", 0, status);
+          } else {
+            // write result
+            status = writeStatusWin("pvc", mode, 1, status);
+          }
+        } else {
+          // write result
+          status = writeStatusWin("pvc", mode, 0, status);
+        }
+      }
+    }
+    $("span#remove-object-event").text(`${heapSizes.join(",")};${turn};${status.join(",")};${remainingHeaps.join(",")}`);
+    $("span#remove-object-event").change(); // trigger change event
+  });
 }
 
 
@@ -167,9 +223,9 @@ function gameSetup(type, heapSizes, first, status) {
  * The third element is the updated status
  */
 function computerRandom(heapSizes, status, remainingHeaps) {
-  let choosingFromHeap = remainingHeaps.random(); // Choose from this heap
-  let objectsOfHeap = heapSizes[choosingFromHeap]; // How many objects are in the heap
-  let removeAmount = Math.floor(Math.random() * objectsOfHeap) + 1; // Remove this much objects from the heap
+  let choosingFromHeap = remainingHeaps.random(); // choose from this heap
+  let objectsOfHeap = heapSizes[choosingFromHeap]; // how many objects are in the heap
+  let removeAmount = Math.floor(Math.random() * objectsOfHeap) + 1; // remove this much objects from the heap
 
   heapSizes[choosingFromHeap] -= removeAmount;
   updateGame(heapSizes);
@@ -219,8 +275,8 @@ $(() => {
   let first; // player, computer
 
   let turn; // 0: Player 1 / Player, 1: Player 2 / Computer
-  let status = []; // Game status, max 3 lines
-  let remainingHeaps; // Indices of all remaining heaps
+  let status = []; // game status, max 4 lines
+  let remainingHeaps; // indices of all remaining heaps
 
   $("button#play").click(() => {
     if (validate(["input#heap-sizes"])) {
@@ -233,56 +289,10 @@ $(() => {
       difficulty = $("select#difficulty").val();
       first = $("select#first").val();
 
-      remainingHeaps = [...heapSizes.keys()]; // Indices of all remaining heaps
+      remainingHeaps = [...heapSizes.keys()]; // indices of all remaining heaps
 
-      [turn, status] = gameSetup(type, heapSizes, first, status); // Set up the game
-      status = writeStatusTurn(type, turn, status); // Write turn
-
-      $("div.heap svg").click(function () {
-        if (type === "pvp" || turn === 0) {
-          let heapIndex = $(this).parent().index();
-          let objectIndex = $(this).index();
-          let removeAmount = heapSizes[heapIndex] - objectIndex;
-
-          console.log(heapIndex, objectIndex, removeAmount);
-          heapSizes[heapIndex] = objectIndex;
-          if (objectIndex === 0) {
-            remainingHeaps.remove(heapIndex);
-          }
-          updateGame(heapSizes);
-          status = writeStatusRemove(type, turn, removeAmount, heapIndex, status);
-          if (type === "pvp") {
-            if (remainingHeaps.length > 0) {
-              // Switch turns
-              turn = 1 - turn;
-              status = writeStatusTurn("pvp", turn, status);
-            } else {
-              // Write result
-              status = writeStatusWin(type, mode, turn, status);
-            }
-          } else {
-            if (remainingHeaps.length > 0) {
-              // Switch turns
-              turn = 1;
-              status = writeStatusTurn("pvc", 1, status);
-              // Computer plays
-              [heapSizes, remainingHeaps, status]
-                = computer(mode, heapSizes, difficulty, status, remainingHeaps);
-              if (remainingHeaps.length > 0) {
-                // Switch turns
-                turn = 0
-                status = writeStatusTurn("pvc", 0, status);
-              } else {
-                // Write result
-                status = writeStatusWin("pvc", mode, 1, status);
-              }
-            } else {
-              // Write result
-              status = writeStatusWin("pvc", mode, 0, status);
-            }
-          }
-        }
-      });
+      [turn, status] = gameSetup(type, heapSizes, first, status); // set up the game
+      status = writeStatusTurn(type, turn, status); // write turn
 
       if (type === "pvc" && turn === 1) {
         // Computer plays
@@ -293,5 +303,14 @@ $(() => {
         turn = 0;
       }
     }
+  });
+
+  // heapSizes(,);turn;status(,);remainingHeaps(,)
+  $("span#remove-object-event").change(function () {
+    let content = $(this).text().split(";");
+    heapSizes = content[0].split(",").map(heapSize => +heapSize);
+    turn = +content[1];
+    status = content[2].split(",");
+    remainingHeaps = content[3].split().map(remainingHeap => +remainingHeap);
   });
 });
