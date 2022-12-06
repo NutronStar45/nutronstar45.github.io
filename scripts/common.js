@@ -1,4 +1,4 @@
-let commitVer = "2.15.0.10";
+let commitVer = "2.15.0.11";
 
 
 let alerts = {
@@ -36,7 +36,7 @@ let round = Math.round;
  * @param {number} precision Number of decimal places
  * @returns {number} The rounded value
  */
-Math.round = function (x, precision = 0) {
+Math.round = function (x, precision=0) {
   return round(x * Math.pow(10, precision)) / Math.pow(10, precision);
 };
 
@@ -57,7 +57,7 @@ function svgNS(name) {
  * @param {boolean} alert Whether to alert invalid input or not, defaults to true
  * @returns {boolean} Whether `targets` are valid or not
  */
-function validate(targets, alert = true) {
+function validate(targets, alert=true) {
   let validity = true;
 
   for (let target of targets) {
@@ -183,8 +183,6 @@ function validate(targets, alert = true) {
         }
       }
     }
-
-    target.parent().next("span.invalid-input").remove(); // Remove potential alert
   }
 
   return validity;
@@ -199,7 +197,7 @@ function validate(targets, alert = true) {
  */
 function alertInvalid(target, type, alert) {
   if (alert) {
-    target.parent().next("span.invalid-input").remove();
+    target.parent().next("span.invalid-input").remove(); // Remove potential alert
     target.parent().after(
       `<span class="invalid-input">${
         target.attr("alert-" + type)
