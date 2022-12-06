@@ -1,4 +1,4 @@
-let commitVer = "2.15.0.11";
+let commitVer = "2.15.0.12";
 
 
 let alerts = {
@@ -61,6 +61,8 @@ function validate(targets, alert=true) {
   let validity = true;
 
   for (let target of targets) {
+    let partialValidity = true;
+
     if (typeof target === "string") {
       target = $(target);
     }
@@ -70,7 +72,7 @@ function validate(targets, alert=true) {
       if (target.val() === "") {
         if (target.prop("required")) {
           alertInvalid(target, "invalid", alert);
-          validity = false;
+          partialValidity = validity = false;
         }
         continue;
       } else {
@@ -95,14 +97,14 @@ function validate(targets, alert=true) {
         // Too small
         if (+target.val() < min) {
           alertInvalid(target, "small", alert);
-          validity = false;
+          partialValidity = validity = false;
           continue;
         }
 
         // Too big
         if (+target.val() > max) {
           alertInvalid(target, "big", alert);
-          validity = false;
+          partialValidity = validity = false;
           continue;
         }
       }
@@ -148,14 +150,14 @@ function validate(targets, alert=true) {
         // Too short
         if (values.length < lmin) {
           alertInvalid(target, "short", alert);
-          validity = false;
+          partialValidity = validity = false;
           continue;
         }
 
         // Too long
         if (values.length > lmax) {
           alertInvalid(target, "long", alert);
-          validity = false;
+          partialValidity = validity = false;
           continue;
         }
 
@@ -163,26 +165,29 @@ function validate(targets, alert=true) {
           // Invalid
           if (value === "" || isNaN(value)) {
             alertInvalid(target, "invalid", alert);
-            validity = false;
+            partialValidity = validity = false;
             break;
           }
 
           // Too small
           if (+value < min) {
             alertInvalid(target, "small", alert);
-            validity = false;
+            partialValidity = validity = false;
             break;
           }
 
           // Too big
           if (+value > max) {
             alertInvalid(target, "big", alert);
-            validity = false;
+            partialValidity = validity = false;
             break;
           }
         }
       }
     }
+
+    if (partialValidity)
+      target.parent().next("span.invalid-input").remove(); // Remove potential alert
   }
 
   return validity;
