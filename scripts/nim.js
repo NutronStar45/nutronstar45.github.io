@@ -141,11 +141,12 @@ function updateGame(type, mode, heapSizes, difficulty, turn, status, remainingHe
   for (let heapSize of heapSizes) {
     let heapDiv = $('<div class="heap"></div>');
     heapDiv.append($(circleSvg.repeat(heapSize)));
+    heapDiv.append('<svg width="20" height="20" class="placeholder"></svg>');
     $("div#game").append(heapDiv);
   }
 
   // click event handler for objects
-  $("div.heap svg").click(function () {
+  $("div.heap svg:not(.placeholder)").click(function () {
     if (type === "pvp" || turn === 0) {
       let heapIndex = $(this).parent().index();
       let objectIndex = $(this).index();

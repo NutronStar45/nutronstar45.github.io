@@ -19,7 +19,7 @@ div.heap + div.heap {
   margin-top: -8px;
 }
 
-div.heap svg:hover circle,
-div.heap svg:hover ~ svg circle {
+div.heap svg:hover:not(.placeholder) circle,
+div.heap svg:hover:not(.placeholder) ~ svg circle {
   fill: #333;
 }
