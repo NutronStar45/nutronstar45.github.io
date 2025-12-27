@@ -1,0 +1,12 @@
+:root {
+    --bg-color: #141414;
+    --fg-color: #ffffff;
+    --link-fg-color: #1282cd;
+    --required-ind-fg-color: #ff0000;
+    --invalid-input-fg-color: #ff0000;
+    --section-border-color: #a5a5a5;
+    --fixed-toolbar-border-color: #ffffff;
+    --button-border-color: #7f7f7f;
+    --code-fg-color: #ffffff;
+    --code-bg-color: #3f3f3f;
+}

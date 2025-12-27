@@ -1,13 +1,13 @@
 div#maze-img g.wall {
-  stroke-width: 2;
-  stroke: white;
-  stroke-linecap: round;
+    stroke-width: 2;
+    stroke: white;
+    stroke-linecap: round;
 }
 
 div#maze-img g.path {
-  fill: green;
+    fill: green;
 }
 
 div#maze-img g.endpoint {
-  fill: red;
+    fill: red;
 }
