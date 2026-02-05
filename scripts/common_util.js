@@ -10,6 +10,7 @@ function chooseRandom(array) {
 
 /**
  * Removes the first occurrence of `value` in `array`.
+ * Does nothing if `value` isn't contained in `array`.
  * @param {any[]} array The array to remove an element from.
  * @param {any} value The value to remove from the array.
  */

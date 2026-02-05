@@ -8,6 +8,10 @@ input#width, input#height {
     width: 5em;
 }
 
+span#gen-progress, span#solve-progress {
+    margin-left: 0.3em;
+}
+
 div#maze-img-container {
     max-height: 600px;
     overflow: auto;

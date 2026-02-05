@@ -15,7 +15,7 @@ addEventListener("message", e => {
             postMessage({ msg: "solve", squaresSolution, squaresEndpoints });
             break;
         default:
-            console.log("Worker received unknown message:", e);
+            console.error("Worker received unknown message:", e);
     }
 });
 
@@ -130,6 +130,9 @@ function generateMaze(width, height) {
         squaresSearching.push(neighbor.index);
     }
 
+    // 0 to 100, rounded down
+    let progress = 0;
+
     // Repeat until all squares are finished
     while (squaresSearching.length > 0) {
         // Choose a searching square as the "extension"
@@ -154,6 +157,12 @@ function generateMaze(width, height) {
             removeItem(squaresDefault, neighbor.index);
             squaresSearching.push(neighbor.index);
         }
+
+        let newProgress = Math.floor(squaresFinished.length / width / height * 100);
+        if (newProgress > progress) {
+            progress = newProgress;
+            postMessage({ msg: "genProgress", progress });
+        }
     }
 
     return { width, height, hWalls, vWalls };
@@ -171,6 +180,15 @@ function calculateSolution(maze, start, end) {
     let hWallsCopy = [...maze.hWalls];
     let vWallsCopy = [...maze.vWalls];
 
+    let squaresSolution = Array.from({ length: maze.width * maze.height }, (_v, i) => i);
+    removeItem(squaresSolution, start);
+    removeItem(squaresSolution, end);
+    let squaresEndpoints = [start];
+    if (start !== end) squaresEndpoints.push(end);
+
+    // 0 to 100, rounded down
+    let progress = 0;
+
     // Search for deadends
     for (let square = 0; square < maze.width * maze.height; square++) {
         let currentSquare = square;
@@ -183,6 +201,9 @@ function calculateSolution(maze, start, end) {
             let openingDir = checkDeadend(currentSquare, { ...maze, hWalls: hWallsCopy, vWalls: vWallsCopy });
             // Break the loop if not a deadend
             if (openingDir === "") break;
+
+            // Remove `currentSquare` from solution
+            removeItem(squaresSolution, currentSquare);
 
             // Fill the deadend
             if (openingDir === "left") {
@@ -202,17 +223,11 @@ function calculateSolution(maze, start, end) {
                 currentSquare += maze.width;
             }
         }
-    }
 
-    let squaresSolution = [];
-    let squaresEndpoints = [];
-
-    // Extracting the solution
-    for (let square = 0; square < maze.width * maze.height; square++) {
-        if (square === start || square === end) {
-            squaresEndpoints.push(square);
-        } else if (!isBlocked(square, { ...maze, hWalls: hWallsCopy, vWalls: vWallsCopy })) {
-            squaresSolution.push(square);
+        let newProgress = Math.floor((square + 1) / maze.width / maze.height * 100);
+        if (newProgress > progress) {
+            progress = newProgress;
+            postMessage({ msg: "solveProgress", progress });
         }
     }
 

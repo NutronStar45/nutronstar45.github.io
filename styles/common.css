@@ -45,10 +45,10 @@ span.required-ind {
 /* Alert */
 span.alert {
     color: var(--alert-fg-color);
-}
 
-:not(label) + span.alert {
-    margin-left: 0.3em;
+    :not(label) + & {
+        margin-left: 0.3em;
+    }
 }
 
 
@@ -150,7 +150,7 @@ button {
     }
 
     &:disabled {
-        background-color: #333333;
+        background-color: var(--button-disabled-bg-color);
         cursor: not-allowed;
     }
 }

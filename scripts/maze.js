@@ -43,7 +43,7 @@ function now() {
  * Appends text to `p#gen-status`.
  * @param {string} text The text to write.
  */
-function writeStatusGen(text) {
+function appendStatusGen(text) {
     let result = $("p#gen-status").html();
     if (result !== "") result += "<br>";
     result += text;
@@ -55,11 +55,29 @@ function writeStatusGen(text) {
  * Appends text to `p#solve-status`.
  * @param {string} text The text to write.
  */
-function writeStatusSolve(text) {
+function appendStatusSolve(text) {
     let result = $("p#solve-status").html();
     if (result !== "") result += "<br>";
     result += text;
     $("p#solve-status").html(result);
+}
+
+
+/**
+ * Overwrites `span#gen-progress`.
+ * @param {string} text The text to write.
+ */
+function writeProgressGen(text) {
+    $("span#gen-progress").text(text);
+}
+
+
+/**
+ * Overwrites `span#solve-progress`.
+ * @param {string} text The text to write.
+ */
+function writeProgressSolve(text) {
+    $("span#solve-progress").text(text);
 }
 
 
@@ -161,10 +179,6 @@ $(() => {
     // Web Worker to offload generation and solving
     const worker = new Worker("/scripts/maze_worker.js");
 
-    /**
-     * The generated maze.
-     * @type {Maze}
-     */
     let maze;
     let startTime;
 
@@ -181,6 +195,8 @@ $(() => {
 
         if (validate(validationTargets)) {
             $("p#gen-status").empty();
+            $("p#solve-status").empty();
+            $("span#solve-progress").empty();
             $("div#maze-img-container").empty();
             $("button#toggle-solution").hide();
             toggleAction(false);
@@ -191,6 +207,7 @@ $(() => {
             startTime = now();
             // Generate maze
             worker.postMessage({ msg: "gen", width, height });
+            writeProgressGen("0%");
         }
     });
 
@@ -218,6 +235,7 @@ $(() => {
             startTime = now();
             // Calculate solution
             worker.postMessage({ msg: "solve", maze, start, end });
+            writeProgressSolve("0%");
         }
     });
 
@@ -227,8 +245,9 @@ $(() => {
                 toggleAction(true);
                 break;
             case "gen":
+                writeProgressGen("100%");
                 maze = e.data.maze;
-                writeStatusGen(`Maze generation took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
+                appendStatusGen(`Maze generation took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
                 startTime = now();
 
                 // Place template SVG
@@ -266,24 +285,31 @@ $(() => {
 
                 // Render maze
                 renderMaze(maze);
-                writeStatusGen(`Maze rendering took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
+                appendStatusGen(`Maze rendering took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
                 toggleAction(true);
                 break;
+            case "genProgress":
+                writeProgressGen(`${e.data.progress}%`);
+                break;
             case "solve":
-                writeStatusSolve(`Solution calculation took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
+                writeProgressSolve("100%");
+                appendStatusSolve(`Solution calculation took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
                 startTime = now();
 
                 let hidePathAfterSolve = $("input#hide-path-after-solve").is(":checked");
 
                 // Render solution
                 renderSolution(maze.width, maze.height, e.data.squaresSolution, e.data.squaresEndpoints);
-                writeStatusSolve(`Solution rendering took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
+                appendStatusSolve(`Solution rendering took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
                 toggleAction(true);
 
                 $("g#maze-solution").toggle(!hidePathAfterSolve);
                 $("button#toggle-solution")
                     .show()
                     .text(hidePathAfterSolve ? "Show Path" : "Hide Path");
+                break;
+            case "solveProgress":
+                writeProgressSolve(`${e.data.progress}%`);
                 break;
             default:
                 console.error("Received unknown message from worker:", e);
