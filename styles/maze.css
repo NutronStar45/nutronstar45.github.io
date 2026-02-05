@@ -1,13 +1,33 @@
-div#maze-img g.wall {
-    stroke-width: 2;
-    stroke: white;
+:root {
+    --solution-color: green;
+    --endpoint-color: red;
+    --wall-thickness: 2;
+}
+
+input#width, input#height {
+    width: 5em;
+}
+
+div#maze-img-container {
+    max-height: 600px;
+    overflow: auto;
+}
+
+g#maze-walls {
+    stroke-width: var(--wall-thickness);
+    stroke: var(--fg-color);
     stroke-linecap: round;
 }
 
-div#maze-img g.path {
-    fill: green;
+path#maze-border {
+    fill: none;
+    stroke-width: var(--wall-thickness);
+    stroke: var(--fg-color);
+}
+g#maze-solution {
+    fill: var(--solution-color);
 }
 
-div#maze-img g.endpoint {
-    fill: red;
+g#maze-endpoints {
+    fill: var(--endpoint-color);
 }

@@ -1,67 +1,36 @@
-let commitVer = "3.0";
+let siteVer = "3.1";
 
 
-let alerts = {
-    invalid: "Invalid/Empty",
-    small: "Too small",
-    big: "Too big",
-    short: "Too short",
-    long: "Too long"
+let defaultAlerts = {
+    invalidInput: () => "Invalid/Empty",
+    small: min => `Should be at least ${min}`,
+    big: max => `Should be at most ${max}`,
+    short: lmin => `Length should be at least ${lmin}`,
+    long: lmax => `Length should be at most ${lmax}`
 };
 
 
 /**
- * Choose a pseudorandom element from the array
- * @returns A random element from the array
+ * Creates an element with the SVG namespace.
+ * @param {string} name The tag name of the element.
+ * @returns {jQuery} The jQuery element with SVG namespace.
  */
-Array.prototype.random = function () {
-    return this[Math.floor(Math.random() * this.length)];
-};
-
-
-/**
- * Remove the first occurrence of `value` in an array
- * @param {*} value The value to remove from the array
- */
-Array.prototype.remove = function (value) {
-    if (this.includes(value))
-        this.splice(this.indexOf(value), 1);
-};
-
-
-let round = Math.round;
-/**
- * Rounds a number to a specific precision
- * @param {number} x The number to be rounded
- * @param {number} precision Number of decimal places
- * @returns {number} The rounded value
- */
-Math.round = function (x, precision=0) {
-    return round(x * Math.pow(10, precision)) / Math.pow(10, precision);
-};
-
-
-/**
- * Creates an element with SVG namespace
- * @param {string} name The name of the tag
- * @returns {$} The element with SVG namespace in JQuery
- */
-function svgNS(name) {
+function svgElement(name) {
     return $(document.createElementNS("http://www.w3.org/2000/svg", name));
 }
 
 
 /**
- * Validates one or more `<input>`s and returns the validity
- * @param {(string | $)[]} targets The validation targets
- * @param {boolean} alert Whether to alert invalid input or not, defaults to true
- * @returns {boolean} Whether `targets` are valid or not
+ * Validates one or more `<input>`s and returns `true` if all inputs are valid. References to other inputs are validated but no alert is placed after, because those inputs are assumed to already be validated on their own.
+ * @param {(string | jQuery)[]} targets Targets for validation, contains query selectors and/or `jQuery` objects.
+ * @param {boolean} alert Whether to put an alert after invalid inputs or not. Defaults to `true`.
+ * @returns {boolean} Whether `targets` are valid or not.
  */
 function validate(targets, alert=true) {
-    let validity = true;
+    let allValid = true;
 
     for (let target of targets) {
-        let partialValidity = true;
+        let isTargetValid = true;
 
         if (typeof target === "string") {
             target = $(target);
@@ -71,192 +40,230 @@ function validate(targets, alert=true) {
             // Invalid/empty
             if (target.val() === "") {
                 if (target.prop("required")) {
-                    alertInvalid(target, "invalid", alert);
-                    partialValidity = validity = false;
+                    if (alert) alertError(target.parent(), "invalidInput");
+                    isTargetValid = allValid = false;
                 }
                 continue;
             } else {
-                let min = -Infinity, max = Infinity;
+                let min = -Infinity;
+                let max = Infinity;
 
-                // Calculate min
+                // Calculate minimum
+                // Check if minimum is a query selector
                 if (isNaN(target.prop("min"))) {
-                    if (validate([target.prop("min")], false))
+                    // Validate reference
+                    if (validate([target.prop("min")], false)) {
                         min = +$(target.prop("min")).val();
-                } else if (target.prop("min") !== "") {
+                    }
+                }
+                // Check if minimum exists
+                else if (target.prop("min") !== "") {
                     min = +target.prop("min");
                 }
 
-                // Calculate max
+                // Calculate maximum
+                // Check if maximum is a query selector
                 if (isNaN(target.prop("max"))) {
-                    if (validate([target.prop("max")], false))
+                    // Validate reference
+                    if (validate([target.prop("max")], false)) {
                         max = +$(target.prop("max")).val();
-                } else if (target.prop("max") !== "") {
+                    }
+                }
+                // Check if maximum exists
+                else if (target.prop("max") !== "") {
                     max = +target.prop("max");
                 }
 
                 // Too small
                 if (+target.val() < min) {
-                    alertInvalid(target, "small", alert);
-                    partialValidity = validity = false;
+                    if (alert) alertError(target.parent(), "small", min);
+                    isTargetValid = allValid = false;
                     continue;
                 }
 
                 // Too big
                 if (+target.val() > max) {
-                    alertInvalid(target, "big", alert);
-                    partialValidity = validity = false;
+                    if (alert) alertError(target.parent(), "big", max);
+                    isTargetValid = allValid = false;
                     continue;
                 }
             }
         }
 
         if (target.is("[type=text]")) {
+            // Custom type: numbers separated by commas, whitespaces are ignored
+            // `min` and `max` are the restrictions on each number
+            // `lmin` and `lmax` are the restrictions on the number of numbers
             if (target.is("[ctype=numbers]")) {
                 let values = target.val().replace(/ /g, "").split(",");
-                let min = -Infinity, max = Infinity, lmin = 0, lmax = Infinity
+                let min = -Infinity;
+                let max = Infinity;
+                let lmin = 0;
+                let lmax = Infinity;
 
-                // Calculate min
+                // Calculate minimum
+                // Check if minimum is a query selector
                 if (isNaN(target.attr("min"))) {
-                    if (validate([target.attr("min")], false))
+                    // Validate minimum
+                    if (validate([target.attr("min")], false)) {
                         min = +$(target.attr("min")).val();
-                } else if (target.attr("min") !== "" && target.attr("min") !== undefined) {
+                    }
+                }
+                // Check if minimum exists
+                else if (target.attr("min") !== "" && target.attr("min") !== undefined) {
                     min = +target.attr("min");
                 }
 
-                // Calculate max
+                // Calculate maximum
+                // Check if maximum is a query selector
                 if (isNaN(target.attr("max"))) {
-                    if (validate([target.attr("max")], false))
+                    // Validate maximum
+                    if (validate([target.attr("max")], false)) {
                         max = +$(target.attr("max")).val();
-                } else if (target.attr("max") !== "" && target.attr("max") !== undefined) {
+                    }
+                }
+                // Check if maximum exists
+                else if (target.attr("max") !== "" && target.attr("max") !== undefined) {
                     max = +target.attr("max");
                 }
 
-                // Calculate min length
+                // Calculate minimum length
+                // Check if minimum length is a query selector
                 if (isNaN(target.attr("lmin"))) {
-                    if (validate([target.attr("lmin")], false))
+                    // Validate minimum length
+                    if (validate([target.attr("lmin")], false)) {
                         lmin = +$(target.attr("lmin")).val();
-                } else if (target.attr("lmin") !== "" && target.attr("lmin") !== undefined) {
+                    }
+                }
+                // Check if minimum length exists
+                else if (target.attr("lmin") !== "" && target.attr("lmin") !== undefined) {
                     lmin = +target.attr("lmin");
                 }
 
-                // Calculate max length
+                // Calculate maximum length
                 if (isNaN(target.attr("lmax"))) {
-                    if (validate([target.attr("lmax")], false))
+                    // Validate maximum length
+                    if (validate([target.attr("lmax")], false)) {
                         lmax = +$(target.attr("lmax")).val();
-                } else if (target.attr("lmax") !== "" && target.attr("lmax") !== undefined) {
+                    }
+                }
+                // Check if maximum length exists
+                else if (target.attr("lmax") !== "" && target.attr("lmax") !== undefined) {
                     lmax = +target.attr("lmax");
                 }
 
                 // Too short
                 if (values.length < lmin) {
-                    alertInvalid(target, "short", alert);
-                    partialValidity = validity = false;
+                    if (alert) alertError(target.parent(), "short", lmin);
+                    isTargetValid = allValid = false;
                     continue;
                 }
 
                 // Too long
                 if (values.length > lmax) {
-                    alertInvalid(target, "long", alert);
-                    partialValidity = validity = false;
+                    if (alert) alertError(target.parent(), "long", lmax);
+                    isTargetValid = allValid = false;
                     continue;
                 }
 
                 for (let value of values) {
                     // Invalid
                     if (value === "" || isNaN(value)) {
-                        alertInvalid(target, "invalid", alert);
-                        partialValidity = validity = false;
+                        if (alert) alertError(target.parent(), "invalidInput");
+                        isTargetValid = allValid = false;
                         break;
                     }
 
                     // Too small
                     if (+value < min) {
-                        alertInvalid(target, "small", alert);
-                        partialValidity = validity = false;
+                        if (alert) alertError(target.parent(), "small", min);
+                        isTargetValid = allValid = false;
                         break;
                     }
 
                     // Too big
                     if (+value > max) {
-                        alertInvalid(target, "big", alert);
-                        partialValidity = validity = false;
+                        if (alert) alertError(target.parent(), "big", max);
+                        isTargetValid = allValid = false;
                         break;
                     }
                 }
             }
         }
 
-        if (partialValidity)
-            target.parent().next("span.invalid-input").remove(); // Remove potential alert
+        if (isTargetValid) {
+            target.parent().next("span.alert").remove(); // Remove previous alert
+        }
     }
 
-    return validity;
+    return allValid;
 }
 
 
 /**
- * Place alert after `<input>`
- * @param {$} target The invalid `<input>`
- * @param {string} type The type of the invalidity
- * @param {boolean} alert Whether to alert or not
+ * Places an alert after an element.
+ * @param {jQuery} target The element.
+ * @param {string} type The type of the alert.
+ * @param {object} args Arguments that gets passed into the function which generates the alert. Defaults to an empty object.
  */
-function alertInvalid(target, type, alert) {
-    if (alert) {
-        target.parent().next("span.invalid-input").remove(); // Remove potential alert
-        target.parent().after(
-            `<span class="invalid-input">${
-                target.attr("alert-" + type)
-                    ? target.attr("alert-" + type) // Use the alert text if provided
-                    : alerts[type] // Default alert text
-            }</span>`
-        );
-    }
+function alertError(target, type, args={}) {
+    // Use the alert text if provided
+    // Otherwise pass the arguments to the default alert text function if it exists
+    // Otherwise use a generic text
+    let alertText = target.attr("alert-" + type) ?? defaultAlerts[type](args) ?? "Error";
+
+    target.next("span.alert").remove(); // Remove previous alert if one exists
+    target.after(`<span class="alert">${alertText}</span>`); // Place alert
 }
 
 
 $(() => {
-    // Location in 404 page
+    // Location on 404 page
     $("h3#404-location").html(
         `The page <code>${location.pathname}</code> doesn't exist`
     );
 
+    /**
+     * Sections information.
+     * @type {{ title: string, id: string }[]}
+     */
     let sections = [];
 
-    // Sections
-    $("body div.section").each(function () {
+    // Fetch sections
+    $("div.section").each(function () {
         sections.push({
             title: $(this).children("span").text(),
             id: $(this).prop("id"),
         });
     });
 
-    // Fixed toolbar
-    let fixedToolbar = `<a href="#">To top</a><br><span>Version ${commitVer}</span>`;
+    let fixedToolbar = `<a href="#">To top</a><br><span>Version ${siteVer}</span>`;
 
+    // Section links
     if (sections.length > 0) {
         fixedToolbar += '<br><button class="coll">Sections</button><div>';
-
         $.each(sections, function (i, section) {
-            fixedToolbar += `<a href="#${section.id}">${section.title}</a>${
-                i < (sections.length - 1) ? "<br>" : ""
-            }`;
+            fixedToolbar += `<a href="#${section.id}">${section.title}</a>`;
+            if (i < sections.length - 1) {
+                fixedToolbar += `<br>`
+            }
         });
         fixedToolbar += "</div>";
     }
 
-    let nav = `<div id="header">
-    <a href="/">Home</a>
-    <a href="/projs">Projects</a>
-</div>`;
+    let nav = '<a href="/">Home</a><a href="/projs">Projects</a>';
 
-    // Toolbar
-    $("div#toolbar").html(nav + `<div id="corner-toolbar">${fixedToolbar}</div>`);
+    // Header
+    $("div#header").html(nav);
+
+    // Sticky corner box
+    $("div#corner-box").html(fixedToolbar);
 
     // Required indicator
     $("input[required]").before('<span class="required-ind">* </span>');
 
     // Collapsible
-    $("button.coll").click(function () {
+    $("button.coll").on("click", function () {
         $(this).toggleClass("opened");
     });
 });

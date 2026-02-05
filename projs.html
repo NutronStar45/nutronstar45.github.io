@@ -11,11 +11,12 @@
 
     <link rel="stylesheet" href="/styles/common.css">
     <link rel="stylesheet" href="/styles/dark.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-4.0.0.slim.min.js" integrity="sha256-8DGpv13HIm+5iDNWw1XqxgFB4mj+yOKFNb+tHBZOowc=" crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <div id="toolbar"></div>
+    <div id="header"></div>
+    <div id="corner-box"></div>
 
     <h2>Projects</h2>
 
@@ -33,9 +34,11 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="projs/maze">Maze</a>
+                    <a href="projs/maze">Maze Generator &amp; Solver</a>
                     <ul>
-                        <li>Maze generator &amp; solver</li>
+                        <li>Generates and solves grid mazes</li>
+                        <li>Uses Prim's algorithm for generation</li>
+                        <li>Uses deadend filling for solving</li>
                     </ul>
                 </li>
             </ul>

@@ -2,8 +2,8 @@
     --bg-color: #141414;
     --fg-color: #ffffff;
     --link-fg-color: #1282cd;
-    --required-ind-fg-color: #ff0000;
-    --invalid-input-fg-color: #ff0000;
+    --required-ind-fg-color: #ffffff;
+    --alert-fg-color: #dc3c3c;
     --section-border-color: #a5a5a5;
     --fixed-toolbar-border-color: #ffffff;
     --button-border-color: #7f7f7f;

@@ -1,11 +1,38 @@
-// Array.prototype.random is defined in common.js
-// Array.prototype.remove is defined in common.js
-// Math.round is defined in common.js
-// svgNS is defined in common.js
+/*
+Defined in common.js:
+    alertError
+    svgElement
+
+Squares are indexed left-to-right, top-to-bottom, starting from 0.
+For example, a maze of width 5 and height 4 is indexed in the following manner:
+ 0  1  2  3  4
+ 5  6  7  8  9
+10 11 12 13 14
+15 16 17 18 19
+
+Walls are split into horizontal and vertical onee
+Horizontal walls are indexed by the square on their left
+Vertical walls are indexed by the square on their top
+*/
 
 
 /**
- * @returns {number} Time passed since 0:00:00, January 1, 1970 in seconds
+ * A maze, represented with its width, height, and horizontal and vertical walls.
+ * @typedef {{ width: number, height: number, hWalls: number[], vWalls: number[] }} Maze
+ */
+
+
+// The width of a square when rendered
+const MAZE_SQUARE_WIDTH = 20;
+// The radius of the rounded corners
+const CORNER_RADIUS = 4;
+// The precision of reported time
+const TIME_PRECISION = 2;
+
+
+/**
+ * Returns timestamp in seconds.
+ * @returns {number} Time passed since 0:00:00, January 1, 1970 (UTC) in seconds.
  */
 function now() {
     return Date.now() / 1000;
@@ -13,414 +40,253 @@ function now() {
 
 
 /**
- * Write to `p#gen-status`
- * @param {string} text The text to write
+ * Appends text to `p#gen-status`.
+ * @param {string} text The text to write.
  */
-function writeStatus(text) {
-    $("p#gen-status").html(text);
+function writeStatusGen(text) {
+    let result = $("p#gen-status").html();
+    if (result !== "") result += "<br>";
+    result += text;
+    $("p#gen-status").html(result);
 }
 
 
 /**
- * Get the surrounding slots around a slot
- * @param {number} slot The target slot
- * @param {number[] | null} filter Slots won't be returned if it's not in this array
- * @param {number} width The width of the maze
- * @param {number} size The size of the maze
- * @returns {number[][]} The surrounding slots around `slot` in the format of `[[num, type], ...]` where `num` is the slot and `type` is the relation between `slot` and `num`, `0` is vertical and `1` is horizontal
+ * Appends text to `p#solve-status`.
+ * @param {string} text The text to write.
  */
-function getNeighbors(slot, filter, width, size) {
-    let results = [];
-
-    if (slot - width >= 0) results.push([slot - width, 0]); // Up
-    if (slot + width < size) results.push([slot + width, 0]); // Down
-    if (slot % width !== 0) results.push([slot - 1, 1]); // Left
-    if ((slot + 1) % width !== 0) results.push([slot + 1, 1]); // Right
-
-    if (filter) results = results.filter(item => filter.includes(item[0]));
-
-    return results;
+function writeStatusSolve(text) {
+    let result = $("p#solve-status").html();
+    if (result !== "") result += "<br>";
+    result += text;
+    $("p#solve-status").html(result);
 }
 
 
 /**
- * Performs a certain action on a certain slot \
- * 0: Check connectivity \
- * 1: Check if the slot is connected to at least one neighbor
- * @param {number} slot The slot to perform the action
- * @param {number} action The action to perform
- * @param {number} width The width of the maze
- * @param {number} size The size of the maze
- * @param {number[]} hWalls The horizontal walls of the maze
- * @param {number[]} vWalls The vertical walls of the maze
- * @param {number[]} endpoints The start- and end-points of the maze
- * @returns {number | boolean} An integer or a boolean, depending on the action
+ * Enables/Disables generation and solving.
+ * @param {boolean} enabled Enables generation and solving if `true` and disable them if `false`.
  */
-function slotAction(slot, action, width, size, hWalls, vWalls, endpoints) {
-    let connectivity = 15;
-
-    // Up
-    if (hWalls.includes(slot - width) || slot - width < 0) connectivity -= 1;
-    // Down
-    if (hWalls.includes(slot) || slot + width >= size) connectivity -= 2;
-    // Left
-    if (vWalls.includes(slot - 1) || slot % width === 0) connectivity -= 4;
-    // Right
-    if (vWalls.includes(slot) || (slot + 1) % width === 0) connectivity -= 8;
-
-    if (action === 0) {
-        if (!endpoints.includes(slot)) return connectivity;
-    }
-    return connectivity > 0;
+function toggleAction(enabled) {
+    $("button#gen").prop("disabled", !enabled);
+    $("button#solve").prop("disabled", !enabled);
 }
 
 
 /**
- * Generates, solves and renders a maze
- * @param {boolean} solving If true, solve the maze
+ * Renders the walls and border of a maze.
+ * @param {Maze} maze The maze.
  */
-function generate(solving) {
-    // Uses Prim's Algorithm to generate a perfect maze
-    // Left-to-right, top-to-bottom, 0-based numbering, like
-    //  0  1  2  3  4
-    //  5  6  7  8  9
-    // 10 11 12 13 14
-    // 15 16 17 18 19
-
-    $("p#gen-status").empty();
-    let gen_status = "";
-
-    /*
-     * Maze Structure
-     */
-
-    // Size
-    let width = +$("input#width").val(), height = +$("input#height").val();
-
-    // Starting time
-    let startTime = now();
-
-    let size = width * height;
-
-    // Initialize walls
-    let vWalls = []; // Vertical walls
-    let hWalls = []; // Horizontal walls
-
-    // Initialize slots status
-    let slotsDefault = [];
-    let slotsSearching = [];
-    let slotsFinished = [];
-
-    // Insert status
-    for (let slot = 0; slot < size; slot++) {
-        slotsDefault.push(slot);
+function renderMaze(maze) {
+    // Draw horizontal walls
+    for (let wall of maze.hWalls) {
+        $("g#maze-walls").append(svgElement("line").attr({
+            x1: (wall % maze.width) * MAZE_SQUARE_WIDTH,
+            y1: (Math.floor(wall / maze.width) + 1) * MAZE_SQUARE_WIDTH,
+            x2: (wall % maze.width + 1) * MAZE_SQUARE_WIDTH,
+            y2: (Math.floor(wall / maze.width) + 1) * MAZE_SQUARE_WIDTH,
+        }));
     }
 
-    // Insert vertical walls
-    for (let vIndex = 0; vIndex < height; vIndex++) {
-        for (let hIndex = 0; hIndex < width - 1; hIndex++) {
-            vWalls.push(vIndex * width + hIndex);
-        }
+    // Draw vertical walls
+    for (let wall of maze.vWalls) {
+        $("g#maze-walls").append(svgElement("line").attr({
+            x1: (wall % maze.width + 1) * MAZE_SQUARE_WIDTH,
+            y1: Math.floor(wall / maze.width) * MAZE_SQUARE_WIDTH,
+            x2: (wall % maze.width + 1) * MAZE_SQUARE_WIDTH,
+            y2: (Math.floor(wall / maze.width) + 1) * MAZE_SQUARE_WIDTH,
+        }));
     }
 
-    // Insert horizontal walls
-    for (let vIndex = 0; vIndex < height - 1; vIndex++) {
-        for (let hIndex = 0; hIndex < width; hIndex++) {
-            hWalls.push(vIndex * width + hIndex);
-        }
+    // The border doesn't get cropped
+    $("g#cropped")
+        .after(svgElement("path").attr({
+            id: "maze-border",
+            d: `M${CORNER_RADIUS},0 `
+                + `h${maze.width * MAZE_SQUARE_WIDTH - CORNER_RADIUS * 2} `
+                + `a${CORNER_RADIUS},${CORNER_RADIUS} 0 0,1 ${CORNER_RADIUS},${CORNER_RADIUS} `
+                + `v${maze.height * MAZE_SQUARE_WIDTH - CORNER_RADIUS * 2} `
+                + `a${CORNER_RADIUS},${CORNER_RADIUS} 0 0,1 -${CORNER_RADIUS},${CORNER_RADIUS} `
+                + `h-${maze.width * MAZE_SQUARE_WIDTH - CORNER_RADIUS * 2} `
+                + `a${CORNER_RADIUS},${CORNER_RADIUS} 0 0,1 -${CORNER_RADIUS},-${CORNER_RADIUS} `
+                + `v-${maze.height * MAZE_SQUARE_WIDTH - CORNER_RADIUS * 2} `
+                + `a${CORNER_RADIUS},${CORNER_RADIUS} 0 0,1 ${CORNER_RADIUS},-${CORNER_RADIUS} `
+                + "Z"
+        }));
+}
+
+
+/**
+ * Renders the solution.
+ * @param {number} width The width of the maze.
+ * @param {number} _height The height of the maze.
+ * @param {number} squaresSolution The list of squares that traces out the solution, excluding the start and the end.
+ * @param {number} squaresEndpoints The list containing the start and the end.
+ */
+function renderSolution(width, _height, squaresSolution, squaresEndpoints) {
+    $("g#maze-solution").empty();
+    $("g#maze-endpoints").empty();
+
+    // Render solution
+    for (let square of squaresSolution) {
+        let squareX = square % width;
+        let squareY = Math.floor(square / width);
+
+        $("g#maze-solution").append(svgElement("rect").attr({
+            width: MAZE_SQUARE_WIDTH,
+            height: MAZE_SQUARE_WIDTH,
+            x: squareX * MAZE_SQUARE_WIDTH,
+            y: squareY * MAZE_SQUARE_WIDTH,
+        }));
     }
 
-    let slot = Math.floor(Math.random() * size);
-    let neighbors = getNeighbors(slot, null, width, size);
+    // Render endpoints
+    for (let square of squaresEndpoints) {
+        let squareX = square % width;
+        let squareY = Math.floor(square / width);
 
-    slotsDefault.remove(slot);
-    slotsFinished.push(slot);
-
-    for (let neighbor of neighbors) {
-        slotsDefault.remove(neighbor[0]);
-        slotsSearching.push(neighbor[0]);
+        $("g#maze-endpoints").append(svgElement("rect").attr({
+            width: MAZE_SQUARE_WIDTH,
+            height: MAZE_SQUARE_WIDTH,
+            x: squareX * MAZE_SQUARE_WIDTH,
+            y: squareY * MAZE_SQUARE_WIDTH,
+        }));
     }
-
-    while (slotsSearching.length > 0) {
-        let slot = slotsSearching.random();
-        let neighbors = getNeighbors(slot, slotsFinished, width, size);
-        let randomNeighbor = neighbors.random();
-
-        let wall = Math.min(slot, randomNeighbor[0]);
-
-        if (randomNeighbor[1] === 0) hWalls.remove(wall);
-        else vWalls.remove(wall);
-
-        slotsSearching.remove(slot);
-        slotsFinished.push(slot);
-
-        neighbors = getNeighbors(slot, slotsDefault, width, size);
-        for (let neighbor of neighbors) {
-            slotsDefault.remove(neighbor[0]);
-            slotsSearching.push(neighbor[0]);
-        }
-    }
-
-    gen_status += `Maze structure generated at ${Math.round(
-        now() - startTime,
-        2
-    )}s (took ${Math.round(now() - startTime, 2)}s)`;
-    let lastTimestamp = now();
-
-    /*
-     * Walls Rendering
-     */
-
-    let svgWalls = svgNS("g").addClass("wall");
-
-    for (let wall of vWalls) {
-        svgWalls.append(
-            svgNS("line").attr({
-                x1: (wall % width) * 20 + 20,
-                y1: Math.floor(wall / width) * 20,
-                x2: (wall % width) * 20 + 20,
-                y2: Math.floor(wall / width) * 20 + 20,
-            })
-        );
-    }
-
-    for (let wall of hWalls) {
-        svgWalls.append(
-            svgNS("line").attr({
-                x1: (wall % width) * 20,
-                y1: Math.floor(wall / width) * 20 + 20,
-                x2: (wall % width) * 20 + 20,
-                y2: Math.floor(wall / width) * 20 + 20,
-            })
-        );
-    }
-
-    gen_status += `<br>Walls rendering calculated at ${Math.round(
-        now() - startTime,
-        2
-    )}s (took ${Math.round(now() - lastTimestamp, 2)}s)`;
-    lastTimestamp = now();
-
-    /*
-     * Path Rendering
-     */
-
-    let svgPath = svgNS("g").addClass("path");
-    let svgEndpoint = svgNS("g").addClass("endpoint");
-
-    if (solving) {
-        let startX = $("input#start-x").val(),
-            startY = $("input#start-y").val(),
-            endX = $("input#end-x").val(),
-            endY = $("input#end-y").val();
-
-        let start = (startY - 1) * width + (startX - 1),
-            end = (endY - 1) * width + (endX - 1);
-
-        let endpoints = [start, end];
-
-        // Detect deadends
-        for (let slot = 0; slot < size; slot++) {
-            let connectivity = slotAction(
-                slot,
-                0,
-                width,
-                size,
-                hWalls,
-                vWalls,
-                endpoints
-            );
-            let tempSlot = slot;
-            while ([1, 2, 4, 8].includes(connectivity)) {
-                if (connectivity === 1) {
-                    hWalls.push(tempSlot - width);
-                    connectivity = slotAction(
-                        tempSlot - width,
-                        0,
-                        width,
-                        size,
-                        hWalls,
-                        vWalls,
-                        endpoints
-                    );
-                    tempSlot -= width;
-                }
-                if (connectivity === 2) {
-                    hWalls.push(tempSlot);
-                    connectivity = slotAction(
-                        tempSlot + width,
-                        0,
-                        width,
-                        size,
-                        hWalls,
-                        vWalls,
-                        endpoints
-                    );
-                    tempSlot += width;
-                }
-                if (connectivity === 4) {
-                    vWalls.push(tempSlot - 1);
-                    connectivity = slotAction(
-                        tempSlot - 1,
-                        0,
-                        width,
-                        size,
-                        hWalls,
-                        vWalls,
-                        endpoints
-                    );
-                    tempSlot -= 1;
-                }
-                if (connectivity === 8) {
-                    vWalls.push(tempSlot);
-                    connectivity = slotAction(
-                        tempSlot + 1,
-                        0,
-                        width,
-                        size,
-                        hWalls,
-                        vWalls,
-                        endpoints
-                    );
-                    tempSlot += 1;
-                }
-            }
-        }
-
-        gen_status += `<br>Path generated at ${Math.round(
-            now() - startTime,
-            2
-        )}s (took ${Math.round(now() - lastTimestamp, 2)}s)`;
-        lastTimestamp = now();
-
-        let slotsPath = [];
-        let slotsEndpoint = [];
-
-        // Categorizing
-        for (let slot = 0; slot < size; slot++) {
-            if (slotAction(slot, 1, width, size, hWalls, vWalls, endpoints)) {
-                if (endpoints.includes(slot)) slotsEndpoint.push(slot);
-                else slotsPath.push(slot);
-            }
-        }
-
-        // Path rendering
-        for (let slot of slotsPath) {
-            let slotX = slot % width;
-            let slotY = Math.floor(slot / width);
-
-            svgPath.append(
-                svgNS("rect").attr({
-                    width: 20,
-                    height: 20,
-                    x: slotX * 20,
-                    y: slotY * 20,
-                })
-            );
-        }
-
-        // Endpoint rendering
-        for (let slot of slotsEndpoint) {
-            let slotX = slot % width;
-            let slotY = Math.floor(slot / width);
-
-            svgEndpoint.append(
-                svgNS("rect").attr({
-                    width: 20,
-                    height: 20,
-                    x: slotX * 20,
-                    y: slotY * 20,
-                })
-            );
-        }
-
-        gen_status += `<br>Path rendering calculated at ${Math.round(
-            now() - startTime,
-            2
-        )}s (took ${Math.round(now() - lastTimestamp, 2)}s)`;
-    }
-
-    writeStatus(gen_status);
-
-    /*
-     * Render
-     */
-
-    let svg = svgNS("svg").attr({
-        width: width * 20,
-        height: height * 20,
-    });
-
-    if (solving) {
-        svg.append(svgPath).append(svgEndpoint);
-    }
-
-    svg
-        .append(
-            svgNS("rect").attr({
-                width: width * 20 + 2,
-                height: height * 20 + 2,
-                rx: 5,
-                fill: "none",
-                stroke: "black",
-                "stroke-width": 2,
-                x: -1,
-                y: -1,
-            })
-        )
-        .append(
-            svgNS("rect").attr({
-                width: width * 20 - 2,
-                height: height * 20 - 2,
-                rx: 3,
-                fill: "none",
-                stroke: "white",
-                "stroke-width": 2,
-                x: 1,
-                y: 1,
-            })
-        )
-        .append(svgWalls);
-
-    $("div#maze-img").empty().append(svg);
-    $("div#maze-img g.path").toggle(!$("#hide-path-after-render").is(":checked"));
-    $("button#toggle-path")
-        .toggle(solving)
-        .text(
-            $("#hide-path-after-render").is(":checked") ? "Show Path" : "Hide Path"
-        );
 }
 
 
 $(() => {
-    $("input#enable-solving").prop("clicked", false);
-    $("div#solver-options").hide();
-    $("button#toggle-path").hide();
+    // Disable generation and solving until worker is ready
+    toggleAction(false);
+    // Web Worker to offload generation and solving
+    const worker = new Worker("/scripts/maze_worker.js");
 
-    $("input#enable-solving").change(function () {
-        $("div#solver-options").toggle();
-        if (this.checked) $("button#gen-solve").text("Generate & Solve");
-        else $("button#gen-solve").text("Generate");
-    });
+    /**
+     * The generated maze.
+     * @type {Maze}
+     */
+    let maze;
+    let startTime;
 
-    $("button#toggle-path").click(function () {
+    $("button#toggle-solution").hide();
+
+    $("button#toggle-solution").on("click", function () {
+        $("g#maze-solution").toggle($(this).text() === "Show Path");
         $(this).text($(this).text() === "Show Path" ? "Hide Path" : "Show Path");
-        $("div#maze-img g.path").toggle();
     });
 
-    $("button#gen-solve").click(() => {
-        let solving = $("input#enable-solving").is(":checked"); // Is solving enabled
+    // Generate button pressed
+    $("button#gen").on("click", function () {
+        let validationTargets = ["input#width", "input#height"];
 
-        let targets = ["input#width", "input#height"];
-        if (solving) {
-            targets.push(
-                "input#start-x",
-                "input#start-y",
-                "input#end-x",
-                "input#end-y"
-            );
+        if (validate(validationTargets)) {
+            $("p#gen-status").empty();
+            $("div#maze-img-container").empty();
+            $("button#toggle-solution").hide();
+            toggleAction(false);
+
+            let width = +$("input#width").val();
+            let height = +$("input#height").val();
+
+            startTime = now();
+            // Generate maze
+            worker.postMessage({ msg: "gen", width, height });
+        }
+    });
+
+    // Solve button pressed
+    $("button#solve").on("click", function () {
+        let validationTargets = ["input#start-x", "input#start-y", "input#end-x", "input#end-y"];
+
+        // Check if a maze has been generated
+        if (maze === undefined) {
+            alertError($(this), "mazeNotGenerated");
         }
 
-        if (validate(targets)) generate(solving);
+        if (validate(validationTargets)) {
+            $("p#solve-status").empty();
+            toggleAction(false);
+
+            let startX = +$("input#start-x").val();
+            let startY = +$("input#start-y").val();
+            let start = (startY - 1) * maze.width + (startX - 1);
+
+            let endX = +$("input#end-x").val();
+            let endY = +$("input#end-y").val();
+            let end = (endY - 1) * maze.width + (endX - 1);
+
+            startTime = now();
+            // Calculate solution
+            worker.postMessage({ msg: "solve", maze, start, end });
+        }
+    });
+
+    worker.addEventListener("message", e => {
+        switch (e.data.msg) {
+            case "ready":
+                toggleAction(true);
+                break;
+            case "gen":
+                maze = e.data.maze;
+                writeStatusGen(`Maze generation took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
+                startTime = now();
+
+                // Place template SVG
+                $("div#maze-img-container").append(svgElement("svg")
+                    .attr({
+                        id: "maze-img",
+                        width: (maze.width + 2) * MAZE_SQUARE_WIDTH,
+                        height: (maze.height + 2) * MAZE_SQUARE_WIDTH,
+                        viewBox: `-${MAZE_SQUARE_WIDTH} -${MAZE_SQUARE_WIDTH} ${(maze.width + 2) * MAZE_SQUARE_WIDTH} ${(maze.height + 2) * MAZE_SQUARE_WIDTH}`
+                    })
+                    .append(svgElement("mask").attr("id", "mask")
+                        .append(svgElement("path").attr({
+                            d: `M${CORNER_RADIUS},0 `
+                                + `h${maze.width * MAZE_SQUARE_WIDTH - CORNER_RADIUS * 2} `
+                                + `a${CORNER_RADIUS},${CORNER_RADIUS} 0 0,1 ${CORNER_RADIUS},${CORNER_RADIUS} `
+                                + `v${maze.height * MAZE_SQUARE_WIDTH - CORNER_RADIUS * 2} `
+                                + `a${CORNER_RADIUS},${CORNER_RADIUS} 0 0,1 -${CORNER_RADIUS},${CORNER_RADIUS} `
+                                + `h-${maze.width * MAZE_SQUARE_WIDTH - CORNER_RADIUS * 2} `
+                                + `a${CORNER_RADIUS},${CORNER_RADIUS} 0 0,1 -${CORNER_RADIUS},-${CORNER_RADIUS} `
+                                + `v-${maze.height * MAZE_SQUARE_WIDTH - CORNER_RADIUS * 2} `
+                                + `a${CORNER_RADIUS},${CORNER_RADIUS} 0 0,1 ${CORNER_RADIUS},-${CORNER_RADIUS} `
+                                + "Z",
+                            fill: "white"
+                        }))
+                    )
+                    .append(svgElement("g").attr({
+                        id: "cropped",
+                        mask: "url(#mask)"
+                    })
+                        .append(svgElement("g").attr("id", "maze-solution"))
+                        .append(svgElement("g").attr("id", "maze-endpoints"))
+                        .append(svgElement("g").attr("id", "maze-walls"))
+                    )
+                );
+
+                // Render maze
+                renderMaze(maze);
+                writeStatusGen(`Maze rendering took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
+                toggleAction(true);
+                break;
+            case "solve":
+                writeStatusSolve(`Solution calculation took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
+                startTime = now();
+
+                let hidePathAfterSolve = $("input#hide-path-after-solve").is(":checked");
+
+                // Render solution
+                renderSolution(maze.width, maze.height, e.data.squaresSolution, e.data.squaresEndpoints);
+                writeStatusSolve(`Solution rendering took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
+                toggleAction(true);
+
+                $("g#maze-solution").toggle(!hidePathAfterSolve);
+                $("button#toggle-solution")
+                    .show()
+                    .text(hidePathAfterSolve ? "Show Path" : "Hide Path");
+                break;
+            default:
+                console.error("Received unknown message from worker:", e);
+        }
     });
 });
