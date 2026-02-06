@@ -17,6 +17,10 @@ div#maze-img-container {
     overflow: auto;
 }
 
+/********
+ * Maze *
+ ********/
+
 g#maze-walls {
     stroke-width: var(--wall-thickness);
     stroke: var(--fg-color);

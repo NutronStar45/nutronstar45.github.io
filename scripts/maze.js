@@ -10,7 +10,7 @@ For example, a maze of width 5 and height 4 is indexed in the following manner:
 10 11 12 13 14
 15 16 17 18 19
 
-Walls are split into horizontal and vertical onee
+Walls are split into horizontal and vertical ones
 Horizontal walls are indexed by the square on their left
 Vertical walls are indexed by the square on their top
 */
@@ -82,23 +82,66 @@ function writeProgressSolve(text) {
 
 
 /**
- * Enables/Disables generation and solving.
- * @param {boolean} enabled Enables generation and solving if `true` and disable them if `false`.
+ * Enables/Disables tasks (generation and solving).
+ * @param {boolean} enabled Enable tasks if `true` and disable if `false`.
  */
-function toggleAction(enabled) {
-    $("button#gen").prop("disabled", !enabled);
-    $("button#solve").prop("disabled", !enabled);
+function toggleTasks(enabled) {
+    $("button#gen").attr("disabled", !enabled);
+    $("button#solve").attr("disabled", !enabled);
 }
 
 
 /**
- * Renders the walls and border of a maze.
- * @param {Maze} maze The maze.
+ * Returns the SVG template of a maze of given size.
+ * @param {number} width The width of the maze.
+ * @param {number} height The height of the maze.
+ * @returns {jQuery} The jQuery object containing the SVG template.
  */
-function renderMaze(maze) {
+function mazeSVGTemplate(width, height) {
+    return svgElement("svg")
+        .attr({
+            id: "maze-img",
+            width: (width + 2) * MAZE_SQUARE_WIDTH,
+            height: (height + 2) * MAZE_SQUARE_WIDTH,
+            viewBox: `-${MAZE_SQUARE_WIDTH} -${MAZE_SQUARE_WIDTH} ${(width + 2) * MAZE_SQUARE_WIDTH} ${(height + 2) * MAZE_SQUARE_WIDTH}`
+        })
+        .append(svgElement("mask").attr("id", "mask")
+            .append(svgElement("path").attr({
+                d: `M${CORNER_RADIUS},0 `
+                    + `h${width * MAZE_SQUARE_WIDTH - CORNER_RADIUS * 2} `
+                    + `a${CORNER_RADIUS},${CORNER_RADIUS} 0 0,1 ${CORNER_RADIUS},${CORNER_RADIUS} `
+                    + `v${height * MAZE_SQUARE_WIDTH - CORNER_RADIUS * 2} `
+                    + `a${CORNER_RADIUS},${CORNER_RADIUS} 0 0,1 -${CORNER_RADIUS},${CORNER_RADIUS} `
+                    + `h-${width * MAZE_SQUARE_WIDTH - CORNER_RADIUS * 2} `
+                    + `a${CORNER_RADIUS},${CORNER_RADIUS} 0 0,1 -${CORNER_RADIUS},-${CORNER_RADIUS} `
+                    + `v-${height * MAZE_SQUARE_WIDTH - CORNER_RADIUS * 2} `
+                    + `a${CORNER_RADIUS},${CORNER_RADIUS} 0 0,1 ${CORNER_RADIUS},-${CORNER_RADIUS} `
+                    + "Z",
+                fill: "white"
+            }))
+        )
+        .append(svgElement("g").attr({
+            id: "cropped",
+            mask: "url(#mask)"
+        })
+            .append(svgElement("g").attr("id", "maze-solution"))
+            .append(svgElement("g").attr("id", "maze-endpoints"))
+            .append(svgElement("g").attr("id", "maze-walls"))
+        );
+}
+
+
+/**
+ * Draws the walls and border of a maze.
+ * @param {Maze} maze The maze.
+ * @param {jQuery} mazeSVG The SVG to draw onto. Expects a template.
+ */
+function drawMaze(maze, mazeSVG) {
+    let gWalls = mazeSVG.find("g#maze-walls");
+
     // Draw horizontal walls
     for (let wall of maze.hWalls) {
-        $("g#maze-walls").append(svgElement("line").attr({
+        gWalls.append(svgElement("line").attr({
             x1: (wall % maze.width) * MAZE_SQUARE_WIDTH,
             y1: (Math.floor(wall / maze.width) + 1) * MAZE_SQUARE_WIDTH,
             x2: (wall % maze.width + 1) * MAZE_SQUARE_WIDTH,
@@ -108,7 +151,7 @@ function renderMaze(maze) {
 
     // Draw vertical walls
     for (let wall of maze.vWalls) {
-        $("g#maze-walls").append(svgElement("line").attr({
+        gWalls.append(svgElement("line").attr({
             x1: (wall % maze.width + 1) * MAZE_SQUARE_WIDTH,
             y1: Math.floor(wall / maze.width) * MAZE_SQUARE_WIDTH,
             x2: (wall % maze.width + 1) * MAZE_SQUARE_WIDTH,
@@ -117,7 +160,7 @@ function renderMaze(maze) {
     }
 
     // The border doesn't get cropped
-    $("g#cropped")
+    mazeSVG.find("g#cropped")
         .after(svgElement("path").attr({
             id: "maze-border",
             d: `M${CORNER_RADIUS},0 `
@@ -135,22 +178,23 @@ function renderMaze(maze) {
 
 
 /**
- * Renders the solution.
+ * Draws the solution.
  * @param {number} width The width of the maze.
  * @param {number} _height The height of the maze.
  * @param {number} squaresSolution The list of squares that traces out the solution, excluding the start and the end.
  * @param {number} squaresEndpoints The list containing the start and the end.
+ * @param {jQuery} mazeSVG The SVG to draw onto. Expects a template with a maze drawn onto it.
  */
-function renderSolution(width, _height, squaresSolution, squaresEndpoints) {
-    $("g#maze-solution").empty();
-    $("g#maze-endpoints").empty();
+function drawSolution(width, _height, squaresSolution, squaresEndpoints, mazeSVG) {
+    let gSolution = mazeSVG.find("g#maze-solution").empty();
+    let gEndpoints = mazeSVG.find("g#maze-endpoints").empty();
 
-    // Render solution
+    // Draw solution
     for (let square of squaresSolution) {
         let squareX = square % width;
         let squareY = Math.floor(square / width);
 
-        $("g#maze-solution").append(svgElement("rect").attr({
+        gSolution.append(svgElement("rect").attr({
             width: MAZE_SQUARE_WIDTH,
             height: MAZE_SQUARE_WIDTH,
             x: squareX * MAZE_SQUARE_WIDTH,
@@ -158,12 +202,12 @@ function renderSolution(width, _height, squaresSolution, squaresEndpoints) {
         }));
     }
 
-    // Render endpoints
+    // Draw endpoints
     for (let square of squaresEndpoints) {
         let squareX = square % width;
         let squareY = Math.floor(square / width);
 
-        $("g#maze-endpoints").append(svgElement("rect").attr({
+        gEndpoints.append(svgElement("rect").attr({
             width: MAZE_SQUARE_WIDTH,
             height: MAZE_SQUARE_WIDTH,
             x: squareX * MAZE_SQUARE_WIDTH,
@@ -174,19 +218,33 @@ function renderSolution(width, _height, squaresSolution, squaresEndpoints) {
 
 
 $(() => {
-    // Disable generation and solving until worker is ready
-    toggleAction(false);
+    $("button#download").hide();
+    $("span#download-note").hide();
+    $("button#toggle-solution").hide();
+    $("button#toggle-endpoints").hide();
+
+    // Prevent tasks before worker is ready
+    toggleTasks(false);
     // Web Worker to offload generation and solving
     const worker = new Worker("/scripts/maze_worker.js");
 
-    let maze;
-    let startTime;
+    let maze; // Internally stored maze with type `Maze`
+    let mazeSVG; // Maze SVG internally stored as a jQuery object
+    let solutionVisible; // Whether `g#maze-solution` is visible or not
+    let endpointsVisible; // Whether `g#maze-endpoints` is visible or not
 
-    $("button#toggle-solution").hide();
+    let startTime; // Timestamp at the start of a step
 
     $("button#toggle-solution").on("click", function () {
-        $("g#maze-solution").toggle($(this).text() === "Show Path");
-        $(this).text($(this).text() === "Show Path" ? "Hide Path" : "Show Path");
+        solutionVisible = !solutionVisible;
+        $("g#maze-solution").toggle(solutionVisible);
+        $(this).text(solutionVisible ? "Hide Solution" : "Show Solution");
+    });
+
+    $("button#toggle-endpoints").on("click", function () {
+        endpointsVisible = !endpointsVisible;
+        $("g#maze-endpoints").toggle(endpointsVisible);
+        $(this).text(endpointsVisible ? "Hide Endpoints" : "Show Endpoints");
     });
 
     // Generate button pressed
@@ -194,13 +252,20 @@ $(() => {
         let validationTargets = ["input#width", "input#height"];
 
         if (validate(validationTargets)) {
+            // Clear generation and solving status
+            // Clear solving progress
             $("p#gen-status").empty();
             $("p#solve-status").empty();
             $("span#solve-progress").empty();
-            $("div#maze-img-container").empty();
-            $("button#toggle-solution").hide();
-            toggleAction(false);
 
+            // Hide solution and endpoints toggle
+            $("button#toggle-solution").hide();
+            $("button#toggle-endpoints").hide();
+
+            // Prevent additional tasks
+            toggleTasks(false);
+
+            // Fetch parameters from user input
             let width = +$("input#width").val();
             let height = +$("input#height").val();
 
@@ -218,12 +283,17 @@ $(() => {
         // Check if a maze has been generated
         if (maze === undefined) {
             alertError($(this), "mazeNotGenerated");
+            return;
         }
 
         if (validate(validationTargets)) {
+            // Clear solving status
             $("p#solve-status").empty();
-            toggleAction(false);
 
+            // Prevent additional tasks
+            toggleTasks(false);
+
+            // Fetch parameters from user input
             let startX = +$("input#start-x").val();
             let startY = +$("input#start-y").val();
             let start = (startY - 1) * maze.width + (startX - 1);
@@ -239,78 +309,121 @@ $(() => {
         }
     });
 
+    // Download
+    $("button#download").on("click", function () {
+        let standaloneSVG = mazeSVG.clone();
+        standaloneSVG.attr("xmlns", "http://www.w3.org/2000/svg");
+
+        let bgColor = $(":root").css("--bg-color");
+        let fgColor = $(":root").css("--fg-color");
+        let solutionColor = $(":root").css("--solution-color");
+        let endpointColor = $(":root").css("--endpoint-color");
+        let wallThickness = $(":root").css("--wall-thickness");
+        let style = ":root { "
+                + `--bg-color: ${bgColor}; `
+                + `--fg-color: ${fgColor}; `
+                + `--solution-color: ${solutionColor}; `
+                + `--endpoint-color: ${endpointColor}; `
+                + `--wall-thickness: ${wallThickness}; `
+            + "} svg { "
+                + "background-color: var(--bg-color); "
+            + "} g#maze-walls { "
+                + "stroke-width: var(--wall-thickness); "
+                + "stroke: var(--fg-color); "
+                + "stroke-linecap: round; "
+            + "} path#maze-border { "
+                + "fill: none; "
+                + "stroke-width: var(--wall-thickness); "
+                + "stroke: var(--fg-color); "
+            + "} g#maze-solution { "
+                + "fill: var(--solution-color); "
+            + "} g#maze-endpoints { "
+                + "fill: var(--endpoint-color);"
+            + "}";
+        standaloneSVG.prepend(svgElement("style").text(style));
+
+        if (!solutionVisible) {
+            standaloneSVG.find("g#maze-solution").empty();
+        }
+        if (!endpointsVisible) {
+            standaloneSVG.find("g#maze-endpoints").empty();
+        }
+
+        downloadFile(standaloneSVG[0].outerHTML, "maze.svg");
+    });
+
+    // Message received from worker
     worker.addEventListener("message", e => {
         switch (e.data.msg) {
+            // Worker ready
             case "ready":
-                toggleAction(true);
+                toggleTasks(true);
                 break;
+
+            // Generation complete
             case "gen":
                 writeProgressGen("100%");
                 maze = e.data.maze;
                 appendStatusGen(`Maze generation took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
                 startTime = now();
 
-                // Place template SVG
-                $("div#maze-img-container").append(svgElement("svg")
-                    .attr({
-                        id: "maze-img",
-                        width: (maze.width + 2) * MAZE_SQUARE_WIDTH,
-                        height: (maze.height + 2) * MAZE_SQUARE_WIDTH,
-                        viewBox: `-${MAZE_SQUARE_WIDTH} -${MAZE_SQUARE_WIDTH} ${(maze.width + 2) * MAZE_SQUARE_WIDTH} ${(maze.height + 2) * MAZE_SQUARE_WIDTH}`
-                    })
-                    .append(svgElement("mask").attr("id", "mask")
-                        .append(svgElement("path").attr({
-                            d: `M${CORNER_RADIUS},0 `
-                                + `h${maze.width * MAZE_SQUARE_WIDTH - CORNER_RADIUS * 2} `
-                                + `a${CORNER_RADIUS},${CORNER_RADIUS} 0 0,1 ${CORNER_RADIUS},${CORNER_RADIUS} `
-                                + `v${maze.height * MAZE_SQUARE_WIDTH - CORNER_RADIUS * 2} `
-                                + `a${CORNER_RADIUS},${CORNER_RADIUS} 0 0,1 -${CORNER_RADIUS},${CORNER_RADIUS} `
-                                + `h-${maze.width * MAZE_SQUARE_WIDTH - CORNER_RADIUS * 2} `
-                                + `a${CORNER_RADIUS},${CORNER_RADIUS} 0 0,1 -${CORNER_RADIUS},-${CORNER_RADIUS} `
-                                + `v-${maze.height * MAZE_SQUARE_WIDTH - CORNER_RADIUS * 2} `
-                                + `a${CORNER_RADIUS},${CORNER_RADIUS} 0 0,1 ${CORNER_RADIUS},-${CORNER_RADIUS} `
-                                + "Z",
-                            fill: "white"
-                        }))
-                    )
-                    .append(svgElement("g").attr({
-                        id: "cropped",
-                        mask: "url(#mask)"
-                    })
-                        .append(svgElement("g").attr("id", "maze-solution"))
-                        .append(svgElement("g").attr("id", "maze-endpoints"))
-                        .append(svgElement("g").attr("id", "maze-walls"))
-                    )
-                );
+                // Initialize SVG
+                mazeSVG = mazeSVGTemplate(maze.width, maze.height);
 
-                // Render maze
-                renderMaze(maze);
+                // Draw maze
+                drawMaze(maze, mazeSVG);
+                $("div#maze-img-container").empty();
+                $("div#maze-img-container").append(mazeSVG.clone());
+
+                // Enable downloading
+                $("button#download").show();
+                $("span#download-note").show();
+
                 appendStatusGen(`Maze rendering took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
-                toggleAction(true);
+                toggleTasks(true);
+
                 break;
+
+            // Generation progress report
             case "genProgress":
                 writeProgressGen(`${e.data.progress}%`);
                 break;
+
+            // Solving complete
             case "solve":
                 writeProgressSolve("100%");
                 appendStatusSolve(`Solution calculation took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
                 startTime = now();
 
-                let hidePathAfterSolve = $("input#hide-path-after-solve").is(":checked");
+                let hideSolutionAfterSolve = $("input#hide-solution-after-solve").is(":checked");
 
-                // Render solution
-                renderSolution(maze.width, maze.height, e.data.squaresSolution, e.data.squaresEndpoints);
+                // Draw solution
+                drawSolution(maze.width, maze.height, e.data.squaresSolution, e.data.squaresEndpoints, mazeSVG);
+                $("div#maze-img-container").empty();
+                $("div#maze-img-container").append(mazeSVG.clone());
+
                 appendStatusSolve(`Solution rendering took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
-                toggleAction(true);
+                toggleTasks(true);
 
-                $("g#maze-solution").toggle(!hidePathAfterSolve);
+                solutionVisible = !hideSolutionAfterSolve;
+                endpointsVisible = true;
+                $("g#maze-solution").toggle(solutionVisible);
+                $("g#maze-endpoints").show();
                 $("button#toggle-solution")
                     .show()
-                    .text(hidePathAfterSolve ? "Show Path" : "Hide Path");
+                    .text(hideSolutionAfterSolve ? "Show Solution" : "Hide Solution");
+                $("button#toggle-endpoints")
+                    .show()
+                    .text("Hide Endpoints");
+
                 break;
+
+            // Solving progress report
             case "solveProgress":
                 writeProgressSolve(`${e.data.progress}%`);
                 break;
+
+            // Unknown message
             default:
                 console.error("Received unknown message from worker:", e);
         }

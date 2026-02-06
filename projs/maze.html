@@ -41,7 +41,7 @@
         <span>Solver</span>
         <div>
             <label>
-                <input id="hide-path-after-solve" type="checkbox"> Hide Path After Solving
+                <input id="hide-solution-after-solve" type="checkbox"> Hide Solution After Solving
             </label>
             <br>
 
@@ -72,7 +72,12 @@
     <div id="sec-maze" class="section">
         <span>Maze</span>
         <div>
+            <button id="download">Download as SVG</button>
+            <span id="download-note">(Solution and endpoints won't be saved to the file if hidden)</span>
+            <br>
+
             <button id="toggle-solution"></button>
+            <button id="toggle-endpoints"></button>
             <div id="maze-img-container"></div>
         </div>
     </div>

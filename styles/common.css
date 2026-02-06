@@ -16,8 +16,14 @@ div#header {
     display: flex;
     padding: 5px;
 
+    * {
+        font-weight: bold;
+        text-decoration: none;
+        font-size: 1.2em;
+    }
+
     * + * {
-        margin-left: 10px;
+        margin-left: 20px;
     }
 }
 
@@ -119,10 +125,8 @@ button.coll:not(.opened) {
 }
 
 /* Opened */
-button.coll.opened {
-    &::before {
-        content: "\25be";
-    }
+button.coll.opened::before {
+    content: "\25be";
 }
 
 

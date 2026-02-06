@@ -1,4 +1,4 @@
-let siteVer = "3.2";
+let siteVer = "3.3";
 
 
 let defaultAlerts = {
@@ -12,6 +12,7 @@ let defaultAlerts = {
 
 /**
  * Creates an element with the SVG namespace.
+ * This function is necessary because all SVG elements must be namespaced.
  * @param {string} name The tag name of the element.
  * @returns {jQuery} The jQuery element with SVG namespace.
  */
@@ -22,7 +23,7 @@ function svgElement(name) {
 
 /**
  * Validates one or more `<input>`s and returns `true` if all inputs are valid. References to other inputs are validated but no alert is placed after, because those inputs are assumed to already be validated on their own.
- * @param {(string | jQuery)[]} targets Targets for validation, contains query selectors and/or `jQuery` objects.
+ * @param {(string | jQuery)[]} targets Targets for validation, contains query selectors and/or jQuery objects.
  * @param {boolean} alert Whether to put an alert after invalid inputs or not. Defaults to `true`.
  * @returns {boolean} Whether `targets` are valid or not.
  */
@@ -39,7 +40,7 @@ function validate(targets, alert=true) {
         if (target.is("[type=number]")) {
             // Invalid/empty
             if (target.val() === "") {
-                if (target.prop("required")) {
+                if (target.attr("required")) {
                     if (alert) alertError(target.parent(), "invalidInput");
                     isTargetValid = allValid = false;
                 }
@@ -50,28 +51,28 @@ function validate(targets, alert=true) {
 
                 // Calculate minimum
                 // Check if minimum is a query selector
-                if (isNaN(target.prop("min"))) {
+                if (isNaN(target.attr("min"))) {
                     // Validate reference
-                    if (validate([target.prop("min")], false)) {
-                        min = +$(target.prop("min")).val();
+                    if (validate([target.attr("min")], false)) {
+                        min = +$(target.attr("min")).val();
                     }
                 }
                 // Check if minimum exists
-                else if (target.prop("min") !== "") {
-                    min = +target.prop("min");
+                else if (target.attr("min") !== "") {
+                    min = +target.attr("min");
                 }
 
                 // Calculate maximum
                 // Check if maximum is a query selector
-                if (isNaN(target.prop("max"))) {
+                if (isNaN(target.attr("max"))) {
                     // Validate reference
-                    if (validate([target.prop("max")], false)) {
-                        max = +$(target.prop("max")).val();
+                    if (validate([target.attr("max")], false)) {
+                        max = +$(target.attr("max")).val();
                     }
                 }
                 // Check if maximum exists
-                else if (target.prop("max") !== "") {
-                    max = +target.prop("max");
+                else if (target.attr("max") !== "") {
+                    max = +target.attr("max");
                 }
 
                 // Too small
@@ -217,6 +218,19 @@ function alertError(target, type, args={}) {
 }
 
 
+/**
+ * Downloads a file.
+ * @param {string} content The content of the file.
+ * @param {string} filename The name of the file, including the file extension.
+ */
+function downloadFile(content, filename) {
+    let blob = new Blob([content]);
+    let url = URL.createObjectURL(blob);
+    $("<a></a>").attr("download", filename).attr("href", url)[0].click();
+    URL.revokeObjectURL(url);
+}
+
+
 $(() => {
     // Location on 404 page
     $("h3#404-location").html(
@@ -232,8 +246,8 @@ $(() => {
     // Fetch sections
     $("div.section").each(function () {
         sections.push({
-            title: $(this).children("span").text(),
-            id: $(this).prop("id"),
+            title: $(this).children("span:first-child").text(),
+            id: $(this).attr("id"),
         });
     });
 

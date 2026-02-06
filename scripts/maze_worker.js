@@ -7,13 +7,18 @@ postMessage({ msg: "ready" });
 
 addEventListener("message", e => {
     switch (e.data.msg) {
+        // Generate maze
         case "gen":
             postMessage({ msg: "gen", maze: generateMaze(e.data.width, e.data.height) });
             break;
+
+        // Calculate solution
         case "solve":
             let { squaresSolution, squaresEndpoints } = calculateSolution(e.data.maze, e.data.start, e.data.end);
             postMessage({ msg: "solve", squaresSolution, squaresEndpoints });
             break;
+
+        // Unknown message
         default:
             console.error("Worker received unknown message:", e);
     }
@@ -181,10 +186,7 @@ function calculateSolution(maze, start, end) {
     let vWallsCopy = [...maze.vWalls];
 
     let squaresSolution = Array.from({ length: maze.width * maze.height }, (_v, i) => i);
-    removeItem(squaresSolution, start);
-    removeItem(squaresSolution, end);
-    let squaresEndpoints = [start];
-    if (start !== end) squaresEndpoints.push(end);
+    let squaresEndpoints = start === end ? [start] : [start, end];
 
     // 0 to 100, rounded down
     let progress = 0;
