@@ -110,15 +110,15 @@ function generateMaze(width, height) {
     let squaresFinished = [];
 
     // Initialize vertical walls
-    for (const vIndex = 0; vIndex < height; vIndex++) {
-        for (const hIndex = 0; hIndex < width - 1; hIndex++) {
+    for (let vIndex = 0; vIndex < height; vIndex++) {
+        for (let hIndex = 0; hIndex < width - 1; hIndex++) {
             vWalls.push(vIndex * width + hIndex);
         }
     }
 
     // Initialize horizontal walls
-    for (const vIndex = 0; vIndex < height - 1; vIndex++) {
-        for (const hIndex = 0; hIndex < width; hIndex++) {
+    for (let vIndex = 0; vIndex < height - 1; vIndex++) {
+        for (let hIndex = 0; hIndex < width; hIndex++) {
             hWalls.push(vIndex * width + hIndex);
         }
     }
@@ -192,7 +192,7 @@ function calculateSolution(maze, start, end) {
     let progress = 0;
 
     // Search for deadends
-    for (const square = 0; square < maze.width * maze.height; square++) {
+    for (let square = 0; square < maze.width * maze.height; square++) {
         let currentSquare = square;
 
         while (true) {

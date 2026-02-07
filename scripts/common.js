@@ -1,4 +1,4 @@
-const SITE_VERSION = "3.4";
+const SITE_VERSION = "3.4.1";
 
 
 const DEFAULT_ALERTS = {
