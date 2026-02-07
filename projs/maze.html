@@ -45,23 +45,23 @@
             </label>
             <br>
 
-            <label alert-small="Coordinate outside maze" alert-big="Coordinate outside maze">
+            <label alert-numberUnderflow="Coordinate outside maze" alert-numberOverflow="Coordinate outside maze">
                 Start: X
-                <input id="start-x" type="number" min="1" max="#width" required>
+                <input id="start-x" type="number" min="1" required>
             </label>
-            <label alert-small="Coordinate outside maze" alert-big="Coordinate outside maze">
+            <label alert-numberUnderflow="Coordinate outside maze" alert-numberOverflow="Coordinate outside maze">
                 Y
-                <input id="start-y" type="number" min="1" max="#height" required>
+                <input id="start-y" type="number" min="1" required>
             </label>
             <br>
 
-            <label alert-small="Coordinate outside maze" alert-big="Coordinate outside maze">
+            <label alert-numberUnderflow="Coordinate outside maze" alert-numberOverflow="Coordinate outside maze">
                 End: X
-                <input id="end-x" type="number" min="1" max="#width" required>
+                <input id="end-x" type="number" min="1" required>
             </label>
-            <label alert-small="Coordinate outside maze" alert-big="Coordinate outside maze">
+            <label alert-numberUnderflow="Coordinate outside maze" alert-numberOverflow="Coordinate outside maze">
                 Y
-                <input id="end-y" type="number" min="1" max="#height" required>
+                <input id="end-y" type="number" min="1" required>
             </label>
         </div>
         <button id="solve" alert-mazeNotGenerated="Maze not yet generated">Solve</button>

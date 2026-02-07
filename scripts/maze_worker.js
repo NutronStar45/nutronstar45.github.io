@@ -14,7 +14,7 @@ addEventListener("message", e => {
 
         // Calculate solution
         case "solve":
-            let { squaresSolution, squaresEndpoints } = calculateSolution(e.data.maze, e.data.start, e.data.end);
+            const { squaresSolution, squaresEndpoints } = calculateSolution(e.data.maze, e.data.start, e.data.end);
             postMessage({ msg: "solve", squaresSolution, squaresEndpoints });
             break;
 
@@ -56,10 +56,10 @@ function getNeighbors(square, filter, width, height) {
  * @returns {{ left: boolean, right: boolean, top: boolean, bottom: boolean }} Four booleans corresponding to each direction, `true` if `square` is connected to the adjacent square in that direction.
  */
 function checkConnectedness(square, maze) {
-    let left = !maze.vWalls.includes(square - 1) && square % maze.width !== 0;
-    let right = !maze.vWalls.includes(square) && (square + 1) % maze.width !== 0;
-    let top = !maze.hWalls.includes(square - maze.width) && square >= maze.width;
-    let bottom = !maze.hWalls.includes(square) && square < maze.width * (maze.height - 1);
+    const left = !maze.vWalls.includes(square - 1) && square % maze.width !== 0;
+    const right = !maze.vWalls.includes(square) && (square + 1) % maze.width !== 0;
+    const top = !maze.hWalls.includes(square - maze.width) && square >= maze.width;
+    const bottom = !maze.hWalls.includes(square) && square < maze.width * (maze.height - 1);
 
     return { left, right, top, bottom };
 }
@@ -72,7 +72,7 @@ function checkConnectedness(square, maze) {
  * @returns {string} One of `"left"`, `"right"`, `"top"`, `"bottom"`, indicating the direction of the opening, or an empty string if `square` is not a deadend.
  */
 function checkDeadend(square, maze) {
-    let { left, right, top, bottom } = checkConnectedness(square, maze);
+    const { left, right, top, bottom } = checkConnectedness(square, maze);
     if ( left && !right && !top && !bottom ) return "left";
     if (!left &&  right && !top && !bottom ) return "right";
     if (!left && !right &&  top && !bottom ) return "top";
@@ -88,7 +88,7 @@ function checkDeadend(square, maze) {
  * @returns {boolean} `true` if `square` is blocked from all sides.
  */
 function isBlocked(square, maze) {
-    let { left, right, top, bottom } = checkConnectedness(square, maze);
+    const { left, right, top, bottom } = checkConnectedness(square, maze);
     return !left && !right && !top && !bottom;
 }
 
@@ -110,27 +110,27 @@ function generateMaze(width, height) {
     let squaresFinished = [];
 
     // Initialize vertical walls
-    for (let vIndex = 0; vIndex < height; vIndex++) {
-        for (let hIndex = 0; hIndex < width - 1; hIndex++) {
+    for (const vIndex = 0; vIndex < height; vIndex++) {
+        for (const hIndex = 0; hIndex < width - 1; hIndex++) {
             vWalls.push(vIndex * width + hIndex);
         }
     }
 
     // Initialize horizontal walls
-    for (let vIndex = 0; vIndex < height - 1; vIndex++) {
-        for (let hIndex = 0; hIndex < width; hIndex++) {
+    for (const vIndex = 0; vIndex < height - 1; vIndex++) {
+        for (const hIndex = 0; hIndex < width; hIndex++) {
             hWalls.push(vIndex * width + hIndex);
         }
     }
 
     // Mark a square as finished and its neighbors as searching
-    let startingSquare = Math.floor(Math.random() * (width * height));
-    let startingNeighbors = getNeighbors(startingSquare, null, width, height);
+    const startingSquare = Math.floor(Math.random() * (width * height));
+    const startingNeighbors = getNeighbors(startingSquare, null, width, height);
 
     removeItem(squaresDefault, startingSquare);
     squaresFinished.push(startingSquare);
 
-    for (let neighbor of startingNeighbors) {
+    for (const neighbor of startingNeighbors) {
         removeItem(squaresDefault, neighbor.index);
         squaresSearching.push(neighbor.index);
     }
@@ -143,27 +143,27 @@ function generateMaze(width, height) {
         // Choose a searching square as the "extension"
         // Then choose an adjacent finished square as the "base"
         // The finished portion will be extended to the extension from the base
-        let extension = chooseRandom(squaresSearching);
-        let finishedNeighbors = getNeighbors(extension, squaresFinished, width, height);
-        let base = chooseRandom(finishedNeighbors);
+        const extension = chooseRandom(squaresSearching);
+        const finishedNeighbors = getNeighbors(extension, squaresFinished, width, height);
+        const base = chooseRandom(finishedNeighbors);
 
         // Remove the wall between `base` and `extension`
-        let wall = Math.min(extension, base.index);
-        if (base.dir === "horizontal") removeItem(vWalls, wall);
-        else removeItem(hWalls, wall);
+        const wallBetween = Math.min(extension, base.index);
+        if (base.dir === "horizontal") removeItem(vWalls, wallBetween);
+        else removeItem(hWalls, wallBetween);
 
         // Mark the extension as finished
         removeItem(squaresSearching, extension);
         squaresFinished.push(extension);
 
         // Mark the default squares adjacent to the extension as searching
-        let defaultNeighbors = getNeighbors(extension, squaresDefault, width, height);
-        for (let neighbor of defaultNeighbors) {
+        const defaultNeighbors = getNeighbors(extension, squaresDefault, width, height);
+        for (const neighbor of defaultNeighbors) {
             removeItem(squaresDefault, neighbor.index);
             squaresSearching.push(neighbor.index);
         }
 
-        let newProgress = Math.floor(squaresFinished.length / width / height * 100);
+        const newProgress = Math.floor(squaresFinished.length / width / height * 100);
         if (newProgress > progress) {
             progress = newProgress;
             postMessage({ msg: "genProgress", progress });
@@ -186,13 +186,13 @@ function calculateSolution(maze, start, end) {
     let vWallsCopy = [...maze.vWalls];
 
     let squaresSolution = Array.from({ length: maze.width * maze.height }, (_v, i) => i);
-    let squaresEndpoints = start === end ? [start] : [start, end];
+    const squaresEndpoints = start === end ? [start] : [start, end];
 
     // 0 to 100, rounded down
     let progress = 0;
 
     // Search for deadends
-    for (let square = 0; square < maze.width * maze.height; square++) {
+    for (const square = 0; square < maze.width * maze.height; square++) {
         let currentSquare = square;
 
         while (true) {
@@ -200,7 +200,7 @@ function calculateSolution(maze, start, end) {
             if (currentSquare === start || currentSquare === end) break;
 
             // The direction of the opening (if one exists)
-            let openingDir = checkDeadend(currentSquare, { ...maze, hWalls: hWallsCopy, vWalls: vWallsCopy });
+            const openingDir = checkDeadend(currentSquare, { ...maze, hWalls: hWallsCopy, vWalls: vWallsCopy });
             // Break the loop if not a deadend
             if (openingDir === "") break;
 
@@ -226,7 +226,7 @@ function calculateSolution(maze, start, end) {
             }
         }
 
-        let newProgress = Math.floor((square + 1) / maze.width / maze.height * 100);
+        const newProgress = Math.floor((square + 1) / maze.width / maze.height * 100);
         if (newProgress > progress) {
             progress = newProgress;
             postMessage({ msg: "solveProgress", progress });

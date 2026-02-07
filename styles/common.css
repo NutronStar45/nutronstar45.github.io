@@ -18,7 +18,6 @@ div#header {
 
     * {
         font-weight: bold;
-        text-decoration: none;
         font-size: 1.2em;
     }
 
@@ -137,7 +136,7 @@ button.coll.opened::before {
 a {
     color: var(--link-fg-color);
     cursor: pointer;
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 /*****************

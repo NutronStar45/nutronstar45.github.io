@@ -1,8 +1,4 @@
 /*
-Defined in common.js:
-    alertError
-    svgElement
-
 Squares are indexed left-to-right, top-to-bottom, starting from 0.
 For example, a maze of width 5 and height 4 is indexed in the following manner:
  0  1  2  3  4
@@ -137,10 +133,10 @@ function mazeSVGTemplate(width, height) {
  * @param {jQuery} mazeSVG The SVG to draw onto. Expects a template.
  */
 function drawMaze(maze, mazeSVG) {
-    let gWalls = mazeSVG.find("g#maze-walls");
+    const gWalls = mazeSVG.find("g#maze-walls");
 
     // Draw horizontal walls
-    for (let wall of maze.hWalls) {
+    for (const wall of maze.hWalls) {
         gWalls.append(svgElement("line").attr({
             x1: (wall % maze.width) * MAZE_SQUARE_WIDTH,
             y1: (Math.floor(wall / maze.width) + 1) * MAZE_SQUARE_WIDTH,
@@ -150,7 +146,7 @@ function drawMaze(maze, mazeSVG) {
     }
 
     // Draw vertical walls
-    for (let wall of maze.vWalls) {
+    for (const wall of maze.vWalls) {
         gWalls.append(svgElement("line").attr({
             x1: (wall % maze.width + 1) * MAZE_SQUARE_WIDTH,
             y1: Math.floor(wall / maze.width) * MAZE_SQUARE_WIDTH,
@@ -186,13 +182,13 @@ function drawMaze(maze, mazeSVG) {
  * @param {jQuery} mazeSVG The SVG to draw onto. Expects a template with a maze drawn onto it.
  */
 function drawSolution(width, _height, squaresSolution, squaresEndpoints, mazeSVG) {
-    let gSolution = mazeSVG.find("g#maze-solution").empty();
-    let gEndpoints = mazeSVG.find("g#maze-endpoints").empty();
+    const gSolution = mazeSVG.find("g#maze-solution").empty();
+    const gEndpoints = mazeSVG.find("g#maze-endpoints").empty();
 
     // Draw solution
-    for (let square of squaresSolution) {
-        let squareX = square % width;
-        let squareY = Math.floor(square / width);
+    for (const square of squaresSolution) {
+        const squareX = square % width;
+        const squareY = Math.floor(square / width);
 
         gSolution.append(svgElement("rect").attr({
             width: MAZE_SQUARE_WIDTH,
@@ -203,9 +199,9 @@ function drawSolution(width, _height, squaresSolution, squaresEndpoints, mazeSVG
     }
 
     // Draw endpoints
-    for (let square of squaresEndpoints) {
-        let squareX = square % width;
-        let squareY = Math.floor(square / width);
+    for (const square of squaresEndpoints) {
+        const squareX = square % width;
+        const squareY = Math.floor(square / width);
 
         gEndpoints.append(svgElement("rect").attr({
             width: MAZE_SQUARE_WIDTH,
@@ -249,7 +245,7 @@ $(() => {
 
     // Generate button pressed
     $("button#gen").on("click", function () {
-        let validationTargets = ["input#width", "input#height"];
+        const validationTargets = $("input#width, input#height");
 
         if (validate(validationTargets)) {
             // Clear generation and solving status
@@ -266,8 +262,8 @@ $(() => {
             toggleTasks(false);
 
             // Fetch parameters from user input
-            let width = +$("input#width").val();
-            let height = +$("input#height").val();
+            const width = +$("input#width").val();
+            const height = +$("input#height").val();
 
             startTime = now();
             // Generate maze
@@ -278,7 +274,7 @@ $(() => {
 
     // Solve button pressed
     $("button#solve").on("click", function () {
-        let validationTargets = ["input#start-x", "input#start-y", "input#end-x", "input#end-y"];
+        const validationTargets = $("input#start-x, input#start-y, input#end-x, input#end-y");
 
         // Check if a maze has been generated
         if (maze === undefined) {
@@ -294,13 +290,13 @@ $(() => {
             toggleTasks(false);
 
             // Fetch parameters from user input
-            let startX = +$("input#start-x").val();
-            let startY = +$("input#start-y").val();
-            let start = (startY - 1) * maze.width + (startX - 1);
+            const startX = +$("input#start-x").val();
+            const startY = +$("input#start-y").val();
+            const start = (startY - 1) * maze.width + (startX - 1);
 
-            let endX = +$("input#end-x").val();
-            let endY = +$("input#end-y").val();
-            let end = (endY - 1) * maze.width + (endX - 1);
+            const endX = +$("input#end-x").val();
+            const endY = +$("input#end-y").val();
+            const end = (endY - 1) * maze.width + (endX - 1);
 
             startTime = now();
             // Calculate solution
@@ -311,15 +307,16 @@ $(() => {
 
     // Download
     $("button#download").on("click", function () {
-        let standaloneSVG = mazeSVG.clone();
+        const standaloneSVG = mazeSVG.clone();
         standaloneSVG.attr("xmlns", "http://www.w3.org/2000/svg");
 
-        let bgColor = $(":root").css("--bg-color");
-        let fgColor = $(":root").css("--fg-color");
-        let solutionColor = $(":root").css("--solution-color");
-        let endpointColor = $(":root").css("--endpoint-color");
-        let wallThickness = $(":root").css("--wall-thickness");
-        let style = ":root { "
+        // Style
+        const bgColor = $(":root").css("--bg-color");
+        const fgColor = $(":root").css("--fg-color");
+        const solutionColor = $(":root").css("--solution-color");
+        const endpointColor = $(":root").css("--endpoint-color");
+        const wallThickness = $(":root").css("--wall-thickness");
+        const style = ":root { "
                 + `--bg-color: ${bgColor}; `
                 + `--fg-color: ${fgColor}; `
                 + `--solution-color: ${solutionColor}; `
@@ -338,7 +335,7 @@ $(() => {
             + "} g#maze-solution { "
                 + "fill: var(--solution-color); "
             + "} g#maze-endpoints { "
-                + "fill: var(--endpoint-color);"
+                + "fill: var(--endpoint-color); "
             + "}";
         standaloneSVG.prepend(svgElement("style").text(style));
 
@@ -379,6 +376,15 @@ $(() => {
                 $("button#download").show();
                 $("span#download-note").show();
 
+                // Remove "maze not yet generated" alert
+                $("button#solve").next("span.alert-mazeNotGenerated").remove();
+
+                // Limit solving parameters
+                $("input#start-x").attr("max", maze.width);
+                $("input#start-y").attr("max", maze.height);
+                $("input#end-x").attr("max", maze.width);
+                $("input#end-y").attr("max", maze.height);
+
                 appendStatusGen(`Maze rendering took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
                 toggleTasks(true);
 
@@ -395,7 +401,7 @@ $(() => {
                 appendStatusSolve(`Solution calculation took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
                 startTime = now();
 
-                let hideSolutionAfterSolve = $("input#hide-solution-after-solve").is(":checked");
+                const hideSolutionAfterSolve = $("input#hide-solution-after-solve").is(":checked");
 
                 // Draw solution
                 drawSolution(maze.width, maze.height, e.data.squaresSolution, e.data.squaresEndpoints, mazeSVG);

@@ -4,7 +4,8 @@
     --wall-thickness: 2;
 }
 
-input#width, input#height {
+/* To prevent these inputs from becoming too narrow */
+input#width, input#height, input#start-x, input#start-y, input#end-x, input#end-y {
     width: 5em;
 }
 

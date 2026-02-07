@@ -1,12 +1,34 @@
-let siteVer = "3.3";
+const SITE_VERSION = "3.4";
 
 
-let defaultAlerts = {
-    invalidInput: () => "Invalid/Empty",
-    small: min => `Should be at least ${min}`,
-    big: max => `Should be at most ${max}`,
-    short: lmin => `Length should be at least ${lmin}`,
-    long: lmax => `Length should be at most ${lmax}`
+const DEFAULT_ALERTS = {
+    numberMissing: _args => "A number should be entered",
+    numberBadInput: _args => "A number should be entered",
+    numberUnderflow: args => `Number should be at least ${args.min}`,
+    numberOverflow: args => `Number should be at most ${args.max}`,
+    numberStepMismatch: args => {
+        if (+args.step === 1) {
+            return `Number should be an integer`;
+        } else {
+            return `Number should be a multiple of ${args.step}`;
+        }
+    },
+
+    numbersMissing: _args => "Number(s) should be entered",
+    numbersBadInput: _args => "Number(s) should be entered",
+    numbersLengthUnderflow: args => `At least ${args.lmin} numbers should be given`,
+    numbersLengthOverflow: args => `At most ${args.lmax} numbers should be given`,
+    numbersUnderflow: args => `Number(s) should be at least ${args.min}`,
+    numbersOverflow: args => `Number(s) should be at most ${args.max}`,
+    numbersStepMismatch: args => {
+        if (+args.step === 1) {
+            return `Number(s) should be an integer`;
+        } else {
+            return `Number(s) should be multiple(s) of ${args.step}`;
+        }
+    },
+
+    custom: args => args.text
 };
 
 
@@ -23,177 +45,213 @@ function svgElement(name) {
 
 /**
  * Validates one or more `<input>`s and returns `true` if all inputs are valid. References to other inputs are validated but no alert is placed after, because those inputs are assumed to already be validated on their own.
- * @param {(string | jQuery)[]} targets Targets for validation, contains query selectors and/or jQuery objects.
+ * @param {jQuery} targets Targets for validation; a jQuery object that may refer to multiple elements.
  * @param {boolean} alert Whether to put an alert after invalid inputs or not. Defaults to `true`.
  * @returns {boolean} Whether `targets` are valid or not.
  */
 function validate(targets, alert=true) {
     let allValid = true;
 
-    for (let target of targets) {
+    for (const target of targets) {
+        const targetJQuery = $(target);
+        const labelJQuery = targetJQuery.parent("label");
         let isTargetValid = true;
 
-        if (typeof target === "string") {
-            target = $(target);
-        }
-
-        if (target.is("[type=number]")) {
-            // Invalid/empty
-            if (target.val() === "") {
-                if (target.attr("required")) {
-                    if (alert) alertError(target.parent(), "invalidInput");
-                    isTargetValid = allValid = false;
-                }
-                continue;
-            } else {
-                let min = -Infinity;
-                let max = Infinity;
-
-                // Calculate minimum
+        if (targetJQuery.is("[type=number]")) {
+            // Check references
+            {
                 // Check if minimum is a query selector
-                if (isNaN(target.attr("min"))) {
+                if (targetJQuery.attr("ref-min") !== undefined) {
                     // Validate reference
-                    if (validate([target.attr("min")], false)) {
-                        min = +$(target.attr("min")).val();
+                    if (validate($(targetJQuery.attr("ref-min")), false)) {
+                        targetJQuery.attr("min", $(targetJQuery.attr("ref-min")).val());
                     }
                 }
-                // Check if minimum exists
-                else if (target.attr("min") !== "") {
-                    min = +target.attr("min");
-                }
 
-                // Calculate maximum
                 // Check if maximum is a query selector
-                if (isNaN(target.attr("max"))) {
+                if (targetJQuery.attr("ref-max") !== undefined) {
                     // Validate reference
-                    if (validate([target.attr("max")], false)) {
-                        max = +$(target.attr("max")).val();
+                    if (validate($(targetJQuery.attr("ref-max")), false)) {
+                        targetJQuery.attr("max", $(targetJQuery.attr("ref-max")).val());
                     }
                 }
-                // Check if maximum exists
-                else if (target.attr("max") !== "") {
-                    max = +target.attr("max");
-                }
 
-                // Too small
-                if (+target.val() < min) {
-                    if (alert) alertError(target.parent(), "small", min);
-                    isTargetValid = allValid = false;
-                    continue;
+                // Check if step is a query selector
+                if (targetJQuery.attr("ref-step") !== undefined) {
+                    // Validate reference
+                    if (validate($(targetJQuery.attr("ref-step")), false)) {
+                        targetJQuery.attr("step", $(targetJQuery.attr("ref-step")).val());
+                    }
                 }
+            }
 
-                // Too big
-                if (+target.val() > max) {
-                    if (alert) alertError(target.parent(), "big", max);
-                    isTargetValid = allValid = false;
-                    continue;
+            const min = +(targetJQuery.attr("min") ?? -Infinity);
+            const max = +(targetJQuery.attr("max") ?? Infinity);
+            const step = +(targetJQuery.attr("step") ?? 1);
+
+            const validity = target.validity;
+            if (!validity.valid) {
+                isTargetValid = allValid = false;
+
+                if (alert) {
+                    if (validity.valueMissing) {
+                        alertError(labelJQuery, "numberMissing");
+                    } else if (validity.badInput) {
+                        alertError(labelJQuery, "numberBadInput");
+                    }
+
+                    else if (validity.rangeUnderflow) {
+                        alertError(labelJQuery, "numberUnderflow", { min });
+                    } else if (validity.rangeOverflow) {
+                        alertError(labelJQuery, "numberOverflow", { max });
+                    }
+
+                    else if (validity.stepMismatch) {
+                        alertError(labelJQuery, "numberStepMismatch", { step });
+                    }
+
+                    else {
+                        alertError(labelJQuery, "custom", { text: target.validationMessage });
+                    }
                 }
             }
         }
 
-        if (target.is("[type=text]")) {
+        if (targetJQuery.is("[type=text]")) {
             // Custom type: numbers separated by commas, whitespaces are ignored
             // `min` and `max` are the restrictions on each number
-            // `lmin` and `lmax` are the restrictions on the number of numbers
-            if (target.is("[ctype=numbers]")) {
-                let values = target.val().replace(/ /g, "").split(",");
-                let min = -Infinity;
-                let max = Infinity;
-                let lmin = 0;
-                let lmax = Infinity;
+            // `lmin` and `lmax` are the restrictions on the number (length) of numbers
+            if (targetJQuery.is("[ctype=numbers]")) {
+                // Check references
+                {
+                    // Check if minimum is a query selector
+                    if (targetJQuery.attr("ref-min") !== undefined) {
+                        // Validate reference
+                        if (validate($(targetJQuery.attr("ref-min")), false)) {
+                            targetJQuery.attr("min", $(targetJQuery.attr("ref-min")).val());
+                        }
+                    }
 
-                // Calculate minimum
-                // Check if minimum is a query selector
-                if (isNaN(target.attr("min"))) {
-                    // Validate minimum
-                    if (validate([target.attr("min")], false)) {
-                        min = +$(target.attr("min")).val();
+                    // Check if maximum is a query selector
+                    if (targetJQuery.attr("ref-max") !== undefined) {
+                        // Validate reference
+                        if (validate($(targetJQuery.attr("ref-max")), false)) {
+                            targetJQuery.attr("max", $(targetJQuery.attr("ref-max")).val());
+                        }
+                    }
+
+                    // Check if step is a query selector
+                    if (targetJQuery.attr("ref-step") !== undefined) {
+                        // Validate reference
+                        if (validate($(targetJQuery.attr("ref-step")), false)) {
+                            targetJQuery.attr("step", $(targetJQuery.attr("ref-step")).val());
+                        }
+                    }
+
+                    // Check if minimum length is a query selector
+                    if (targetJQuery.attr("ref-lmin") !== undefined) {
+                        // Validate reference
+                        if (validate($(targetJQuery.attr("ref-lmin")), false)) {
+                            targetJQuery.attr("lmin", $(targetJQuery.attr("ref-lmin")).val());
+                        }
+                    }
+
+                    // Check if maximum length is a query selector
+                    if (targetJQuery.attr("ref-lmax") !== undefined) {
+                        // Validate reference
+                        if (validate($(targetJQuery.attr("ref-lmax")), false)) {
+                            targetJQuery.attr("lmax", $(targetJQuery.attr("ref-lmax")).val());
+                        }
                     }
                 }
-                // Check if minimum exists
-                else if (target.attr("min") !== "" && target.attr("min") !== undefined) {
-                    min = +target.attr("min");
-                }
 
-                // Calculate maximum
-                // Check if maximum is a query selector
-                if (isNaN(target.attr("max"))) {
-                    // Validate maximum
-                    if (validate([target.attr("max")], false)) {
-                        max = +$(target.attr("max")).val();
+                const min = +(targetJQuery.attr("min") ?? -Infinity);
+                const max = +(targetJQuery.attr("max") ?? Infinity);
+                const step = +(targetJQuery.attr("step") ?? 1);
+                const lmin = +(targetJQuery.attr("lmin") ?? 0);
+                const lmax = +(targetJQuery.attr("lmax") ?? Infinity);
+
+                // Manual tests
+                (() => {
+                    const values = targetJQuery.val().replace(/ /g, "").split(",");
+
+                    // Too few numbers
+                    if (values.length < lmin) {
+                        target.setCustomValidity("numbersLengthUnderflow");
+                        return;
                     }
-                }
-                // Check if maximum exists
-                else if (target.attr("max") !== "" && target.attr("max") !== undefined) {
-                    max = +target.attr("max");
-                }
 
-                // Calculate minimum length
-                // Check if minimum length is a query selector
-                if (isNaN(target.attr("lmin"))) {
-                    // Validate minimum length
-                    if (validate([target.attr("lmin")], false)) {
-                        lmin = +$(target.attr("lmin")).val();
+                    // Too many numbers
+                    if (values.length > lmax) {
+                        target.setCustomValidity("numbersLengthOverflow");
+                        return;
                     }
-                }
-                // Check if minimum length exists
-                else if (target.attr("lmin") !== "" && target.attr("lmin") !== undefined) {
-                    lmin = +target.attr("lmin");
-                }
 
-                // Calculate maximum length
-                if (isNaN(target.attr("lmax"))) {
-                    // Validate maximum length
-                    if (validate([target.attr("lmax")], false)) {
-                        lmax = +$(target.attr("lmax")).val();
+                    for (const value of values) {
+                        // Invalid
+                        if (value === "" || isNaN(value)) {
+                            target.setCustomValidity("numbersBadInput");
+                            return;
+                        }
+
+                        // Too small
+                        if (+value < min) {
+                            target.setCustomValidity("numbersUnderflow");
+                            return;
+                        }
+
+                        // Too big
+                        if (+value > max) {
+                            target.setCustomValidity("numbersOverflow");
+                            return;
+                        }
+
+                        // Step mismatch
+                        if (+value % step !== 0) {
+                            target.setCustomValidity("numbersStepMismatch");
+                            return;
+                        }
                     }
-                }
-                // Check if maximum length exists
-                else if (target.attr("lmax") !== "" && target.attr("lmax") !== undefined) {
-                    lmax = +target.attr("lmax");
-                }
+                })();
 
-                // Too short
-                if (values.length < lmin) {
-                    if (alert) alertError(target.parent(), "short", lmin);
+                const validity = target.validity;
+                const message = target.validationMessage;
+                if (!validity.valid) {
                     isTargetValid = allValid = false;
-                    continue;
-                }
 
-                // Too long
-                if (values.length > lmax) {
-                    if (alert) alertError(target.parent(), "long", lmax);
-                    isTargetValid = allValid = false;
-                    continue;
-                }
+                    if (alert) {
+                        if (validity.valueMissing) {
+                            alertError(labelJQuery, "numbersMissing");
+                        } else if (message === "numbersBadInput") {
+                            alertError(labelJQuery, "numbersBadInput");
+                        }
 
-                for (let value of values) {
-                    // Invalid
-                    if (value === "" || isNaN(value)) {
-                        if (alert) alertError(target.parent(), "invalidInput");
-                        isTargetValid = allValid = false;
-                        break;
-                    }
+                        else if (message === "numbersLengthUnderflow") {
+                            alertError(labelJQuery, "numbersLengthUnderflow", { lmin });
+                        } else if (message === "numbersLengthOverflow") {
+                            alertError(labelJQuery, "numbersLengthOverflow", { lmax });
+                        }
 
-                    // Too small
-                    if (+value < min) {
-                        if (alert) alertError(target.parent(), "small", min);
-                        isTargetValid = allValid = false;
-                        break;
-                    }
+                        else if (message === "numbersUnderflow") {
+                            alertError(labelJQuery, "numbersUnderflow", { min });
+                        } else if (message === "numbersOverflow") {
+                            alertError(labelJQuery, "numbersOverflow", { max });
+                        }
 
-                    // Too big
-                    if (+value > max) {
-                        if (alert) alertError(target.parent(), "big", max);
-                        isTargetValid = allValid = false;
-                        break;
+                        else if (message === "numbersStepMismatch") {
+                            alertError(labelJQuery, "numbersStepMismatch", { step });
+                        }
+
+                        else {
+                            alertError(labelJQuery, "custom", { text: message });
+                        }
                     }
                 }
             }
         }
 
         if (isTargetValid) {
-            target.parent().next("span.alert").remove(); // Remove previous alert
+            labelJQuery.next("span.alert").remove(); // Remove previous alert
         }
     }
 
@@ -211,10 +269,10 @@ function alertError(target, type, args={}) {
     // Use the alert text if provided
     // Otherwise pass the arguments to the default alert text function if it exists
     // Otherwise use a generic text
-    let alertText = target.attr("alert-" + type) ?? defaultAlerts[type](args) ?? "Error";
+    const alertText = target.attr("alert-" + type) ?? DEFAULT_ALERTS[type](args) ?? "Error";
 
     target.next("span.alert").remove(); // Remove previous alert if one exists
-    target.after(`<span class="alert">${alertText}</span>`); // Place alert
+    target.after(`<span class="alert alert-${type}">${alertText}</span>`); // Place alert
 }
 
 
@@ -224,8 +282,8 @@ function alertError(target, type, args={}) {
  * @param {string} filename The name of the file, including the file extension.
  */
 function downloadFile(content, filename) {
-    let blob = new Blob([content]);
-    let url = URL.createObjectURL(blob);
+    const blob = new Blob([content]);
+    const url = URL.createObjectURL(blob);
     $("<a></a>").attr("download", filename).attr("href", url)[0].click();
     URL.revokeObjectURL(url);
 }
@@ -237,44 +295,43 @@ $(() => {
         `The page <code>${location.pathname}</code> doesn't exist`
     );
 
+    // Header
+    const header = '<a href="/">Home</a><a href="/projs">Projects</a>';
+    $("div#header").html(header);
+
     /**
      * Sections information.
      * @type {{ title: string, id: string }[]}
      */
-    let sections = [];
-
-    // Fetch sections
-    $("div.section").each(function () {
-        sections.push({
+    const sections = $("div.section").map(function () {
+        return {
             title: $(this).children("span:first-child").text(),
             id: $(this).attr("id"),
-        });
-    });
+        };
+    }).get();
 
-    let fixedToolbar = `<a href="#">To top</a><br><span>Version ${siteVer}</span>`;
+    // Sticky corner box
+    let cornerBox = `<a href="#">To top</a><br><span>Version ${SITE_VERSION}</span>`;
 
     // Section links
     if (sections.length > 0) {
-        fixedToolbar += '<br><button class="coll">Sections</button><div>';
+        cornerBox += '<br><button class="coll">Sections</button><div>';
         $.each(sections, function (i, section) {
-            fixedToolbar += `<a href="#${section.id}">${section.title}</a>`;
+            cornerBox += `<a href="#${section.id}">${section.title}</a>`;
             if (i < sections.length - 1) {
-                fixedToolbar += `<br>`
+                cornerBox += `<br>`
             }
         });
-        fixedToolbar += "</div>";
+        cornerBox += "</div>";
     }
 
-    let nav = '<a href="/">Home</a><a href="/projs">Projects</a>';
-
-    // Header
-    $("div#header").html(nav);
-
-    // Sticky corner box
-    $("div#corner-box").html(fixedToolbar);
+    $("div#corner-box").html(cornerBox);
 
     // Required indicator
-    $("input[required]").before('<span class="required-ind">* </span>');
+    $("input[required]")
+        .before('<span class="required-ind">* </span>')
+        .parent("label")
+        .attr("title", "Required");
 
     // Collapsible
     $("button.coll").on("click", function () {
