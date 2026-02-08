@@ -10,29 +10,31 @@
  **********/
 
 /* Header */
-div#header {
+header {
     position: sticky;
     top: 0;
     display: flex;
+    justify-content: space-between;
     padding: 5px;
-
-    * {
-        font-weight: bold;
-        font-size: 1.2em;
-    }
 
     * + * {
         margin-left: 20px;
     }
 }
 
-/* Sticky corner box */
+/* Navigation links */
+nav a {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+/* Corner box */
 div#corner-box {
     position: fixed;
     top: 0;
     right: 0;
     z-index: 1;
-    padding: 0 5px;
+    padding: 5px;
     border: 2px solid var(--fixed-toolbar-border-color);
     margin: 8px 8px 0 0;
 }
@@ -57,104 +59,72 @@ span.alert {
 }
 
 
-/******************
- * Title elements *
- ******************/
+/**********
+ * Layout *
+ **********/
 
-/* Header */
+/* Page title */
 h2 {
     font-weight: bold;
     font-size: 1.5em;
 }
 
-/* Subtitle */
-h3 {
-    font-size: 1.25em;
-}
-
-
-/************
- * Sections *
- ************/
-
 /* Sections */
-div.section {
+section {
     border: 1px dashed var(--section-border-color);
     padding: 10px;
-}
 
-/* Sections after sections */
-div.section + div.section {
-    margin-top: 10px;
-}
-
-/* Title */
-div.section > span:first-child {
-    font-size: 0.7em;
-}
-
-/* Content */
-div.section > div {
-    margin: 10px;
-}
-
-
-/***************
- * Collapsible *
- ***************/
-
-/* Button */
-button.coll {
-    padding: 0;
-    border: 0;
-}
-
-/* Closed */
-button.coll:not(.opened) {
-    margin-bottom: 10px;
-
-    &::before {
-        content: "\25b4";
+    /* Sections after sections */
+    + section {
+        margin-top: 10px;
     }
 
-    /* Collapsed content */
-    + * {
-        display: none;
+    /* Section title */
+    > h3 {
+        margin: 0;
+        font-size: 0.7em;
+    }
+
+    /* Content */
+    > div {
+        margin: 10px;
     }
 }
 
-/* Opened */
-button.coll.opened::before {
-    content: "\25be";
-}
 
+/*****************
+ * Miscellaneous *
+ *****************/
 
-/*********
- * Links *
- *********/
-
+/* Anchor */
 a {
     color: var(--link-fg-color);
     cursor: pointer;
     text-decoration: none;
 }
 
-/*****************
- * Miscellaneous *
- *****************/
-
 /* Buttons */
 button {
     cursor: pointer;
-    border: 3px outset var(--button-border-color);
+    user-select: none;
 
-    &:active:not(:disabled) {
-        border-style: inset;
+    /* Regular buttons */
+    &:not(.plain-button) {
+        border: 3px outset var(--button-border-color);
+
+        &:active:not(:disabled) {
+            border-style: inset;
+        }
+
+        &:disabled {
+            background-color: var(--button-disabled-bg-color);
+            cursor: not-allowed;
+        }
     }
 
-    &:disabled {
-        background-color: var(--button-disabled-bg-color);
-        cursor: not-allowed;
+    /* Plain buttons */
+    &.plain-button {
+        border: none;
     }
 }
 
@@ -171,6 +141,23 @@ code {
     padding: 0 0.2em;
 }
 
+/* Unordered list */
 ul {
     margin: 0;
+}
+
+/* Collapsible */
+summary {
+    cursor: pointer;
+    user-select: none;
+
+    /* Closed */
+    details:not([open]) > &::marker {
+        content: "\25b4";
+    }
+
+    /* Opened */
+    details[open] > &::marker {
+        content: "\25be";
+    }
 }

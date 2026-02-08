@@ -1,4 +1,4 @@
-const SITE_VERSION = "3.4.1";
+const SITE_VERSION = "3.5";
 
 
 const DEFAULT_ALERTS = {
@@ -45,49 +45,49 @@ function svgElement(name) {
 
 /**
  * Validates one or more `<input>`s and returns `true` if all inputs are valid. References to other inputs are validated but no alert is placed after, because those inputs are assumed to already be validated on their own.
- * @param {jQuery} targets Targets for validation; a jQuery object that may refer to multiple elements.
+ * @param {jQuery} $targets Targets for validation; a jQuery object that may refer to multiple elements.
  * @param {boolean} alert Whether to put an alert after invalid inputs or not. Defaults to `true`.
  * @returns {boolean} Whether `targets` are valid or not.
  */
-function validate(targets, alert=true) {
+function validate($targets, alert=true) {
     let allValid = true;
 
-    for (const target of targets) {
-        const targetJQuery = $(target);
-        const labelJQuery = targetJQuery.parent("label");
+    for (const target of $targets) {
+        const $target = $(target);
+        const $label = $target.parent("label");
         let isTargetValid = true;
 
-        if (targetJQuery.is("[type=number]")) {
+        if ($target.is("[type=number]")) {
             // Check references
             {
                 // Check if minimum is a query selector
-                if (targetJQuery.attr("ref-min") !== undefined) {
+                if ($target.attr("ref-min") !== undefined) {
                     // Validate reference
-                    if (validate($(targetJQuery.attr("ref-min")), false)) {
-                        targetJQuery.attr("min", $(targetJQuery.attr("ref-min")).val());
+                    if (validate($($target.attr("ref-min")), false)) {
+                        $target.attr("min", $($target.attr("ref-min")).val());
                     }
                 }
 
                 // Check if maximum is a query selector
-                if (targetJQuery.attr("ref-max") !== undefined) {
+                if ($target.attr("ref-max") !== undefined) {
                     // Validate reference
-                    if (validate($(targetJQuery.attr("ref-max")), false)) {
-                        targetJQuery.attr("max", $(targetJQuery.attr("ref-max")).val());
+                    if (validate($($target.attr("ref-max")), false)) {
+                        $target.attr("max", $($target.attr("ref-max")).val());
                     }
                 }
 
                 // Check if step is a query selector
-                if (targetJQuery.attr("ref-step") !== undefined) {
+                if ($target.attr("ref-step") !== undefined) {
                     // Validate reference
-                    if (validate($(targetJQuery.attr("ref-step")), false)) {
-                        targetJQuery.attr("step", $(targetJQuery.attr("ref-step")).val());
+                    if (validate($($target.attr("ref-step")), false)) {
+                        $target.attr("step", $($target.attr("ref-step")).val());
                     }
                 }
             }
 
-            const min = +(targetJQuery.attr("min") ?? -Infinity);
-            const max = +(targetJQuery.attr("max") ?? Infinity);
-            const step = +(targetJQuery.attr("step") ?? 1);
+            const min = +($target.attr("min") ?? -Infinity);
+            const max = +($target.attr("max") ?? Infinity);
+            const step = +($target.attr("step") ?? 1);
 
             const validity = target.validity;
             if (!validity.valid) {
@@ -95,85 +95,85 @@ function validate(targets, alert=true) {
 
                 if (alert) {
                     if (validity.valueMissing) {
-                        alertError(labelJQuery, "numberMissing");
+                        alertError($label, "numberMissing");
                     } else if (validity.badInput) {
-                        alertError(labelJQuery, "numberBadInput");
+                        alertError($label, "numberBadInput");
                     }
 
                     else if (validity.rangeUnderflow) {
-                        alertError(labelJQuery, "numberUnderflow", { min });
+                        alertError($label, "numberUnderflow", { min });
                     } else if (validity.rangeOverflow) {
-                        alertError(labelJQuery, "numberOverflow", { max });
+                        alertError($label, "numberOverflow", { max });
                     }
 
                     else if (validity.stepMismatch) {
-                        alertError(labelJQuery, "numberStepMismatch", { step });
+                        alertError($label, "numberStepMismatch", { step });
                     }
 
                     else {
-                        alertError(labelJQuery, "custom", { text: target.validationMessage });
+                        alertError($label, "custom", { text: target.validationMessage });
                     }
                 }
             }
         }
 
-        if (targetJQuery.is("[type=text]")) {
+        if ($target.is("[type=text]")) {
             // Custom type: numbers separated by commas, whitespaces are ignored
             // `min` and `max` are the restrictions on each number
             // `lmin` and `lmax` are the restrictions on the number (length) of numbers
-            if (targetJQuery.is("[ctype=numbers]")) {
+            if ($target.is("[ctype=numbers]")) {
                 // Check references
                 {
                     // Check if minimum is a query selector
-                    if (targetJQuery.attr("ref-min") !== undefined) {
+                    if ($target.attr("ref-min") !== undefined) {
                         // Validate reference
-                        if (validate($(targetJQuery.attr("ref-min")), false)) {
-                            targetJQuery.attr("min", $(targetJQuery.attr("ref-min")).val());
+                        if (validate($($target.attr("ref-min")), false)) {
+                            $target.attr("min", $($target.attr("ref-min")).val());
                         }
                     }
 
                     // Check if maximum is a query selector
-                    if (targetJQuery.attr("ref-max") !== undefined) {
+                    if ($target.attr("ref-max") !== undefined) {
                         // Validate reference
-                        if (validate($(targetJQuery.attr("ref-max")), false)) {
-                            targetJQuery.attr("max", $(targetJQuery.attr("ref-max")).val());
+                        if (validate($($target.attr("ref-max")), false)) {
+                            $target.attr("max", $($target.attr("ref-max")).val());
                         }
                     }
 
                     // Check if step is a query selector
-                    if (targetJQuery.attr("ref-step") !== undefined) {
+                    if ($target.attr("ref-step") !== undefined) {
                         // Validate reference
-                        if (validate($(targetJQuery.attr("ref-step")), false)) {
-                            targetJQuery.attr("step", $(targetJQuery.attr("ref-step")).val());
+                        if (validate($($target.attr("ref-step")), false)) {
+                            $target.attr("step", $($target.attr("ref-step")).val());
                         }
                     }
 
                     // Check if minimum length is a query selector
-                    if (targetJQuery.attr("ref-lmin") !== undefined) {
+                    if ($target.attr("ref-lmin") !== undefined) {
                         // Validate reference
-                        if (validate($(targetJQuery.attr("ref-lmin")), false)) {
-                            targetJQuery.attr("lmin", $(targetJQuery.attr("ref-lmin")).val());
+                        if (validate($($target.attr("ref-lmin")), false)) {
+                            $target.attr("lmin", $($target.attr("ref-lmin")).val());
                         }
                     }
 
                     // Check if maximum length is a query selector
-                    if (targetJQuery.attr("ref-lmax") !== undefined) {
+                    if ($target.attr("ref-lmax") !== undefined) {
                         // Validate reference
-                        if (validate($(targetJQuery.attr("ref-lmax")), false)) {
-                            targetJQuery.attr("lmax", $(targetJQuery.attr("ref-lmax")).val());
+                        if (validate($($target.attr("ref-lmax")), false)) {
+                            $target.attr("lmax", $($target.attr("ref-lmax")).val());
                         }
                     }
                 }
 
-                const min = +(targetJQuery.attr("min") ?? -Infinity);
-                const max = +(targetJQuery.attr("max") ?? Infinity);
-                const step = +(targetJQuery.attr("step") ?? 1);
-                const lmin = +(targetJQuery.attr("lmin") ?? 0);
-                const lmax = +(targetJQuery.attr("lmax") ?? Infinity);
+                const min = +($target.attr("min") ?? -Infinity);
+                const max = +($target.attr("max") ?? Infinity);
+                const step = +($target.attr("step") ?? 1);
+                const lmin = +($target.attr("lmin") ?? 0);
+                const lmax = +($target.attr("lmax") ?? Infinity);
 
                 // Manual tests
                 (() => {
-                    const values = targetJQuery.val().replace(/ /g, "").split(",");
+                    const values = $target.val().replace(/ /g, "").split(",");
 
                     // Too few numbers
                     if (values.length < lmin) {
@@ -221,29 +221,29 @@ function validate(targets, alert=true) {
 
                     if (alert) {
                         if (validity.valueMissing) {
-                            alertError(labelJQuery, "numbersMissing");
+                            alertError($label, "numbersMissing");
                         } else if (message === "numbersBadInput") {
-                            alertError(labelJQuery, "numbersBadInput");
+                            alertError($label, "numbersBadInput");
                         }
 
                         else if (message === "numbersLengthUnderflow") {
-                            alertError(labelJQuery, "numbersLengthUnderflow", { lmin });
+                            alertError($label, "numbersLengthUnderflow", { lmin });
                         } else if (message === "numbersLengthOverflow") {
-                            alertError(labelJQuery, "numbersLengthOverflow", { lmax });
+                            alertError($label, "numbersLengthOverflow", { lmax });
                         }
 
                         else if (message === "numbersUnderflow") {
-                            alertError(labelJQuery, "numbersUnderflow", { min });
+                            alertError($label, "numbersUnderflow", { min });
                         } else if (message === "numbersOverflow") {
-                            alertError(labelJQuery, "numbersOverflow", { max });
+                            alertError($label, "numbersOverflow", { max });
                         }
 
                         else if (message === "numbersStepMismatch") {
-                            alertError(labelJQuery, "numbersStepMismatch", { step });
+                            alertError($label, "numbersStepMismatch", { step });
                         }
 
                         else {
-                            alertError(labelJQuery, "custom", { text: message });
+                            alertError($label, "custom", { text: message });
                         }
                     }
                 }
@@ -251,7 +251,7 @@ function validate(targets, alert=true) {
         }
 
         if (isTargetValid) {
-            labelJQuery.next("span.alert").remove(); // Remove previous alert
+            $label.next("span.alert").remove(); // Remove previous alert
         }
     }
 
@@ -261,18 +261,18 @@ function validate(targets, alert=true) {
 
 /**
  * Places an alert after an element.
- * @param {jQuery} target The element.
+ * @param {jQuery} $target The element.
  * @param {string} type The type of the alert.
  * @param {object} args Arguments that gets passed into the function which generates the alert. Defaults to an empty object.
  */
-function alertError(target, type, args={}) {
+function alertError($target, type, args={}) {
     // Use the alert text if provided
     // Otherwise pass the arguments to the default alert text function if it exists
     // Otherwise use a generic text
-    const alertText = target.attr("alert-" + type) ?? DEFAULT_ALERTS[type](args) ?? "Error";
+    const alertText = $target.attr("alert-" + type) ?? DEFAULT_ALERTS[type](args) ?? "Error";
 
-    target.next("span.alert").remove(); // Remove previous alert if one exists
-    target.after(`<span class="alert alert-${type}">${alertText}</span>`); // Place alert
+    $target.next("span.alert").remove(); // Remove previous alert if one exists
+    $target.after(`<span class="alert alert-${type}">${alertText}</span>`); // Place alert
 }
 
 
@@ -289,52 +289,75 @@ function downloadFile(content, filename) {
 }
 
 
+/**
+ * Shows/hides the corner box and the "show corner box" button, and stores to `localStorage`.
+ * @param {boolean} visible Whether the corner box is visible or not.
+ */
+function updateCornerBoxVisibility(visible) {
+    $("div#corner-box").toggle(visible);
+    $("button#show-corner-box").toggle(!visible);
+    localStorage.setItem("cornerBoxVisible", visible);
+}
+
+
 $(() => {
+    let cornerBoxVisible = localStorage.getItem("cornerBoxVisible") !== "false";
+
     // Location on 404 page
-    $("h3#404-location").html(
-        `The page <code>${location.pathname}</code> doesn't exist`
-    );
+    // `slice(1)` to trim the beginning slash
+    $("code#404-location").html(location.pathname.slice(1));
 
     // Header
-    const header = '<a href="/">Home</a><a href="/projs">Projects</a>';
-    $("div#header").html(header);
+    const headerHTML = '<nav><a href="/">Home</a><a href="/projs">Projects</a></nav>'
+        + '<button id="show-corner-box">Show corner box</button>';
+    $("header").html(headerHTML);
+    $("button#show-corner-box").hide();
 
     /**
      * Sections information.
      * @type {{ title: string, id: string }[]}
      */
-    const sections = $("div.section").map(function () {
+    const sections = $("section").map(function () {
         return {
-            title: $(this).children("span:first-child").text(),
+            title: $(this).children("h3").text(),
             id: $(this).attr("id"),
         };
     }).get();
 
-    // Sticky corner box
-    let cornerBox = `<a href="#">To top</a><br><span>Version ${SITE_VERSION}</span>`;
+    // Corner box
+    let cornerBoxHTML = `<button id="hide-corner-box">Hide</button><br><a href="#">To top</a><br><span>Version ${SITE_VERSION}</span>`;
 
     // Section links
     if (sections.length > 0) {
-        cornerBox += '<br><button class="coll">Sections</button><div>';
+        cornerBoxHTML += '<br><details><summary>Sections</summary>';
         $.each(sections, function (i, section) {
-            cornerBox += `<a href="#${section.id}">${section.title}</a>`;
-            if (i < sections.length - 1) {
-                cornerBox += `<br>`
+            if (i > 0) {
+                cornerBoxHTML += `<br>`
             }
+            cornerBoxHTML += `<a href="#${section.id}">${section.title}</a>`;
         });
-        cornerBox += "</div>";
+        cornerBoxHTML += "</details>";
     }
 
-    $("div#corner-box").html(cornerBox);
+    // Place corner box into DOM
+    $("div#corner-box").html(cornerBoxHTML);
+    updateCornerBoxVisibility(cornerBoxVisible);
+
+    // Show corner box
+    $("button#show-corner-box").on("click", function () {
+        cornerBoxVisible = true;
+        updateCornerBoxVisibility(cornerBoxVisible);
+    });
+
+    // Hide corner box
+    $("button#hide-corner-box").on("click", function () {
+        cornerBoxVisible = false;
+        updateCornerBoxVisibility(cornerBoxVisible);
+    });
 
     // Required indicator
     $("input[required]")
         .before('<span class="required-ind">* </span>')
         .parent("label")
         .attr("title", "Required");
-
-    // Collapsible
-    $("button.coll").on("click", function () {
-        $(this).toggleClass("opened");
-    });
 });

@@ -36,31 +36,31 @@ function now() {
 
 
 /**
- * Appends text to `p#gen-status`.
- * @param {string} text The text to write.
+ * Appends HTML to `p#gen-status`.
+ * @param {string} html The HTML to write.
  */
-function appendStatusGen(text) {
-    let result = $("p#gen-status").html();
-    if (result !== "") result += "<br>";
-    result += text;
-    $("p#gen-status").html(result);
+function appendStatusGen(html) {
+    let resultHTML = $("p#gen-status").html();
+    if (resultHTML !== "") resultHTML += "<br>";
+    resultHTML += html;
+    $("p#gen-status").html(resultHTML);
 }
 
 
 /**
- * Appends text to `p#solve-status`.
- * @param {string} text The text to write.
+ * Appends HTML to `p#solve-status`.
+ * @param {string} html The HTML to write.
  */
-function appendStatusSolve(text) {
-    let result = $("p#solve-status").html();
-    if (result !== "") result += "<br>";
-    result += text;
-    $("p#solve-status").html(result);
+function appendStatusSolve(html) {
+    let resultHTML = $("p#solve-status").html();
+    if (resultHTML !== "") resultHTML += "<br>";
+    resultHTML += html;
+    $("p#solve-status").html(resultHTML);
 }
 
 
 /**
- * Overwrites `span#gen-progress`.
+ * Overwrites `span#gen-progress` with text.
  * @param {string} text The text to write.
  */
 function writeProgressGen(text) {
@@ -69,7 +69,7 @@ function writeProgressGen(text) {
 
 
 /**
- * Overwrites `span#solve-progress`.
+ * Overwrites `span#solve-progress` with text.
  * @param {string} text The text to write.
  */
 function writeProgressSolve(text) {
@@ -82,8 +82,8 @@ function writeProgressSolve(text) {
  * @param {boolean} enabled Enable tasks if `true` and disable if `false`.
  */
 function toggleTasks(enabled) {
-    $("button#gen").attr("disabled", !enabled);
-    $("button#solve").attr("disabled", !enabled);
+    $("button#gen").prop("disabled", !enabled);
+    $("button#solve").prop("disabled", !enabled);
 }
 
 
@@ -130,14 +130,14 @@ function mazeSVGTemplate(width, height) {
 /**
  * Draws the walls and border of a maze.
  * @param {Maze} maze The maze.
- * @param {jQuery} mazeSVG The SVG to draw onto. Expects a template.
+ * @param {jQuery} $mazeSVG The SVG to draw onto. Expects a template.
  */
-function drawMaze(maze, mazeSVG) {
-    const gWalls = mazeSVG.find("g#maze-walls");
+function drawMaze(maze, $mazeSVG) {
+    const $gWalls = $mazeSVG.find("g#maze-walls");
 
     // Draw horizontal walls
     for (const wall of maze.hWalls) {
-        gWalls.append(svgElement("line").attr({
+        $gWalls.append(svgElement("line").attr({
             x1: (wall % maze.width) * MAZE_SQUARE_WIDTH,
             y1: (Math.floor(wall / maze.width) + 1) * MAZE_SQUARE_WIDTH,
             x2: (wall % maze.width + 1) * MAZE_SQUARE_WIDTH,
@@ -147,7 +147,7 @@ function drawMaze(maze, mazeSVG) {
 
     // Draw vertical walls
     for (const wall of maze.vWalls) {
-        gWalls.append(svgElement("line").attr({
+        $gWalls.append(svgElement("line").attr({
             x1: (wall % maze.width + 1) * MAZE_SQUARE_WIDTH,
             y1: Math.floor(wall / maze.width) * MAZE_SQUARE_WIDTH,
             x2: (wall % maze.width + 1) * MAZE_SQUARE_WIDTH,
@@ -156,7 +156,7 @@ function drawMaze(maze, mazeSVG) {
     }
 
     // The border doesn't get cropped
-    mazeSVG.find("g#cropped")
+    $mazeSVG.find("g#cropped")
         .after(svgElement("path").attr({
             id: "maze-border",
             d: `M${CORNER_RADIUS},0 `
@@ -179,18 +179,18 @@ function drawMaze(maze, mazeSVG) {
  * @param {number} _height The height of the maze.
  * @param {number} squaresSolution The list of squares that traces out the solution, excluding the start and the end.
  * @param {number} squaresEndpoints The list containing the start and the end.
- * @param {jQuery} mazeSVG The SVG to draw onto. Expects a template with a maze drawn onto it.
+ * @param {jQuery} $mazeSVG The SVG to draw onto. Expects a template with a maze drawn onto it.
  */
-function drawSolution(width, _height, squaresSolution, squaresEndpoints, mazeSVG) {
-    const gSolution = mazeSVG.find("g#maze-solution").empty();
-    const gEndpoints = mazeSVG.find("g#maze-endpoints").empty();
+function drawSolution(width, _height, squaresSolution, squaresEndpoints, $mazeSVG) {
+    const $gSolution = $mazeSVG.find("g#maze-solution").empty();
+    const $gEndpoints = $mazeSVG.find("g#maze-endpoints").empty();
 
     // Draw solution
     for (const square of squaresSolution) {
         const squareX = square % width;
         const squareY = Math.floor(square / width);
 
-        gSolution.append(svgElement("rect").attr({
+        $gSolution.append(svgElement("rect").attr({
             width: MAZE_SQUARE_WIDTH,
             height: MAZE_SQUARE_WIDTH,
             x: squareX * MAZE_SQUARE_WIDTH,
@@ -203,7 +203,7 @@ function drawSolution(width, _height, squaresSolution, squaresEndpoints, mazeSVG
         const squareX = square % width;
         const squareY = Math.floor(square / width);
 
-        gEndpoints.append(svgElement("rect").attr({
+        $gEndpoints.append(svgElement("rect").attr({
             width: MAZE_SQUARE_WIDTH,
             height: MAZE_SQUARE_WIDTH,
             x: squareX * MAZE_SQUARE_WIDTH,
@@ -214,10 +214,8 @@ function drawSolution(width, _height, squaresSolution, squaresEndpoints, mazeSVG
 
 
 $(() => {
-    $("button#download").hide();
-    $("span#download-note").hide();
-    $("button#toggle-solution").hide();
-    $("button#toggle-endpoints").hide();
+    $("div#subsec-download").hide();
+    $("div#subsec-solution-visibility").hide();
 
     // Prevent tasks before worker is ready
     toggleTasks(false);
@@ -225,29 +223,27 @@ $(() => {
     const worker = new Worker("/scripts/maze_worker.js");
 
     let maze; // Internally stored maze with type `Maze`
-    let mazeSVG; // Maze SVG internally stored as a jQuery object
+    let $mazeSVG; // Maze SVG internally stored as a jQuery object
     let solutionVisible; // Whether `g#maze-solution` is visible or not
     let endpointsVisible; // Whether `g#maze-endpoints` is visible or not
 
     let startTime; // Timestamp at the start of a step
 
-    $("button#toggle-solution").on("click", function () {
-        solutionVisible = !solutionVisible;
+    $("input#show-solution").on("change", function () {
+        solutionVisible = this.checked;
         $("g#maze-solution").toggle(solutionVisible);
-        $(this).text(solutionVisible ? "Hide Solution" : "Show Solution");
     });
 
-    $("button#toggle-endpoints").on("click", function () {
-        endpointsVisible = !endpointsVisible;
+    $("input#show-endpoints").on("change", function () {
+        endpointsVisible = this.checked;
         $("g#maze-endpoints").toggle(endpointsVisible);
-        $(this).text(endpointsVisible ? "Hide Endpoints" : "Show Endpoints");
     });
 
     // Generate button pressed
     $("button#gen").on("click", function () {
-        const validationTargets = $("input#width, input#height");
+        const $validationTargets = $("input#width, input#height");
 
-        if (validate(validationTargets)) {
+        if (validate($validationTargets)) {
             // Clear generation and solving status
             // Clear solving progress
             $("p#gen-status").empty();
@@ -255,8 +251,7 @@ $(() => {
             $("span#solve-progress").empty();
 
             // Hide solution and endpoints toggle
-            $("button#toggle-solution").hide();
-            $("button#toggle-endpoints").hide();
+            $("div#subsec-solution-visibility").hide();
 
             // Prevent additional tasks
             toggleTasks(false);
@@ -274,7 +269,7 @@ $(() => {
 
     // Solve button pressed
     $("button#solve").on("click", function () {
-        const validationTargets = $("input#start-x, input#start-y, input#end-x, input#end-y");
+        const $validationTargets = $("input#start-x, input#start-y, input#end-x, input#end-y");
 
         // Check if a maze has been generated
         if (maze === undefined) {
@@ -282,7 +277,7 @@ $(() => {
             return;
         }
 
-        if (validate(validationTargets)) {
+        if (validate($validationTargets)) {
             // Clear solving status
             $("p#solve-status").empty();
 
@@ -307,8 +302,8 @@ $(() => {
 
     // Download
     $("button#download").on("click", function () {
-        const standaloneSVG = mazeSVG.clone();
-        standaloneSVG.attr("xmlns", "http://www.w3.org/2000/svg");
+        const $standaloneSVG = $mazeSVG.clone();
+        $standaloneSVG.attr("xmlns", "http://www.w3.org/2000/svg");
 
         // Style
         const bgColor = $(":root").css("--bg-color");
@@ -316,7 +311,7 @@ $(() => {
         const solutionColor = $(":root").css("--solution-color");
         const endpointColor = $(":root").css("--endpoint-color");
         const wallThickness = $(":root").css("--wall-thickness");
-        const style = ":root { "
+        const css = ":root { "
                 + `--bg-color: ${bgColor}; `
                 + `--fg-color: ${fgColor}; `
                 + `--solution-color: ${solutionColor}; `
@@ -337,16 +332,16 @@ $(() => {
             + "} g#maze-endpoints { "
                 + "fill: var(--endpoint-color); "
             + "}";
-        standaloneSVG.prepend(svgElement("style").text(style));
+        $standaloneSVG.prepend(svgElement("style").text(css));
 
         if (!solutionVisible) {
-            standaloneSVG.find("g#maze-solution").empty();
+            $standaloneSVG.find("g#maze-solution").empty();
         }
         if (!endpointsVisible) {
-            standaloneSVG.find("g#maze-endpoints").empty();
+            $standaloneSVG.find("g#maze-endpoints").empty();
         }
 
-        downloadFile(standaloneSVG[0].outerHTML, "maze.svg");
+        downloadFile($standaloneSVG[0].outerHTML, "maze.svg");
     });
 
     // Message received from worker
@@ -365,16 +360,15 @@ $(() => {
                 startTime = now();
 
                 // Initialize SVG
-                mazeSVG = mazeSVGTemplate(maze.width, maze.height);
+                $mazeSVG = mazeSVGTemplate(maze.width, maze.height);
 
                 // Draw maze
-                drawMaze(maze, mazeSVG);
+                drawMaze(maze, $mazeSVG);
                 $("div#maze-img-container").empty();
-                $("div#maze-img-container").append(mazeSVG.clone());
+                $("div#maze-img-container").append($mazeSVG.clone());
 
                 // Enable downloading
-                $("button#download").show();
-                $("span#download-note").show();
+                $("div#subsec-download").show();
 
                 // Remove "maze not yet generated" alert
                 $("button#solve").next("span.alert-mazeNotGenerated").remove();
@@ -404,23 +398,21 @@ $(() => {
                 const hideSolutionAfterSolve = $("input#hide-solution-after-solve").is(":checked");
 
                 // Draw solution
-                drawSolution(maze.width, maze.height, e.data.squaresSolution, e.data.squaresEndpoints, mazeSVG);
+                drawSolution(maze.width, maze.height, e.data.squaresSolution, e.data.squaresEndpoints, $mazeSVG);
                 $("div#maze-img-container").empty();
-                $("div#maze-img-container").append(mazeSVG.clone());
+                $("div#maze-img-container").append($mazeSVG.clone());
 
                 appendStatusSolve(`Solution rendering took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
                 toggleTasks(true);
 
                 solutionVisible = !hideSolutionAfterSolve;
+                $("input#show-solution").prop("checked", solutionVisible);
                 endpointsVisible = true;
+                $("input#show-endpoints").prop("checked", endpointsVisible);
+
                 $("g#maze-solution").toggle(solutionVisible);
                 $("g#maze-endpoints").show();
-                $("button#toggle-solution")
-                    .show()
-                    .text(hideSolutionAfterSolve ? "Show Solution" : "Hide Solution");
-                $("button#toggle-endpoints")
-                    .show()
-                    .text("Hide Endpoints");
+                $("div#subsec-solution-visibility").show();
 
                 break;
 

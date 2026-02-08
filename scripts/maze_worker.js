@@ -1,5 +1,3 @@
-// Type `Maze` is defined in maze.js
-
 importScripts("/scripts/common_util.js");
 
 

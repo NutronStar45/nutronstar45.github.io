@@ -16,71 +16,91 @@
 </head>
 
 <body>
-    <div id="header"></div>
+    <header></header>
     <div id="corner-box"></div>
 
     <h2>Maze Generator &amp; Solver</h2>
 
-    <div id="sec-gen" class="section">
-        <span>Generator</span>
-        <div>
-            <label>
-                Width: <input id="width" type="number" min="1" max="1000" required>
-            </label>
-            <br>
-            <label>
-                Height: <input id="height" type="number" min="1" max="1000" required>
-            </label>
-        </div>
-        <button id="gen">Generate</button>
-        <span id="gen-progress"></span>
-        <p id="gen-status"></p>
-    </div>
+    <main>
+        <section id="sec-gen">
+            <h3>Generator</h3>
+            <div>
+                <label>
+                    Width: <input id="width" type="number" min="1" max="1000" required>
+                </label>
+                <br>
 
-    <div id="sec-solve" class="section">
-        <span>Solver</span>
-        <div>
-            <label>
-                <input id="hide-solution-after-solve" type="checkbox"> Hide Solution After Solving
-            </label>
-            <br>
+                <label>
+                    Height: <input id="height" type="number" min="1" max="1000" required>
+                </label>
+                <br>
 
-            <label alert-numberUnderflow="Coordinate outside maze" alert-numberOverflow="Coordinate outside maze">
-                Start: X
-                <input id="start-x" type="number" min="1" required>
-            </label>
-            <label alert-numberUnderflow="Coordinate outside maze" alert-numberOverflow="Coordinate outside maze">
-                Y
-                <input id="start-y" type="number" min="1" required>
-            </label>
-            <br>
+                <button id="gen">Generate</button>
+                <span id="gen-progress"></span>
 
-            <label alert-numberUnderflow="Coordinate outside maze" alert-numberOverflow="Coordinate outside maze">
-                End: X
-                <input id="end-x" type="number" min="1" required>
-            </label>
-            <label alert-numberUnderflow="Coordinate outside maze" alert-numberOverflow="Coordinate outside maze">
-                Y
-                <input id="end-y" type="number" min="1" required>
-            </label>
-        </div>
-        <button id="solve" alert-mazeNotGenerated="Maze not yet generated">Solve</button>
-        <span id="solve-progress"></span>
-        <p id="solve-status"></p>
-    </div>
+                <p id="gen-status"></p>
+            </div>
+        </section>
 
-    <div id="sec-maze" class="section">
-        <span>Maze</span>
-        <div>
-            <button id="download">Download as SVG</button>
-            <span id="download-note">(Solution and endpoints won't be saved to the file if hidden)</span>
-            <br>
+        <section id="sec-solve">
+            <h3>Solver</h3>
+            <div>
+                <label>
+                    <input id="hide-solution-after-solve" type="checkbox"> Hide Solution After Solving
+                </label>
+                <br>
 
-            <button id="toggle-solution"></button>
-            <button id="toggle-endpoints"></button>
-            <div id="maze-img-container"></div>
-        </div>
-    </div>
+                <label alert-numberUnderflow="Coordinate outside maze" alert-numberOverflow="Coordinate outside maze">
+                    Start: X
+                    <input id="start-x" type="number" min="1" required>
+                </label>
+                <label alert-numberUnderflow="Coordinate outside maze" alert-numberOverflow="Coordinate outside maze">
+                    Y
+                    <input id="start-y" type="number" min="1" required>
+                </label>
+                <br>
+
+                <label alert-numberUnderflow="Coordinate outside maze" alert-numberOverflow="Coordinate outside maze">
+                    End: X
+                    <input id="end-x" type="number" min="1" required>
+                </label>
+                <label alert-numberUnderflow="Coordinate outside maze" alert-numberOverflow="Coordinate outside maze">
+                    Y
+                    <input id="end-y" type="number" min="1" required>
+                </label>
+                <br>
+
+                <button id="solve" alert-mazeNotGenerated="Maze not yet generated">Solve</button>
+                <span id="solve-progress"></span>
+
+                <p id="solve-status"></p>
+            </div>
+        </section>
+
+        <section id="sec-maze">
+            <h3>Maze</h3>
+            <div>
+                <div id="subsec-download">
+                    <button id="download">Download as SVG</button>
+                    <span id="download-note">(Solution and endpoints won't be saved to the file if hidden)</span>
+                </div>
+
+                <div id="subsec-solution-visibility">
+                    <label>
+                        <input id="show-solution" type="checkbox">
+                        Show Solution
+                    </label>
+                    <br>
+                    <label>
+                        <input id="show-endpoints" type="checkbox">
+                        Show Endpoints
+                    </label>
+                </div>
+
+                <div id="maze-img-container"></div>
+            </div>
+        </section>
+    </main>
 
     <script src="/scripts/common.js"></script>
     <script src="/scripts/maze.js"></script>
