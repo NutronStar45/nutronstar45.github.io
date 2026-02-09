@@ -1,6 +1,3 @@
-const SITE_VERSION = "3.5";
-
-
 const DEFAULT_ALERTS = {
     numberMissing: _args => "A number should be entered",
     numberBadInput: _args => "A number should be entered",
@@ -330,7 +327,7 @@ $(() => {
     // Section links
     if (sections.length > 0) {
         cornerBoxHTML += '<br><details><summary>Sections</summary>';
-        $.each(sections, function (i, section) {
+        sections.forEach((section, i) => {
             if (i > 0) {
                 cornerBoxHTML += `<br>`
             }

@@ -18,63 +18,14 @@ Vertical walls are indexed by the square on their top
  */
 
 
-// The width of a square when rendered
+// The width of a square in the resulting SVG
 const MAZE_SQUARE_WIDTH = 20;
 // The radius of the rounded corners
 const CORNER_RADIUS = 4;
-// The precision of reported time
-const TIME_PRECISION = 2;
-
-
-/**
- * Returns timestamp in seconds.
- * @returns {number} Time passed since 0:00:00, January 1, 1970 (UTC) in seconds.
- */
-function now() {
-    return Date.now() / 1000;
-}
-
-
-/**
- * Appends HTML to `p#gen-status`.
- * @param {string} html The HTML to write.
- */
-function appendStatusGen(html) {
-    let resultHTML = $("p#gen-status").html();
-    if (resultHTML !== "") resultHTML += "<br>";
-    resultHTML += html;
-    $("p#gen-status").html(resultHTML);
-}
-
-
-/**
- * Appends HTML to `p#solve-status`.
- * @param {string} html The HTML to write.
- */
-function appendStatusSolve(html) {
-    let resultHTML = $("p#solve-status").html();
-    if (resultHTML !== "") resultHTML += "<br>";
-    resultHTML += html;
-    $("p#solve-status").html(resultHTML);
-}
-
-
-/**
- * Overwrites `span#gen-progress` with text.
- * @param {string} text The text to write.
- */
-function writeProgressGen(text) {
-    $("span#gen-progress").text(text);
-}
-
-
-/**
- * Overwrites `span#solve-progress` with text.
- * @param {string} text The text to write.
- */
-function writeProgressSolve(text) {
-    $("span#solve-progress").text(text);
-}
+// The precision of reported time during a process
+const TIME_PRECISION = 0;
+// The precision of final reported time
+const FINAL_TIME_PRECISION = 2;
 
 
 /**
@@ -82,7 +33,7 @@ function writeProgressSolve(text) {
  * @param {boolean} enabled Enable tasks if `true` and disable if `false`.
  */
 function toggleTasks(enabled) {
-    $("button#gen").prop("disabled", !enabled);
+    $("button#generate").prop("disabled", !enabled);
     $("button#solve").prop("disabled", !enabled);
 }
 
@@ -185,12 +136,16 @@ function drawSolution(width, _height, squaresSolution, squaresEndpoints, $mazeSV
     const $gSolution = $mazeSVG.find("g#maze-solution").empty();
     const $gEndpoints = $mazeSVG.find("g#maze-endpoints").empty();
 
-    // Draw solution
-    for (const square of squaresSolution) {
+    /**
+     * Draws a square under an element.
+     * @param {number} square The square to be drawn.
+     * @param {jQuery} $parent The element to draw the square under.
+     */
+    function drawSquare(square, $parent) {
         const squareX = square % width;
         const squareY = Math.floor(square / width);
 
-        $gSolution.append(svgElement("rect").attr({
+        $parent.append(svgElement("rect").attr({
             width: MAZE_SQUARE_WIDTH,
             height: MAZE_SQUARE_WIDTH,
             x: squareX * MAZE_SQUARE_WIDTH,
@@ -198,22 +153,21 @@ function drawSolution(width, _height, squaresSolution, squaresEndpoints, $mazeSV
         }));
     }
 
+    // Draw solution
+    for (const square of squaresSolution) {
+        drawSquare(square, $gSolution);
+    }
+
     // Draw endpoints
     for (const square of squaresEndpoints) {
-        const squareX = square % width;
-        const squareY = Math.floor(square / width);
-
-        $gEndpoints.append(svgElement("rect").attr({
-            width: MAZE_SQUARE_WIDTH,
-            height: MAZE_SQUARE_WIDTH,
-            x: squareX * MAZE_SQUARE_WIDTH,
-            y: squareY * MAZE_SQUARE_WIDTH,
-        }));
+        drawSquare(square, $gEndpoints);
     }
 }
 
 
 $(() => {
+    $("div#subsec-generator-status").hide();
+    $("div#subsec-solver-status").hide();
     $("div#subsec-download").hide();
     $("div#subsec-solution-visibility").hide();
 
@@ -227,8 +181,6 @@ $(() => {
     let solutionVisible; // Whether `g#maze-solution` is visible or not
     let endpointsVisible; // Whether `g#maze-endpoints` is visible or not
 
-    let startTime; // Timestamp at the start of a step
-
     $("input#show-solution").on("change", function () {
         solutionVisible = this.checked;
         $("g#maze-solution").toggle(solutionVisible);
@@ -240,15 +192,17 @@ $(() => {
     });
 
     // Generate button pressed
-    $("button#gen").on("click", function () {
+    $("button#generate").on("click", function () {
         const $validationTargets = $("input#width, input#height");
 
         if (validate($validationTargets)) {
-            // Clear generation and solving status
-            // Clear solving progress
-            $("p#gen-status").empty();
-            $("p#solve-status").empty();
-            $("span#solve-progress").empty();
+            // Show generator status
+            // Hide solver status
+            $("div#subsec-generator-status").show();
+            $("div#subsec-solver-status").hide();
+
+            // Reset maze drawing time
+            $("span#draw-maze-time").text("0s");
 
             // Hide solution and endpoints toggle
             $("div#subsec-solution-visibility").hide();
@@ -260,10 +214,8 @@ $(() => {
             const width = +$("input#width").val();
             const height = +$("input#height").val();
 
-            startTime = now();
             // Generate maze
-            worker.postMessage({ msg: "gen", width, height });
-            writeProgressGen("0%");
+            worker.postMessage({ msg: "generate", width, height });
         }
     });
 
@@ -278,8 +230,11 @@ $(() => {
         }
 
         if (validate($validationTargets)) {
-            // Clear solving status
-            $("p#solve-status").empty();
+            // Show solver status
+            $("div#subsec-solver-status").show();
+
+            // Reset solution drawing time
+            $("span#draw-solution-time").text("0s");
 
             // Prevent additional tasks
             toggleTasks(false);
@@ -293,10 +248,8 @@ $(() => {
             const endY = +$("input#end-y").val();
             const end = (endY - 1) * maze.width + (endX - 1);
 
-            startTime = now();
             // Calculate solution
             worker.postMessage({ msg: "solve", maze, start, end });
-            writeProgressSolve("0%");
         }
     });
 
@@ -346,6 +299,7 @@ $(() => {
 
     // Message received from worker
     worker.addEventListener("message", e => {
+        let startTime;
         switch (e.data.msg) {
             // Worker ready
             case "ready":
@@ -353,11 +307,10 @@ $(() => {
                 break;
 
             // Generation complete
-            case "gen":
-                writeProgressGen("100%");
+            case "generateComplete":
                 maze = e.data.maze;
-                appendStatusGen(`Maze generation took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
-                startTime = now();
+                $("span#generate-time").text(`${(e.data.time / 1000).toFixed(FINAL_TIME_PRECISION)}s`);
+                startTime = Date.now();
 
                 // Initialize SVG
                 $mazeSVG = mazeSVGTemplate(maze.width, maze.height);
@@ -379,21 +332,21 @@ $(() => {
                 $("input#end-x").attr("max", maze.width);
                 $("input#end-y").attr("max", maze.height);
 
-                appendStatusGen(`Maze rendering took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
+                $("span#draw-maze-time").text(`${((Date.now() - startTime) / 1000).toFixed(FINAL_TIME_PRECISION)}s`);
                 toggleTasks(true);
 
                 break;
 
             // Generation progress report
-            case "genProgress":
-                writeProgressGen(`${e.data.progress}%`);
+            case "generateProgress":
+                $("span#generate-progress").text(`${e.data.progress}%`);
+                $("span#generate-time").text(`${(e.data.time / 1000).toFixed(TIME_PRECISION)}s`);
                 break;
 
             // Solving complete
-            case "solve":
-                writeProgressSolve("100%");
-                appendStatusSolve(`Solution calculation took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
-                startTime = now();
+            case "solveComplete":
+                $("span#solve-time").text(`${(e.data.time / 1000).toFixed(FINAL_TIME_PRECISION)}s`);
+                startTime = Date.now();
 
                 const hideSolutionAfterSolve = $("input#hide-solution-after-solve").is(":checked");
 
@@ -402,7 +355,7 @@ $(() => {
                 $("div#maze-img-container").empty();
                 $("div#maze-img-container").append($mazeSVG.clone());
 
-                appendStatusSolve(`Solution rendering took ${(now() - startTime).toFixed(TIME_PRECISION)}s`);
+                $("span#draw-solution-time").text(`${((Date.now() - startTime) / 1000).toFixed(FINAL_TIME_PRECISION)}s`);
                 toggleTasks(true);
 
                 solutionVisible = !hideSolutionAfterSolve;
@@ -418,7 +371,8 @@ $(() => {
 
             // Solving progress report
             case "solveProgress":
-                writeProgressSolve(`${e.data.progress}%`);
+                $("span#solve-progress").text(`${e.data.progress}%`);
+                $("span#solve-time").text(`${(e.data.time / 1000).toFixed(TIME_PRECISION)}s`);
                 break;
 
             // Unknown message

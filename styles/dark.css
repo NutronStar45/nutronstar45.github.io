@@ -1,9 +1,10 @@
 :root {
     --bg-color: #141414;
     --fg-color: #ffffff;
-    --link-fg-color: #1282cd;
+    --anchor-fg-color: #3fadf7;
+    --external-anchor-fg-color: #dce50b;
     --required-ind-fg-color: #ffffff;
-    --alert-fg-color: #dc3c3c;
+    --alert-fg-color: #f34545;
     --section-border-color: #a5a5a5;
     --fixed-toolbar-border-color: #ffffff;
     --button-border-color: #7f7f7f;

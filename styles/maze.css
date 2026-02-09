@@ -9,10 +9,6 @@ input#width, input#height, input#start-x, input#start-y, input#end-x, input#end-
     width: 5em;
 }
 
-span#gen-progress, span#solve-progress {
-    margin-left: 0.3em;
-}
-
 div#maze-img-container {
     max-height: 600px;
     overflow: auto;

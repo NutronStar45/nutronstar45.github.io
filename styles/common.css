@@ -98,9 +98,14 @@ section {
 
 /* Anchor */
 a {
-    color: var(--link-fg-color);
+    color: var(--anchor-fg-color);
     cursor: pointer;
     text-decoration: none;
+}
+
+/* External anchor */
+a.external {
+    color: var(--external-anchor-fg-color);
 }
 
 /* Buttons */

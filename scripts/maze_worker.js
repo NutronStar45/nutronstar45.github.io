@@ -1,19 +1,34 @@
 importScripts("/scripts/common_util.js");
 
 
+// Time between individual progress reports in milliseconds
+const PROGRESS_REPORT_INTERVAL = 1000;
+
+// Timestamp at the start of a step
+let startTime;
+
 postMessage({ msg: "ready" });
 
 addEventListener("message", e => {
     switch (e.data.msg) {
         // Generate maze
-        case "gen":
-            postMessage({ msg: "gen", maze: generateMaze(e.data.width, e.data.height) });
+        case "generate":
+            postMessage({
+                msg: "generateComplete",
+                maze: generateMaze(e.data.width, e.data.height),
+                time: Date.now() - startTime
+            });
             break;
 
         // Calculate solution
         case "solve":
             const { squaresSolution, squaresEndpoints } = calculateSolution(e.data.maze, e.data.start, e.data.end);
-            postMessage({ msg: "solve", squaresSolution, squaresEndpoints });
+            postMessage({
+                msg: "solveComplete",
+                squaresSolution,
+                squaresEndpoints,
+                time: Date.now() - startTime
+            });
             break;
 
         // Unknown message
@@ -98,6 +113,14 @@ function isBlocked(square, maze) {
  * @returns {Maze} The generated maze.
  */
 function generateMaze(width, height) {
+    startTime = Date.now();
+    postMessage({ msg: "generateProgress", progress: 0, time: 0 });
+
+    // 0 to 100, rounded down
+    let progress = 0;
+    // Number of `PROGRESS_REPORT_INTERVAL`s elapsed, rounded down
+    let reportUnitsElapsed = 0;
+
     // Initialize walls
     let hWalls = []; // Horizontal
     let vWalls = []; // Vertical
@@ -133,9 +156,6 @@ function generateMaze(width, height) {
         squaresSearching.push(neighbor.index);
     }
 
-    // 0 to 100, rounded down
-    let progress = 0;
-
     // Repeat until all squares are finished
     while (squaresSearching.length > 0) {
         // Choose a searching square as the "extension"
@@ -161,10 +181,17 @@ function generateMaze(width, height) {
             squaresSearching.push(neighbor.index);
         }
 
+        // Report progress
         const newProgress = Math.floor(squaresFinished.length / width / height * 100);
-        if (newProgress > progress) {
+        const newReportUnitsElapsed = Math.floor((Date.now() - startTime) / PROGRESS_REPORT_INTERVAL);
+        if (newProgress > progress || newReportUnitsElapsed > reportUnitsElapsed) {
             progress = newProgress;
-            postMessage({ msg: "genProgress", progress });
+            reportUnitsElapsed = newReportUnitsElapsed;
+            postMessage({
+                msg: "generateProgress",
+                progress,
+                time: reportUnitsElapsed * PROGRESS_REPORT_INTERVAL
+            });
         }
     }
 
@@ -180,14 +207,21 @@ function generateMaze(width, height) {
  * @returns {{ squaresSolution: number[], squaresEndpoints: number[] }} `squaresSolution` is the list of squares that traces out the solution, excluding the start and the end; `squaresEndpoints` is the list containing the start and the end.
  */
 function calculateSolution(maze, start, end) {
-    let hWallsCopy = [...maze.hWalls];
-    let vWallsCopy = [...maze.vWalls];
-
-    let squaresSolution = Array.from({ length: maze.width * maze.height }, (_v, i) => i);
-    const squaresEndpoints = start === end ? [start] : [start, end];
+    startTime = Date.now();
+    postMessage({ msg: "solveProgress", progress: 0, time: 0 });
 
     // 0 to 100, rounded down
     let progress = 0;
+    // Number of `PROGRESS_REPORT_INTERVAL`s elapsed, rounded down
+    let reportUnitsElapsed = 0;
+
+    // Copy walls
+    let hWallsCopy = [...maze.hWalls];
+    let vWallsCopy = [...maze.vWalls];
+
+    // Initialize return arrays
+    let squaresSolution = Array.from({ length: maze.width * maze.height }, (_v, i) => i);
+    const squaresEndpoints = start === end ? [start] : [start, end];
 
     // Search for deadends
     for (let square = 0; square < maze.width * maze.height; square++) {
@@ -224,10 +258,17 @@ function calculateSolution(maze, start, end) {
             }
         }
 
+        // Report progress
         const newProgress = Math.floor((square + 1) / maze.width / maze.height * 100);
-        if (newProgress > progress) {
+        const newReportUnitsElapsed = Math.floor((Date.now() - startTime) / PROGRESS_REPORT_INTERVAL);
+        if (newProgress > progress || newReportUnitsElapsed > reportUnitsElapsed) {
             progress = newProgress;
-            postMessage({ msg: "solveProgress", progress });
+            reportUnitsElapsed = newReportUnitsElapsed;
+            postMessage({
+                msg: "solveProgress",
+                progress,
+                time: reportUnitsElapsed * PROGRESS_REPORT_INTERVAL
+            });
         }
     }
 

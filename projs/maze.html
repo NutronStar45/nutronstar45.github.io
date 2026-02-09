@@ -22,8 +22,9 @@
     <h2>Maze Generator &amp; Solver</h2>
 
     <main>
-        <section id="sec-gen">
+        <section id="sec-generator">
             <h3>Generator</h3>
+
             <div>
                 <label>
                     Width: <input id="width" type="number" min="1" max="1000" required>
@@ -33,23 +34,23 @@
                 <label>
                     Height: <input id="height" type="number" min="1" max="1000" required>
                 </label>
+            </div>
+
+            <div>
+                <button id="generate">Generate</button>
+            </div>
+
+            <div id="subsec-generator-status">
+                Generating maze <span id="generate-progress"></span> (<span id="generate-time"></span>)
                 <br>
-
-                <button id="gen">Generate</button>
-                <span id="gen-progress"></span>
-
-                <p id="gen-status"></p>
+                Drawing maze (<span id="draw-maze-time"></span>)
             </div>
         </section>
 
-        <section id="sec-solve">
+        <section id="sec-solver">
             <h3>Solver</h3>
-            <div>
-                <label>
-                    <input id="hide-solution-after-solve" type="checkbox"> Hide Solution After Solving
-                </label>
-                <br>
 
+            <div>
                 <label alert-numberUnderflow="Coordinate outside maze" alert-numberOverflow="Coordinate outside maze">
                     Start: X
                     <input id="start-x" type="number" min="1" required>
@@ -70,38 +71,46 @@
                 </label>
                 <br>
 
-                <button id="solve" alert-mazeNotGenerated="Maze not yet generated">Solve</button>
-                <span id="solve-progress"></span>
+                <label>
+                    <input id="hide-solution-after-solve" type="checkbox"> Hide Solution After Solving
+                </label>
+            </div>
 
-                <p id="solve-status"></p>
+            <div>
+                <button id="solve" alert-mazeNotGenerated="Maze not yet generated">Solve</button>
+            </div>
+
+            <div id="subsec-solver-status">
+                Calculating solution <span id="solve-progress"></span> (<span id="solve-time"></span>)
+                <br>
+                Drawing solution (<span id="draw-solution-time"></span>)
             </div>
         </section>
 
         <section id="sec-maze">
             <h3>Maze</h3>
-            <div>
-                <div id="subsec-download">
-                    <button id="download">Download as SVG</button>
-                    <span id="download-note">(Solution and endpoints won't be saved to the file if hidden)</span>
-                </div>
-
-                <div id="subsec-solution-visibility">
-                    <label>
-                        <input id="show-solution" type="checkbox">
-                        Show Solution
-                    </label>
-                    <br>
-                    <label>
-                        <input id="show-endpoints" type="checkbox">
-                        Show Endpoints
-                    </label>
-                </div>
-
-                <div id="maze-img-container"></div>
+            <div id="subsec-download">
+                <button id="download">Download as SVG</button>
+                <span id="download-note">(Solution and endpoints won't be saved to the file if hidden)</span>
             </div>
+
+            <div id="subsec-solution-visibility">
+                <label>
+                    <input id="show-solution" type="checkbox">
+                    Show Solution
+                </label>
+                <br>
+                <label>
+                    <input id="show-endpoints" type="checkbox">
+                    Show Endpoints
+                </label>
+            </div>
+
+            <div id="maze-img-container"></div>
         </section>
     </main>
 
+    <script src="/scripts/common_util.js"></script>
     <script src="/scripts/common.js"></script>
     <script src="/scripts/maze.js"></script>
 </body>

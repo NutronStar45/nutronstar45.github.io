@@ -1,3 +1,6 @@
+const SITE_VERSION = "3.6";
+
+
 /**
  * Chooses a random element from the array.
  * @param {any[]} array An array to choose an element from.
