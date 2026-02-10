@@ -29,16 +29,6 @@ const FINAL_TIME_PRECISION = 2;
 
 
 /**
- * Enables/Disables tasks (generation and solving).
- * @param {boolean} enabled Enable tasks if `true` and disable if `false`.
- */
-function toggleTasks(enabled) {
-    $("button#generate").prop("disabled", !enabled);
-    $("button#solve").prop("disabled", !enabled);
-}
-
-
-/**
  * Returns the SVG template of a maze of given size.
  * @param {number} width The width of the maze.
  * @param {number} height The height of the maze.
@@ -171,10 +161,9 @@ $(() => {
     $("div#subsec-download").hide();
     $("div#subsec-solution-visibility").hide();
 
-    // Prevent tasks before worker is ready
-    toggleTasks(false);
-    // Web Worker to offload generation and solving
-    const worker = new Worker("/scripts/maze_worker.js");
+    $("button#generate-cancel").hide();
+    $("button#solve").prop("disabled", true);
+    $("button#solve-cancel").hide();
 
     let maze; // Internally stored maze with type `Maze`
     let $mazeSVG; // Maze SVG internally stored as a jQuery object
@@ -191,65 +180,202 @@ $(() => {
         $("g#maze-endpoints").toggle(endpointsVisible);
     });
 
-    // Generate button pressed
+    // "Generate" pressed
     $("button#generate").on("click", function () {
         const $validationTargets = $("input#width, input#height");
 
         if (validate($validationTargets)) {
-            // Show generator status
-            // Hide solver status
+            // Show generator and solver status
             $("div#subsec-generator-status").show();
             $("div#subsec-solver-status").hide();
 
-            // Reset maze drawing time
+            // Reset maze drawing status
+            $("span#draw-maze-progress").text("0%");
             $("span#draw-maze-time").text("0s");
 
             // Hide solution and endpoints toggle
             $("div#subsec-solution-visibility").hide();
 
-            // Prevent additional tasks
-            toggleTasks(false);
+            // Prevent generation and solving
+            $(this).prop("disabled", true);
+            $("button#solve").prop("disabled", true);
 
-            // Fetch parameters from user input
+            // Generate maze
             const width = +$("input#width").val();
             const height = +$("input#height").val();
 
-            // Generate maze
-            worker.postMessage({ msg: "generate", width, height });
+            // Spawn worker
+            const worker = new Worker("/scripts/maze_worker_generate.js");
+            worker.postMessage({ width, height });
+            worker.addEventListener("message", e => {
+                switch (e.data.msg) {
+                    // Complete
+                    case "complete":
+                        worker.terminate();
+                        maze = e.data.maze;
+                        $("span#generate-time").text(`${(e.data.time / 1000).toFixed(FINAL_TIME_PRECISION)}s`);
+                        const startTime = Date.now();
+
+                        // Disable canceling
+                        $("button#generate-cancel").hide();
+                        $("button#generate-cancel").off("click", cancel);
+
+                        // Initialize SVG
+                        $mazeSVG = mazeSVGTemplate(maze.width, maze.height);
+
+                        // Draw maze
+                        drawMaze(maze, $mazeSVG);
+                        $("div#maze-img-container").empty();
+                        $("div#maze-img-container").append($mazeSVG.clone());
+
+                        // Report maze drawing status
+                        $("span#draw-maze-progress").text("100%");
+                        $("span#draw-maze-time").text(`${((Date.now() - startTime) / 1000).toFixed(FINAL_TIME_PRECISION)}s`);
+
+                        // Enable downloading
+                        $("div#subsec-download").show();
+
+                        // Limit solving parameters
+                        $("input#start-x").attr("max", maze.width);
+                        $("input#start-y").attr("max", maze.height);
+                        $("input#end-x").attr("max", maze.width);
+                        $("input#end-y").attr("max", maze.height);
+
+                        // Enable generation and solving
+                        $("button#generate").prop("disabled", false);
+                        $("button#solve").prop("disabled", false);
+                        break;
+
+                    // Progress report
+                    case "progress":
+                        $("span#generate-progress").text(`${e.data.progress}%`);
+                        $("span#generate-time").text(`${(e.data.time / 1000).toFixed(TIME_PRECISION)}s`);
+                        break;
+
+                    // Unknown message
+                    default:
+                        console.error("Received unknown message from generation worker:", e);
+                }
+            });
+
+            // Handle canceling
+            function cancel() {
+                $(this).hide();
+
+                // Hide generator status
+                $("div#subsec-generator-status").hide();
+
+                // Enable generation
+                // Enable solving if maze is generated
+                $("button#generate").prop("disabled", false);
+                if (maze !== undefined) {
+                    $("button#solve").prop("disabled", false);
+                }
+
+                worker.terminate();
+            }
+
+            // Enable canceling
+            $("button#generate-cancel").on("click", cancel);
+            $("button#generate-cancel").show();
         }
     });
 
-    // Solve button pressed
+    // "Solve" pressed
     $("button#solve").on("click", function () {
         const $validationTargets = $("input#start-x, input#start-y, input#end-x, input#end-y");
-
-        // Check if a maze has been generated
-        if (maze === undefined) {
-            alertError($(this), "mazeNotGenerated");
-            return;
-        }
 
         if (validate($validationTargets)) {
             // Show solver status
             $("div#subsec-solver-status").show();
 
-            // Reset solution drawing time
+            // Reset solution drawing status
+            $("span#draw-solution-progress").text("0%");
             $("span#draw-solution-time").text("0s");
 
-            // Prevent additional tasks
-            toggleTasks(false);
+            // Prevent generation and solving
+            $("button#generate").prop("disabled", true);
+            $(this).prop("disabled", true);
 
-            // Fetch parameters from user input
+            // Calculate solution
             const startX = +$("input#start-x").val();
             const startY = +$("input#start-y").val();
             const start = (startY - 1) * maze.width + (startX - 1);
-
             const endX = +$("input#end-x").val();
             const endY = +$("input#end-y").val();
             const end = (endY - 1) * maze.width + (endX - 1);
 
-            // Calculate solution
-            worker.postMessage({ msg: "solve", maze, start, end });
+            // Spawn worker
+            const worker = new Worker("/scripts/maze_worker_solve.js");
+            worker.postMessage({ maze, start, end });
+            worker.addEventListener("message", e => {
+                switch (e.data.msg) {
+                    // Complete
+                    case "complete":
+                        worker.terminate();
+                        $("span#solve-time").text(`${(e.data.time / 1000).toFixed(FINAL_TIME_PRECISION)}s`);
+                        const startTime = Date.now();
+
+                        // Disable canceling
+                        $("button#solve-cancel").hide();
+                        $("button#solve-cancel").off("click", cancel);
+
+                        // Draw solution
+                        drawSolution(maze.width, maze.height, e.data.squaresSolution, e.data.squaresEndpoints, $mazeSVG);
+                        $("div#maze-img-container").empty();
+                        $("div#maze-img-container").append($mazeSVG.clone());
+
+                        // Report solution drawing status
+                        $("span#draw-solution-progress").text("100%");
+                        $("span#draw-solution-time").text(`${((Date.now() - startTime) / 1000).toFixed(FINAL_TIME_PRECISION)}s`);
+
+                        // Toggle solution visibility
+                        solutionVisible = !$("input#hide-solution-after-solve").is(":checked");
+                        $("input#show-solution").prop("checked", solutionVisible);
+                        $("g#maze-solution").toggle(solutionVisible);
+
+                        // Toggle endpoints visibility
+                        endpointsVisible = true;
+                        $("input#show-endpoints").prop("checked", endpointsVisible);
+                        $("g#maze-endpoints").show();
+
+                        // Show visibility toggles
+                        $("div#subsec-solution-visibility").show();
+
+                        // Enable generation and solving
+                        $("button#generate").prop("disabled", false);
+                        $("button#solve").prop("disabled", false);
+                        break;
+
+                    // Progress report
+                    case "progress":
+                        $("span#solve-progress").text(`${e.data.progress}%`);
+                        $("span#solve-time").text(`${(e.data.time / 1000).toFixed(TIME_PRECISION)}s`);
+                        break;
+
+                    // Unknown message
+                    default:
+                        console.error("Received unknown message from worker:", e);
+                }
+            });
+
+            // Handle canceling
+            function cancel() {
+                $(this).hide();
+
+                // Hide solver status
+                $("div#subsec-solver-status").hide();
+
+                // Enable generation and solving
+                $("button#generate").prop("disabled", false);
+                $("button#solve").prop("disabled", false);
+
+                worker.terminate();
+            }
+
+            // Enable canceling
+            $("button#solve-cancel").on("click", cancel);
+            $("button#solve-cancel").show();
         }
     });
 
@@ -295,89 +421,5 @@ $(() => {
         }
 
         downloadFile($standaloneSVG[0].outerHTML, "maze.svg");
-    });
-
-    // Message received from worker
-    worker.addEventListener("message", e => {
-        let startTime;
-        switch (e.data.msg) {
-            // Worker ready
-            case "ready":
-                toggleTasks(true);
-                break;
-
-            // Generation complete
-            case "generateComplete":
-                maze = e.data.maze;
-                $("span#generate-time").text(`${(e.data.time / 1000).toFixed(FINAL_TIME_PRECISION)}s`);
-                startTime = Date.now();
-
-                // Initialize SVG
-                $mazeSVG = mazeSVGTemplate(maze.width, maze.height);
-
-                // Draw maze
-                drawMaze(maze, $mazeSVG);
-                $("div#maze-img-container").empty();
-                $("div#maze-img-container").append($mazeSVG.clone());
-
-                // Enable downloading
-                $("div#subsec-download").show();
-
-                // Remove "maze not yet generated" alert
-                $("button#solve").next("span.alert-mazeNotGenerated").remove();
-
-                // Limit solving parameters
-                $("input#start-x").attr("max", maze.width);
-                $("input#start-y").attr("max", maze.height);
-                $("input#end-x").attr("max", maze.width);
-                $("input#end-y").attr("max", maze.height);
-
-                $("span#draw-maze-time").text(`${((Date.now() - startTime) / 1000).toFixed(FINAL_TIME_PRECISION)}s`);
-                toggleTasks(true);
-
-                break;
-
-            // Generation progress report
-            case "generateProgress":
-                $("span#generate-progress").text(`${e.data.progress}%`);
-                $("span#generate-time").text(`${(e.data.time / 1000).toFixed(TIME_PRECISION)}s`);
-                break;
-
-            // Solving complete
-            case "solveComplete":
-                $("span#solve-time").text(`${(e.data.time / 1000).toFixed(FINAL_TIME_PRECISION)}s`);
-                startTime = Date.now();
-
-                const hideSolutionAfterSolve = $("input#hide-solution-after-solve").is(":checked");
-
-                // Draw solution
-                drawSolution(maze.width, maze.height, e.data.squaresSolution, e.data.squaresEndpoints, $mazeSVG);
-                $("div#maze-img-container").empty();
-                $("div#maze-img-container").append($mazeSVG.clone());
-
-                $("span#draw-solution-time").text(`${((Date.now() - startTime) / 1000).toFixed(FINAL_TIME_PRECISION)}s`);
-                toggleTasks(true);
-
-                solutionVisible = !hideSolutionAfterSolve;
-                $("input#show-solution").prop("checked", solutionVisible);
-                endpointsVisible = true;
-                $("input#show-endpoints").prop("checked", endpointsVisible);
-
-                $("g#maze-solution").toggle(solutionVisible);
-                $("g#maze-endpoints").show();
-                $("div#subsec-solution-visibility").show();
-
-                break;
-
-            // Solving progress report
-            case "solveProgress":
-                $("span#solve-progress").text(`${e.data.progress}%`);
-                $("span#solve-time").text(`${(e.data.time / 1000).toFixed(TIME_PRECISION)}s`);
-                break;
-
-            // Unknown message
-            default:
-                console.error("Received unknown message from worker:", e);
-        }
     });
 });

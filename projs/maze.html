@@ -38,12 +38,15 @@
 
             <div>
                 <button id="generate">Generate</button>
+                <button id="generate-cancel">Cancel</button>
             </div>
 
             <div id="subsec-generator-status">
                 Generating maze <span id="generate-progress"></span> (<span id="generate-time"></span>)
                 <br>
-                Drawing maze (<span id="draw-maze-time"></span>)
+                <!-- `span#draw-maze-progress` will only be 0% or 100% because the UI will be freezed when drawing -->
+                <!-- It is only put here for consistency -->
+                Drawing maze <span id="draw-maze-progress"></span> (<span id="draw-maze-time"></span>)
             </div>
         </section>
 
@@ -77,13 +80,16 @@
             </div>
 
             <div>
-                <button id="solve" alert-mazeNotGenerated="Maze not yet generated">Solve</button>
+                <button id="solve">Solve</button>
+                <button id="solve-cancel">Cancel</button>
             </div>
 
             <div id="subsec-solver-status">
                 Calculating solution <span id="solve-progress"></span> (<span id="solve-time"></span>)
                 <br>
-                Drawing solution (<span id="draw-solution-time"></span>)
+                <!-- `span#draw-solution-progress` will only be 0% or 100% because the UI will be freezed when drawing -->
+                <!-- It is only put here for consistency -->
+                Drawing solution <span id="draw-solution-progress"></span> (<span id="draw-solution-time"></span>)
             </div>
         </section>
 
