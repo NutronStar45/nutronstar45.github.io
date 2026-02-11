@@ -1,8 +1,10 @@
-importScripts("/scripts/maze_util.js");
+import { chooseRandom, removeItem } from "../common_util.mjs";
+import { PROGRESS_REPORT_INTERVAL, type Maze } from "./maze_util.mjs";
+import { adjacentDirections, directionDifference, neighbors } from "./maze_util.mjs";
 
 
 // Timestamp at the start of generation
-let startTime;
+let startTime: number;
 
 addEventListener("message", e => {
     const maze = generate(e.data.width, e.data.height, e.data.algorithm);
@@ -16,12 +18,12 @@ addEventListener("message", e => {
 
 /**
  * Generates a spanning tree of a square grid using the given algorithm.
- * @param {number} width The width of the maze.
- * @param {number} height The height of the maze.
- * @param {string} algorithm The generation algorithm.
- * @returns {Maze | null} The generated maze, or `null` if the given algorithm is unknown.
+ * @param width The width of the maze.
+ * @param height The height of the maze.
+ * @param algorithm The generation algorithm.
+ * @returns The generated maze, or `null` if the given algorithm is unknown.
  */
-function generate(width, height, algorithm) {
+function generate(width: number, height: number, algorithm: string) {
     switch (algorithm) {
         case "prims":
             return prims(width, height);
@@ -33,11 +35,11 @@ function generate(width, height, algorithm) {
 
 /**
  * Uses Prim's algorithm to generate a spanning tree of a square grid.
- * @param {number} width The width of the maze.
- * @param {number} height The height of the maze.
- * @returns {Maze} The generated maze.
+ * @param width The width of the maze.
+ * @param height The height of the maze.
+ * @returns The generated maze.
  */
-function prims(width, height) {
+function prims(width: number, height: number) {
     startTime = Date.now();
     postMessage({ msg: "progress", progress: 0, time: 0 });
 
@@ -123,5 +125,5 @@ function prims(width, height) {
         }
     }
 
-    return { width, height, hWalls, vWalls };
+    return { width, height, hWalls, vWalls } as Maze;
 }

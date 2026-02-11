@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="/styles/common.css">
     <link rel="stylesheet" href="/styles/dark.css">
     <link rel="stylesheet" href="/styles/maze.css">
-    <script src="https://code.jquery.com/jquery-4.0.0.slim.min.js" integrity="sha256-8DGpv13HIm+5iDNWw1XqxgFB4mj+yOKFNb+tHBZOowc=" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -132,9 +131,18 @@
         </section>
     </main>
 
-    <script src="/scripts/common_util.js"></script>
-    <script src="/scripts/common.js"></script>
-    <script src="/scripts/maze.js"></script>
+    <script type="importmap">
+        {
+            "imports": {
+                "jquery.mjs": "https://code.jquery.com/jquery-4.0.0.slim.module.min.js"
+            },
+            "integrity": {
+                "https://code.jquery.com/jquery-4.0.0.slim.module.min.js": "sha256-pfF5Ia5QBsbk5uvsmgKvY9knPinzh4d6ak09qdkaKz8="
+            }
+        }
+    </script>
+    <script src="/scripts/common.mjs" type="module"></script>
+    <script src="/scripts/maze/maze.mjs" type="module"></script>
 </body>
 
 </html>

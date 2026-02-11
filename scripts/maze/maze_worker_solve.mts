@@ -1,8 +1,10 @@
-importScripts("/scripts/maze_util.js");
+import { removeItem } from "../common_util.mjs";
+import { PROGRESS_REPORT_INTERVAL, type Maze } from "./maze_util.mjs";
+import { checkDeadend, connectedNeighbors } from "./maze_util.mjs";
 
 
 // Timestamp at the start of a step
-let startTime;
+let startTime: number;
 
 addEventListener("message", e => {
     const solution = solve(e.data.maze, e.data.start, e.data.end, e.data.algorithm);
@@ -16,13 +18,13 @@ addEventListener("message", e => {
 
 /**
  * 
- * @param {Maze} maze The maze.
- * @param {number} start The starting square.
- * @param {number} end The ending square.
- * @param {string} algorithm The solving algorithm.
- * @returns {number[] | null} `null` if the given algorithm is unknown. Otherwise, an array of squares tracing out the solution.
+ * @param maze The maze.
+ * @param start The starting square.
+ * @param end The ending square.
+ * @param algorithm The solving algorithm.
+ * @returns `null` if the given algorithm is unknown. Otherwise, an array of squares tracing out the solution.
  */
-function solve(maze, start, end, algorithm) {
+function solve(maze: Maze, start: number, end: number, algorithm: string) {
     switch (algorithm) {
         case "deadendFilling":
             return deadendFilling(maze, start, end);
@@ -34,12 +36,12 @@ function solve(maze, start, end, algorithm) {
 
 /**
  * Calculates the solution using deadend filling.
- * @param {Maze} maze The maze.
- * @param {number} start The start.
- * @param {number} end The end.
- * @returns {number[]} An array of squares tracing out the solution.
+ * @param maze The maze.
+ * @param start The start.
+ * @param end The end.
+ * @returns An array of squares tracing out the solution.
  */
-function deadendFilling(maze, start, end) {
+function deadendFilling(maze: Maze, start: number, end: number) {
     startTime = Date.now();
     postMessage({ msg: "progress", progress: 0, time: 0 });
 
@@ -108,7 +110,7 @@ function deadendFilling(maze, start, end) {
     let solution = [start];
     while (solution.at(-1) !== end) {
         // Connected (previous or next) square(s) on the solution path
-        let connectedOnPath = connectedNeighbors(solution.at(-1), maze).filter(sq => path.includes(sq));
+        let connectedOnPath = connectedNeighbors(solution.at(-1) as number, maze).filter(sq => path.includes(sq));
 
         // Remove previous square
         if (solution.length > 1) {
@@ -116,7 +118,7 @@ function deadendFilling(maze, start, end) {
         }
 
         // Walk forward
-        solution.push(connectedOnPath[0]);
+        solution.push(connectedOnPath[0] as number);
     }
 
     return solution;

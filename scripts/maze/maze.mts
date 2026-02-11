@@ -11,17 +11,9 @@ Horizontal walls are indexed by the square on their left
 Vertical walls are indexed by the square on their top
 */
 
-
-/**
- * One of four cardinal directions.
- * @typedef {"left" | "right" | "top" | "bottom"} Direction
- */
-
-
-/**
- * A maze, represented with its width, height, and horizontal and vertical walls.
- * @typedef {{ width: number, height: number, hWalls: number[], vWalls: number[] }} Maze
- */
+import { $ } from "jquery.mjs";
+import { downloadFile, svgElement, validate } from "../common.mjs";
+import { type Maze } from "./maze_util.mjs";
 
 
 // The width of a square in the resulting SVG
@@ -36,11 +28,11 @@ const FINAL_TIME_PRECISION = 2;
 
 /**
  * Returns the SVG template of a maze of given size.
- * @param {number} width The width of the maze.
- * @param {number} height The height of the maze.
- * @returns {jQuery} The jQuery object containing the SVG template.
+ * @param width The width of the maze.
+ * @param height The height of the maze.
+ * @returns The JQuery object containing the SVG template.
  */
-function mazeSVGTemplate(width, height) {
+function mazeSVGTemplate(width: number, height: number) {
     return svgElement("svg")
         .attr({
             id: "maze-img",
@@ -76,10 +68,10 @@ function mazeSVGTemplate(width, height) {
 
 /**
  * Draws the walls and border of a maze.
- * @param {Maze} maze The maze.
- * @param {jQuery} $mazeSVG The SVG to draw onto. Expects a template.
+ * @param maze The maze.
+ * @param $mazeSVG The SVG to draw onto. Expects a template.
  */
-function drawMaze(maze, $mazeSVG) {
+function drawMaze(maze: Maze, $mazeSVG: JQuery<SVGElement>) {
     const $gWalls = $mazeSVG.find("g#maze-walls");
 
     // Draw horizontal walls
@@ -122,21 +114,21 @@ function drawMaze(maze, $mazeSVG) {
 
 /**
  * Draws the solution.
- * @param {number} width The width of the maze.
- * @param {number[]} solution The array of squares tracing out the solution.
- * @param {number[]} squaresEndpoints The array containing the starting and ending squares.
- * @param {jQuery} $mazeSVG The SVG to draw onto. Expects a template with a maze drawn onto it.
+ * @param width The width of the maze.
+ * @param solution The array of squares tracing out the solution.
+ * @param squaresEndpoints The array containing the starting and ending squares.
+ * @param $mazeSVG The SVG to draw onto. Expects a template with a maze drawn onto it.
  */
-function drawSolution(width, solution, squaresEndpoints, $mazeSVG) {
+function drawSolution(width: number, solution: number[], squaresEndpoints: number[], $mazeSVG: JQuery<SVGElement>) {
     const $gSolution = $mazeSVG.find("g#maze-solution").empty();
     const $gEndpoints = $mazeSVG.find("g#maze-endpoints").empty();
 
     /**
      * Draws a square under an element.
-     * @param {number} square The square to be drawn.
-     * @param {jQuery} $parent The element to draw the square under.
+     * @param square The square to be drawn.
+     * @param $parent The element to draw the square under.
      */
-    function drawSquare(square, $parent) {
+    function drawSquare(square: number, $parent: JQuery) {
         const squareX = square % width;
         const squareY = Math.floor(square / width);
 
@@ -170,18 +162,18 @@ $(() => {
     $("button#solve").prop("disabled", true);
     $("button#solve-cancel").hide();
 
-    let maze; // Internally stored maze with type `Maze`
-    let $mazeSVG; // Maze SVG internally stored as a jQuery object
-    let solutionVisible; // Whether `g#maze-solution` is visible or not
-    let endpointsVisible; // Whether `g#maze-endpoints` is visible or not
+    let maze: Maze; // Internally stored maze
+    let $mazeSVG: JQuery<SVGElement>; // Internally stored maze SVG
+    let solutionVisible: boolean; // Whether `g#maze-solution` is visible or not
+    let endpointsVisible: boolean; // Whether `g#maze-endpoints` is visible or not
 
     $("input#show-solution").on("change", function () {
-        solutionVisible = this.checked;
+        solutionVisible = (this as HTMLInputElement).checked;
         $("g#maze-solution").toggle(solutionVisible);
     });
 
     $("input#show-endpoints").on("change", function () {
-        endpointsVisible = this.checked;
+        endpointsVisible = (this as HTMLInputElement).checked;
         $("g#maze-endpoints").toggle(endpointsVisible);
     });
 
@@ -206,12 +198,12 @@ $(() => {
             $("button#solve").prop("disabled", true);
 
             // Generate maze
-            const width = +$("input#width").val();
-            const height = +$("input#height").val();
-            const algorithm = $("select#generate-algorithm").val();
+            const width = +($("input#width").val() as string);
+            const height = +($("input#height").val() as string);
+            const algorithm = $("select#generate-algorithm").val() as string;
 
             // Spawn worker
-            const worker = new Worker("/scripts/maze_worker_generate.js");
+            const worker = new Worker("/scripts/maze/maze_worker_generate.mjs", { type: "module" });
             worker.postMessage({ width, height, algorithm });
             worker.addEventListener("message", e => {
                 switch (e.data.msg) {
@@ -265,7 +257,7 @@ $(() => {
             });
 
             // Handle canceling
-            function cancel() {
+            function cancel(this: JQuery) {
                 $(this).hide();
 
                 // Hide generator status
@@ -304,16 +296,16 @@ $(() => {
             $(this).prop("disabled", true);
 
             // Calculate solution
-            const startX = +$("input#start-x").val();
-            const startY = +$("input#start-y").val();
+            const startX = +($("input#start-x").val() as string);
+            const startY = +($("input#start-y").val() as string);
             const start = (startY - 1) * maze.width + (startX - 1);
-            const endX = +$("input#end-x").val();
-            const endY = +$("input#end-y").val();
+            const endX = +($("input#end-x").val() as string);
+            const endY = +($("input#end-y").val() as string);
             const end = (endY - 1) * maze.width + (endX - 1);
-            const algorithm = $("select#solve-algorithm").val();
+            const algorithm = $("select#solve-algorithm").val() as string;
 
             // Spawn worker
-            const worker = new Worker("/scripts/maze_worker_solve.js");
+            const worker = new Worker("/scripts/maze/maze_worker_solve.mjs", { type: "module" });
             worker.postMessage({ maze, start, end, algorithm });
             worker.addEventListener("message", e => {
                 switch (e.data.msg) {
@@ -367,7 +359,7 @@ $(() => {
             });
 
             // Handle canceling
-            function cancel() {
+            function cancel(this: JQuery) {
                 $(this).hide();
 
                 // Hide solver status
@@ -427,6 +419,10 @@ $(() => {
             $standaloneSVG.find("g#maze-endpoints").empty();
         }
 
-        downloadFile($standaloneSVG[0].outerHTML, "maze.svg");
+        if ($standaloneSVG[0] !== undefined) {
+            downloadFile($standaloneSVG[0].outerHTML, "maze.svg");
+        } else {
+            console.error("Maze not yet generated");
+        }
     });
 });

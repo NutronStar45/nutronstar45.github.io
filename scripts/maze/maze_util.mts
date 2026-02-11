@@ -1,17 +1,26 @@
-importScripts("/scripts/common_util.js");
+/**
+ * One of four cardinal directions.
+ */
+export type Direction = "left" | "right" | "top" | "bottom";
+
+
+/**
+ * A maze, represented with its width, height, and horizontal and vertical walls.
+ */
+export type Maze = { width: number, height: number, hWalls: number[], vWalls: number[] };
 
 
 // Time between individual progress reports in milliseconds
-const PROGRESS_REPORT_INTERVAL = 1000;
+export const PROGRESS_REPORT_INTERVAL = 1000;
 
 
 /**
  * Returns the corresponding index difference of a direction.
- * @param {Direction} direction The direction.
- * @param {number} width The width of the grid.
- * @returns {number} The corresponding index difference.
+ * @param direction The direction.
+ * @param width The width of the grid.
+ * @returns The corresponding index difference.
  */
-function directionDifference(direction, width) {
+export function directionDifference(direction: Direction, width: number) {
     switch (direction) {
         case "left":
             return -1;
@@ -27,13 +36,13 @@ function directionDifference(direction, width) {
 
 /**
  * Returns directions in which a given square has neighbors.
- * @param {number} square A square.
- * @param {number} width The width of the grid.
- * @param {number} height The height of the grid.
- * @returns {Direction[]} The directions in which `square` has neighbors.
+ * @param square A square.
+ * @param width The width of the grid.
+ * @param height The height of the grid.
+ * @returns The directions in which `square` has neighbors.
  */
-function adjacentDirections(square, width, height) {
-    let directions = [];
+export function adjacentDirections(square: number, width: number, height: number) {
+    let directions: Direction[] = [];
 
     if (square       % width !== 0)     directions.push("left");
     if ((square + 1) % width !== 0)     directions.push("right");
@@ -46,12 +55,12 @@ function adjacentDirections(square, width, height) {
 
 /**
  * Returns squares adjacent to a given square.
- * @param {number} square A square.
- * @param {number} width The width of the grid.
- * @param {number} height The height of the grid.
- * @returns {number[]} The squares adjacent to `square`.
+ * @param square A square.
+ * @param width The width of the grid.
+ * @param height The height of the grid.
+ * @returns The squares adjacent to `square`.
  */
-function neighbors(square, width, height) {
+export function neighbors(square: number, width: number, height: number) {
     const adjacentDirections_ = adjacentDirections(square, width, height);
     return adjacentDirections_.map(dir => square + directionDifference(dir, width));
 }
@@ -59,12 +68,12 @@ function neighbors(square, width, height) {
 
 /**
  * returns in which directions a given square is connected to.
- * @param {number} square The square whose connectedness is checked.
- * @param {Maze} maze The maze.
- * @returns {Direction[]} An array of directions in which `square` isn't blocked by a wall or the border.
+ * @param square The square whose connectedness is checked.
+ * @param maze The maze.
+ * @returns An array of directions in which `square` isn't blocked by a wall or the border.
  */
-function connectedDirections(square, maze) {
-    let directionsNoWalls = [];
+function connectedDirections(square: number, maze: Maze) {
+    let directionsNoWalls: Direction[] = [];
     if (!maze.vWalls.includes(square - 1)) {
         directionsNoWalls.push("left");
     }
@@ -84,11 +93,11 @@ function connectedDirections(square, maze) {
 
 /**
  * Returns an array of squares which a given square is connected to.
- * @param {number} square The square to be checked.
- * @param {Maze} maze The maze.
- * @returns {number[]} The neighbors which `square` is connected to.
+ * @param square The square to be checked.
+ * @param maze The maze.
+ * @returns The neighbors which `square` is connected to.
  */
-function connectedNeighbors(square, maze) {
+export function connectedNeighbors(square: number, maze: Maze) {
     const adjacentDirections_ = adjacentDirections(square, maze.width, maze.height);
     const connectedDirections_ = connectedDirections(square, maze);
     return adjacentDirections_
@@ -99,14 +108,14 @@ function connectedNeighbors(square, maze) {
 
 /**
  * Checks if a square is a deadend, i.e. only connected to a single square; if so, returns the direction of the opening.
- * @param {number} square The square to be checked.
- * @param {Maze} maze The maze.
- * @returns {Direction | ""} The direction of the opening, or an empty string if `square` is not a deadend.
+ * @param square The square to be checked.
+ * @param maze The maze.
+ * @returns The direction of the opening, or an empty string if `square` is not a deadend.
  */
-function checkDeadend(square, maze) {
+export function checkDeadend(square: number, maze: Maze) {
     const directions = connectedDirections(square, maze);
     if (directions.length === 1) {
-        return directions[0];
+        return (directions[0] as Direction);
     } else {
         return "";
     }
