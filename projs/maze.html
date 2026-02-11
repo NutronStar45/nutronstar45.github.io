@@ -34,6 +34,14 @@
                 <label>
                     Height: <input id="height" type="number" min="1" max="1000" required>
                 </label>
+                <br>
+
+                <label>
+                    Algorithm:
+                    <select id="generate-algorithm">
+                        <option value="prims">Prim's</option>
+                    </select>
+                </label>
             </div>
 
             <div>
@@ -75,7 +83,15 @@
                 <br>
 
                 <label>
-                    <input id="hide-solution-after-solve" type="checkbox"> Hide Solution After Solving
+                    Algorithm:
+                    <select id="solve-algorithm">
+                        <option value="deadendFilling">Deadend filling</option>
+                    </select>
+                </label>
+                <br>
+
+                <label>
+                    <input id="hide-solution-after-solve" type="checkbox"> Hide solution after solving
                 </label>
             </div>
 

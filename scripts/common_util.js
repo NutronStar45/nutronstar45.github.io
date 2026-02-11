@@ -1,4 +1,4 @@
-const SITE_VERSION = "3.7";
+const SITE_VERSION = "3.8";
 
 
 /**

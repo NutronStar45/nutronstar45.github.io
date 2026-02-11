@@ -5,12 +5,30 @@ importScripts("/scripts/maze_util.js");
 let startTime;
 
 addEventListener("message", e => {
-    postMessage({
-        msg: "complete",
-        maze: generateMaze(e.data.width, e.data.height),
-        time: Date.now() - startTime
-    });
+    const maze = generate(e.data.width, e.data.height, e.data.algorithm);
+    if (maze !== null) {
+        postMessage({ msg: "complete", maze, time: Date.now() - startTime });
+    } else {
+        console.error(`Unknown algorithm: ${e.data.algorithm}`);
+    }
 });
+
+
+/**
+ * Generates a spanning tree of a square grid using the given algorithm.
+ * @param {number} width The width of the maze.
+ * @param {number} height The height of the maze.
+ * @param {string} algorithm The generation algorithm.
+ * @returns {Maze | null} The generated maze, or `null` if the given algorithm is unknown.
+ */
+function generate(width, height, algorithm) {
+    switch (algorithm) {
+        case "prims":
+            return prims(width, height);
+        default:
+            return null;
+    }
+}
 
 
 /**
@@ -19,7 +37,7 @@ addEventListener("message", e => {
  * @param {number} height The height of the maze.
  * @returns {Maze} The generated maze.
  */
-function generateMaze(width, height) {
+function prims(width, height) {
     startTime = Date.now();
     postMessage({ msg: "progress", progress: 0, time: 0 });
 
@@ -53,14 +71,14 @@ function generateMaze(width, height) {
 
     // Mark a square as finished and its neighbors as searching
     const startingSquare = Math.floor(Math.random() * (width * height));
-    const startingNeighbors = getNeighbors(startingSquare, null, width, height);
+    const startingNeighbors = neighbors(startingSquare, width, height);
 
     removeItem(squaresDefault, startingSquare);
     squaresFinished.push(startingSquare);
 
     for (const neighbor of startingNeighbors) {
-        removeItem(squaresDefault, neighbor.index);
-        squaresSearching.push(neighbor.index);
+        removeItem(squaresDefault, neighbor);
+        squaresSearching.push(neighbor);
     }
 
     // Repeat until all squares are finished
@@ -69,12 +87,14 @@ function generateMaze(width, height) {
         // Then choose an adjacent finished square as the "base"
         // The finished portion will be extended to the extension from the base
         const extension = chooseRandom(squaresSearching);
-        const finishedNeighbors = getNeighbors(extension, squaresFinished, width, height);
-        const base = chooseRandom(finishedNeighbors);
+        const finishedDirections = adjacentDirections(extension, width, height)
+            .filter(dir => squaresFinished.includes(extension + directionDifference(dir, width)));
+        const baseDirection = chooseRandom(finishedDirections);
+        const base = extension + directionDifference(baseDirection, width);
 
         // Remove the wall between `base` and `extension`
-        const wallBetween = Math.min(extension, base.index);
-        if (base.dir === "horizontal") removeItem(vWalls, wallBetween);
+        const wallBetween = Math.min(extension, base);
+        if (baseDirection === "left" || baseDirection === "right") removeItem(vWalls, wallBetween);
         else removeItem(hWalls, wallBetween);
 
         // Mark the extension as finished
@@ -82,10 +102,11 @@ function generateMaze(width, height) {
         squaresFinished.push(extension);
 
         // Mark the default squares adjacent to the extension as searching
-        const defaultNeighbors = getNeighbors(extension, squaresDefault, width, height);
+        const defaultNeighbors = neighbors(extension, width, height)
+            .filter(square => squaresDefault.includes(square));
         for (const neighbor of defaultNeighbors) {
-            removeItem(squaresDefault, neighbor.index);
-            squaresSearching.push(neighbor.index);
+            removeItem(squaresDefault, neighbor);
+            squaresSearching.push(neighbor);
         }
 
         // Report progress

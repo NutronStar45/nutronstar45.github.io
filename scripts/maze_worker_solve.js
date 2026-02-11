@@ -5,12 +5,31 @@ importScripts("/scripts/maze_util.js");
 let startTime;
 
 addEventListener("message", e => {
-    postMessage({
-        msg: "complete",
-        ...calculateSolution(e.data.maze, e.data.start, e.data.end),
-        time: Date.now() - startTime
-    });
+    const solution = solve(e.data.maze, e.data.start, e.data.end, e.data.algorithm);
+    if (solution !== null) {
+        postMessage({ msg: "complete", solution, time: Date.now() - startTime });
+    } else {
+        console.error(`Unknown algorithm: ${e.data.algorithm}`);
+    }
 });
+
+
+/**
+ * 
+ * @param {Maze} maze The maze.
+ * @param {number} start The starting square.
+ * @param {number} end The ending square.
+ * @param {string} algorithm The solving algorithm.
+ * @returns {number[] | null} `null` if the given algorithm is unknown. Otherwise, an array of squares tracing out the solution.
+ */
+function solve(maze, start, end, algorithm) {
+    switch (algorithm) {
+        case "deadendFilling":
+            return deadendFilling(maze, start, end);
+        default:
+            return null;
+    }
+}
 
 
 /**
@@ -18,9 +37,9 @@ addEventListener("message", e => {
  * @param {Maze} maze The maze.
  * @param {number} start The start.
  * @param {number} end The end.
- * @returns {{ squaresSolution: number[], squaresEndpoints: number[] }} An object containing `squaresSolution`, the array of squares that form the solution, and `squaresEndpoints`, the array containing the start and the end. `squaresSolution` and `squaresEndpoints` are not guaranteed to be ordered in any way.
+ * @returns {number[]} An array of squares tracing out the solution.
  */
-function calculateSolution(maze, start, end) {
+function deadendFilling(maze, start, end) {
     startTime = Date.now();
     postMessage({ msg: "progress", progress: 0, time: 0 });
 
@@ -33,9 +52,8 @@ function calculateSolution(maze, start, end) {
     let hWallsCopy = [...maze.hWalls];
     let vWallsCopy = [...maze.vWalls];
 
-    // Initialize return arrays
-    let squaresSolution = Array.from({ length: maze.width * maze.height }, (_v, i) => i);
-    const squaresEndpoints = start === end ? [start] : [start, end];
+    // Initialize solution path
+    let path = Array.from({ length: maze.width * maze.height }, (_v, i) => i);
 
     // Search for deadends
     for (let square = 0; square < maze.width * maze.height; square++) {
@@ -50,8 +68,8 @@ function calculateSolution(maze, start, end) {
             // Break the loop if not a deadend
             if (openingDir === "") break;
 
-            // Remove `currentSquare` from solution
-            removeItem(squaresSolution, currentSquare);
+            // Remove current square from path
+            removeItem(path, currentSquare);
 
             // Fill the deadend
             if (openingDir === "left") {
@@ -86,5 +104,20 @@ function calculateSolution(maze, start, end) {
         }
     }
 
-    return { squaresSolution, squaresEndpoints }
+    // Order solution
+    let solution = [start];
+    while (solution.at(-1) !== end) {
+        // Connected (previous or next) square(s) on the solution path
+        let connectedOnPath = connectedNeighbors(solution.at(-1), maze).filter(sq => path.includes(sq));
+
+        // Remove previous square
+        if (solution.length > 1) {
+            removeItem(connectedOnPath, solution.at(-2));
+        }
+
+        // Walk forward
+        solution.push(connectedOnPath[0]);
+    }
+
+    return solution;
 }

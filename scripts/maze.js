@@ -13,6 +13,12 @@ Vertical walls are indexed by the square on their top
 
 
 /**
+ * One of four cardinal directions.
+ * @typedef {"left" | "right" | "top" | "bottom"} Direction
+ */
+
+
+/**
  * A maze, represented with its width, height, and horizontal and vertical walls.
  * @typedef {{ width: number, height: number, hWalls: number[], vWalls: number[] }} Maze
  */
@@ -117,12 +123,11 @@ function drawMaze(maze, $mazeSVG) {
 /**
  * Draws the solution.
  * @param {number} width The width of the maze.
- * @param {number} _height The height of the maze.
- * @param {number} squaresSolution The list of squares that traces out the solution, excluding the start and the end.
- * @param {number} squaresEndpoints The list containing the start and the end.
+ * @param {number[]} solution The array of squares tracing out the solution.
+ * @param {number[]} squaresEndpoints The array containing the starting and ending squares.
  * @param {jQuery} $mazeSVG The SVG to draw onto. Expects a template with a maze drawn onto it.
  */
-function drawSolution(width, _height, squaresSolution, squaresEndpoints, $mazeSVG) {
+function drawSolution(width, solution, squaresEndpoints, $mazeSVG) {
     const $gSolution = $mazeSVG.find("g#maze-solution").empty();
     const $gEndpoints = $mazeSVG.find("g#maze-endpoints").empty();
 
@@ -144,7 +149,7 @@ function drawSolution(width, _height, squaresSolution, squaresEndpoints, $mazeSV
     }
 
     // Draw solution
-    for (const square of squaresSolution) {
+    for (const square of solution) {
         drawSquare(square, $gSolution);
     }
 
@@ -203,10 +208,11 @@ $(() => {
             // Generate maze
             const width = +$("input#width").val();
             const height = +$("input#height").val();
+            const algorithm = $("select#generate-algorithm").val();
 
             // Spawn worker
             const worker = new Worker("/scripts/maze_worker_generate.js");
-            worker.postMessage({ width, height });
+            worker.postMessage({ width, height, algorithm });
             worker.addEventListener("message", e => {
                 switch (e.data.msg) {
                     // Complete
@@ -304,10 +310,11 @@ $(() => {
             const endX = +$("input#end-x").val();
             const endY = +$("input#end-y").val();
             const end = (endY - 1) * maze.width + (endX - 1);
+            const algorithm = $("select#solve-algorithm").val();
 
             // Spawn worker
             const worker = new Worker("/scripts/maze_worker_solve.js");
-            worker.postMessage({ maze, start, end });
+            worker.postMessage({ maze, start, end, algorithm });
             worker.addEventListener("message", e => {
                 switch (e.data.msg) {
                     // Complete
@@ -321,7 +328,7 @@ $(() => {
                         $("button#solve-cancel").off("click", cancel);
 
                         // Draw solution
-                        drawSolution(maze.width, maze.height, e.data.squaresSolution, e.data.squaresEndpoints, $mazeSVG);
+                        drawSolution(maze.width, e.data.solution, [start, end], $mazeSVG);
                         $("div#maze-img-container").empty();
                         $("div#maze-img-container").append($mazeSVG.clone());
 

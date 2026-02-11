@@ -6,26 +6,54 @@ const PROGRESS_REPORT_INTERVAL = 1000;
 
 
 /**
- * Returns squares adjacent to the square `square`.
- * @param {number} square A square.
- * @param {number[] | null} filter Squares won't be returned if they're not in this array
- * @param {number} width The width of the maze.
- * @param {number} height The height of the maze.
- * @returns {{ index: number, dir: string }[]} The adjacent squares around `square`. `index` is the index of the square, and `dir` is the direction, which can be one of `"horizontal"` and `"vertical"`.
+ * Returns the corresponding index difference of a direction.
+ * @param {Direction} direction The direction.
+ * @param {number} width The width of the grid.
+ * @returns {number} The corresponding index difference.
  */
-function getNeighbors(square, filter, width, height) {
-    let neighbors = [];
-
-    if (square % width !== 0) neighbors.push({ index: square - 1, dir: "horizontal" });             // Left
-    if ((square + 1) % width !== 0) neighbors.push({ index: square + 1, dir: "horizontal" });       // Right
-    if (square >= width) neighbors.push({ index: square - width, dir: "vertical" });                // Top
-    if (square < width * (height - 1)) neighbors.push({ index: square + width, dir: "vertical" });  // Bottom
-
-    if (filter) {
-        return neighbors.filter(neighbor => filter.includes(neighbor.index));
-    } else {
-        return neighbors;
+function directionDifference(direction, width) {
+    switch (direction) {
+        case "left":
+            return -1;
+        case "right":
+            return 1;
+        case "top":
+            return -width;
+        case "bottom":
+            return width;
     }
+}
+
+
+/**
+ * Returns directions in which a given square has neighbors.
+ * @param {number} square A square.
+ * @param {number} width The width of the grid.
+ * @param {number} height The height of the grid.
+ * @returns {Direction[]} The directions in which `square` has neighbors.
+ */
+function adjacentDirections(square, width, height) {
+    let directions = [];
+
+    if (square       % width !== 0)     directions.push("left");
+    if ((square + 1) % width !== 0)     directions.push("right");
+    if (square >= width)                directions.push("top");
+    if (square <  width * (height - 1)) directions.push("bottom");
+
+    return directions;
+}
+
+
+/**
+ * Returns squares adjacent to a given square.
+ * @param {number} square A square.
+ * @param {number} width The width of the grid.
+ * @param {number} height The height of the grid.
+ * @returns {number[]} The squares adjacent to `square`.
+ */
+function neighbors(square, width, height) {
+    const adjacentDirections_ = adjacentDirections(square, width, height);
+    return adjacentDirections_.map(dir => square + directionDifference(dir, width));
 }
 
 
@@ -33,15 +61,39 @@ function getNeighbors(square, filter, width, height) {
  * returns in which directions a given square is connected to.
  * @param {number} square The square whose connectedness is checked.
  * @param {Maze} maze The maze.
- * @returns {{ left: boolean, right: boolean, top: boolean, bottom: boolean }} Four booleans corresponding to each direction, `true` if `square` is connected to the adjacent square in that direction.
+ * @returns {Direction[]} An array of directions in which `square` isn't blocked by a wall or the border.
  */
-function checkConnectedness(square, maze) {
-    const left = !maze.vWalls.includes(square - 1) && square % maze.width !== 0;
-    const right = !maze.vWalls.includes(square) && (square + 1) % maze.width !== 0;
-    const top = !maze.hWalls.includes(square - maze.width) && square >= maze.width;
-    const bottom = !maze.hWalls.includes(square) && square < maze.width * (maze.height - 1);
+function connectedDirections(square, maze) {
+    let directionsNoWalls = [];
+    if (!maze.vWalls.includes(square - 1)) {
+        directionsNoWalls.push("left");
+    }
+    if (!maze.vWalls.includes(square)) {
+        directionsNoWalls.push("right");
+    }
+    if (!maze.hWalls.includes(square - maze.width)) {
+        directionsNoWalls.push("top");
+    }
+    if (!maze.hWalls.includes(square)) {
+        directionsNoWalls.push("bottom");
+    }
 
-    return { left, right, top, bottom };
+    return adjacentDirections(square, maze.width, maze.height).filter(dir => directionsNoWalls.includes(dir));
+}
+
+
+/**
+ * Returns an array of squares which a given square is connected to.
+ * @param {number} square The square to be checked.
+ * @param {Maze} maze The maze.
+ * @returns {number[]} The neighbors which `square` is connected to.
+ */
+function connectedNeighbors(square, maze) {
+    const adjacentDirections_ = adjacentDirections(square, maze.width, maze.height);
+    const connectedDirections_ = connectedDirections(square, maze);
+    return adjacentDirections_
+        .filter(dir => connectedDirections_.includes(dir))
+        .map(dir => square + directionDifference(dir, maze.width));
 }
 
 
@@ -49,13 +101,13 @@ function checkConnectedness(square, maze) {
  * Checks if a square is a deadend, i.e. only connected to a single square; if so, returns the direction of the opening.
  * @param {number} square The square to be checked.
  * @param {Maze} maze The maze.
- * @returns {string} One of `"left"`, `"right"`, `"top"`, `"bottom"`, indicating the direction of the opening, or an empty string if `square` is not a deadend.
+ * @returns {Direction | ""} The direction of the opening, or an empty string if `square` is not a deadend.
  */
 function checkDeadend(square, maze) {
-    const { left, right, top, bottom } = checkConnectedness(square, maze);
-    if ( left && !right && !top && !bottom ) return "left";
-    if (!left &&  right && !top && !bottom ) return "right";
-    if (!left && !right &&  top && !bottom ) return "top";
-    if (!left && !right && !top &&  bottom ) return "bottom";
-    return "";
+    const directions = connectedDirections(square, maze);
+    if (directions.length === 1) {
+        return directions[0];
+    } else {
+        return "";
+    }
 }
