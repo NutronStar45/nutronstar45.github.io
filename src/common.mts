@@ -155,9 +155,9 @@ export function validate($targets: JQuery, alert=true): boolean {
                 }
             }
 
-            const min = +($target.attr("min") ?? -Infinity);
-            const max = +($target.attr("max") ?? Infinity);
-            const step = +($target.attr("step") ?? 1);
+            const min = Number($target.attr("min") ?? -Infinity);
+            const max = Number($target.attr("max") ?? Infinity);
+            const step = Number($target.attr("step") ?? 1);
 
             const validity = target.validity;
 
@@ -266,11 +266,11 @@ export function validate($targets: JQuery, alert=true): boolean {
                     }
                 }
 
-                const min = +($target.attr("min") ?? -Infinity);
-                const max = +($target.attr("max") ?? Infinity);
-                const step = +($target.attr("step") ?? 1);
-                const lmin = +($target.attr("lmin") ?? 0);
-                const lmax = +($target.attr("lmax") ?? Infinity);
+                const min = Number($target.attr("min") ?? -Infinity);
+                const max = Number($target.attr("max") ?? Infinity);
+                const step = Number($target.attr("step") ?? 1);
+                const lmin = Number($target.attr("lmin") ?? 0);
+                const lmax = Number($target.attr("lmax") ?? Infinity);
 
                 // Manual tests
                 (() => {
@@ -290,25 +290,25 @@ export function validate($targets: JQuery, alert=true): boolean {
 
                     for (const value of values) {
                         // Invalid
-                        if (value === "" || isNaN(+value)) {
+                        if (value === "" || Number.isNaN(Number(value))) {
                             target.setCustomValidity("numbersBadInput");
                             return;
                         }
 
                         // Too small
-                        if (+value < min) {
+                        if (Number(value) < min) {
                             target.setCustomValidity("numbersUnderflow");
                             return;
                         }
 
                         // Too big
-                        if (+value > max) {
+                        if (Number(value) > max) {
                             target.setCustomValidity("numbersOverflow");
                             return;
                         }
 
                         // Step mismatch
-                        if (+value % step !== 0) {
+                        if (Number(value) % step !== 0) {
                             target.setCustomValidity("numbersStepMismatch");
                             return;
                         }
@@ -395,7 +395,7 @@ export function downloadFile(content: string, filename: string) {
  * @param visible Whether the corner box is visible or not.
  */
 function updateCornerBoxVisibility(visible: boolean) {
-    $("div#corner-box").toggle(visible);
+    $("section#corner-box").toggle(visible);
     $("button#show-corner-box").toggle(!visible);
     localStorage.setItem("cornerBoxVisible", String(visible));
 }
@@ -415,7 +415,7 @@ $(() => {
     $("button#show-corner-box").hide();
 
     // Sections information
-    const sections = $("section").map(function () {
+    const sections = $("main > section").map(function () {
         const title = $(this).children("h3").text();
         const id = $(this).attr("id");
         if (id === undefined) {
@@ -440,7 +440,7 @@ $(() => {
     }
 
     // Place corner box into DOM
-    $("div#corner-box").html(cornerBoxHTML);
+    $("section#corner-box").html(cornerBoxHTML);
     updateCornerBoxVisibility(cornerBoxVisible);
 
     // Show corner box

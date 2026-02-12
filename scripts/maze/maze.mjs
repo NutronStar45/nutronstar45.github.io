@@ -17,6 +17,8 @@ import {} from "./maze_util.mjs";
 const MAZE_SQUARE_WIDTH = 20;
 // The radius of the rounded corners
 const CORNER_RADIUS = 4;
+// The width of the image's margin
+const IMAGE_MARGIN = 20;
 // The precision of reported time during a process
 const TIME_PRECISION = 0;
 // The precision of final reported time
@@ -31,9 +33,9 @@ function mazeSVGTemplate(width, height) {
     return svgElement("svg")
         .attr({
         id: "maze-img",
-        width: (width + 2) * MAZE_SQUARE_WIDTH,
-        height: (height + 2) * MAZE_SQUARE_WIDTH,
-        viewBox: `-${MAZE_SQUARE_WIDTH} -${MAZE_SQUARE_WIDTH} ${(width + 2) * MAZE_SQUARE_WIDTH} ${(height + 2) * MAZE_SQUARE_WIDTH}`
+        width: width * MAZE_SQUARE_WIDTH + IMAGE_MARGIN * 2,
+        height: height * MAZE_SQUARE_WIDTH + IMAGE_MARGIN * 2,
+        viewBox: `-${IMAGE_MARGIN} -${IMAGE_MARGIN} ${width * MAZE_SQUARE_WIDTH + IMAGE_MARGIN * 2} ${height * MAZE_SQUARE_WIDTH + IMAGE_MARGIN * 2}`
     })
         .append(svgElement("mask").attr("id", "mask")
         .append(svgElement("path").attr({
@@ -168,8 +170,8 @@ $(() => {
             $(this).prop("disabled", true);
             $("button#solve").prop("disabled", true);
             // Generate maze
-            const width = +$("input#width").val();
-            const height = +$("input#height").val();
+            const width = Number($("input#width").val());
+            const height = Number($("input#height").val());
             const algorithm = $("select#generate-algorithm").val();
             // Spawn worker
             const worker = new Worker("/scripts/maze/maze_worker_generate.mjs", { type: "module" });
@@ -246,11 +248,11 @@ $(() => {
             $("button#generate").prop("disabled", true);
             $(this).prop("disabled", true);
             // Calculate solution
-            const startX = +$("input#start-x").val();
-            const startY = +$("input#start-y").val();
+            const startX = Number($("input#start-x").val());
+            const startY = Number($("input#start-y").val());
             const start = (startY - 1) * maze.width + (startX - 1);
-            const endX = +$("input#end-x").val();
-            const endY = +$("input#end-y").val();
+            const endX = Number($("input#end-x").val());
+            const endY = Number($("input#end-y").val());
             const end = (endY - 1) * maze.width + (endX - 1);
             const algorithm = $("select#solve-algorithm").val();
             // Spawn worker

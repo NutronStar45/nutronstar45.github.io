@@ -29,7 +29,7 @@ nav a {
 }
 
 /* Corner box */
-div#corner-box {
+section#corner-box {
     position: fixed;
     top: 0;
     right: 0;
@@ -70,7 +70,7 @@ h2 {
 }
 
 /* Sections */
-section {
+main > section {
     border: 1px dashed var(--section-border-color);
     padding: 10px;
 
