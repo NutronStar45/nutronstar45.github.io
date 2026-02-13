@@ -1,18 +1,25 @@
 import { chooseRandom, removeItem } from "../common_util.mjs";
-import { PROGRESS_REPORT_INTERVAL, type Maze } from "./maze_util.mjs";
-import { adjacentDirections, directionDifference, neighbors } from "./maze_util.mjs";
+import { PROGRESS_REPORT_INTERVAL, type Subgraph, MazeShape, GenerateParams, GenerateAlgorithm } from "./maze_util.mjs";
+import { SquareMaze } from "./shapes/maze_square.mjs";
 
 
 // Timestamp at the start of generation
 let startTime: number;
 
 addEventListener("message", e => {
-    const maze = generate(e.data.width, e.data.height, e.data.algorithm);
-    if (maze !== null) {
-        postMessage({ msg: "complete", maze, time: Date.now() - startTime });
-    } else {
-        console.error(`Unknown algorithm: ${e.data.algorithm}`);
+    const options = GenerateParams.fromObject(e.data);
+    if (options === null) {
+        console.error("Generation worker received invalid message: ", e.data);
+        return;
     }
+
+    const maze = generate(options);
+    if (maze !== null) {
+        postMessage({ msg: "complete", maze: maze.toObject(), time: Date.now() - startTime });
+        return;
+    }
+
+    console.error("Generation worker received invalid message: ", e.data);
 });
 
 
@@ -21,109 +28,106 @@ addEventListener("message", e => {
  * @param width The width of the maze.
  * @param height The height of the maze.
  * @param algorithm The generation algorithm.
- * @returns The generated maze, or `null` if the given algorithm is unknown.
+ * @returns The generated maze, or `null` if the given parameters are invalid.
  */
-function generate(width: number, height: number, algorithm: string) {
-    switch (algorithm) {
-        case "prims":
-            return prims(width, height);
-        default:
-            return null;
+function generate(options: GenerateParams) {
+    const params = options.params;
+
+    // Complete graph
+    let graph;
+    switch (options.shape) {
+        case MazeShape.Square:
+            graph = SquareMaze.supergraph(params.width, params.height);
+    }
+    if (graph === null) return null;
+
+    switch (options.algorithm) {
+        case GenerateAlgorithm.Prims:
+            return prims(graph);
     }
 }
 
 
 /**
- * Uses Prim's algorithm to generate a spanning tree of a square grid.
- * @param width The width of the maze.
- * @param height The height of the maze.
- * @returns The generated maze.
+ * Uses Prim's algorithm to generate a spanning tree of a connected graph.
+ * @param graph A connected graph.
+ * @returns The generated spanning tree.
  */
-function prims(width: number, height: number) {
+function prims<V, T extends Subgraph<V>>(graph: T) {
     startTime = Date.now();
-    postMessage({ msg: "progress", progress: 0, time: 0 });
+    postMessage({ msg: "progress", progress: "0%", time: 0 });
 
     // 0 to 100, rounded down
     let progress = 0;
     // Number of `PROGRESS_REPORT_INTERVAL`s elapsed, rounded down
     let reportUnitsElapsed = 0;
 
-    // Initialize walls
-    let hWalls = []; // Horizontal
-    let vWalls = []; // Vertical
+    // Initialize the result
+    // From here on, neighbors in `graph` will be called "potential neighbors" and are "potentially adjacent"
+    // Neighbors in `resultGraph` will be called "neighbors" and are "adjacent"
+    let resultGraph = graph.copy();
+    resultGraph.empty();
 
-    // All squares have one of three states: default, searching, finished
-    let squaresDefault = Array.from({ length: width * height }, (_v, i) => i);
-    let squaresSearching = [];
-    let squaresFinished = [];
+    // All vertices have one of three states: default, searching, finished
+    let verticesDefault = graph.vertices();
+    let verticesSearching = [];
+    let verticesFinished = [];
 
-    // Initialize vertical walls
-    for (let vIndex = 0; vIndex < height; vIndex++) {
-        for (let hIndex = 0; hIndex < width - 1; hIndex++) {
-            vWalls.push(vIndex * width + hIndex);
-        }
-    }
+    // Mark a vertex as finished and its potential neighbors as searching
+    const startingVertex = chooseRandom(verticesDefault);
+    const startingNeighbors = graph.neighbors(startingVertex) as V[];
 
-    // Initialize horizontal walls
-    for (let vIndex = 0; vIndex < height - 1; vIndex++) {
-        for (let hIndex = 0; hIndex < width; hIndex++) {
-            hWalls.push(vIndex * width + hIndex);
-        }
-    }
-
-    // Mark a square as finished and its neighbors as searching
-    const startingSquare = Math.floor(Math.random() * (width * height));
-    const startingNeighbors = neighbors(startingSquare, width, height);
-
-    removeItem(squaresDefault, startingSquare);
-    squaresFinished.push(startingSquare);
+    removeItem(verticesDefault, startingVertex);
+    verticesFinished.push(startingVertex);
 
     for (const neighbor of startingNeighbors) {
-        removeItem(squaresDefault, neighbor);
-        squaresSearching.push(neighbor);
+        removeItem(verticesDefault, neighbor);
+        verticesSearching.push(neighbor);
     }
 
-    // Repeat until all squares are finished
-    while (squaresSearching.length > 0) {
-        // Choose a searching square as the "extension"
-        // Then choose an adjacent finished square as the "base"
-        // The finished portion will be extended to the extension from the base
-        const extension = chooseRandom(squaresSearching);
-        const finishedDirections = adjacentDirections(extension, width, height)
-            .filter(dir => squaresFinished.includes(extension + directionDifference(dir, width)));
-        const baseDirection = chooseRandom(finishedDirections);
-        const base = extension + directionDifference(baseDirection, width);
+    // Handle the special case that `startingVertex` is isolated
+    if (verticesSearching.length === 0) {
+        postMessage({ msg: "progress", progress: "100%", time: 0 });
+    }
 
-        // Remove the wall between `base` and `extension`
-        const wallBetween = Math.min(extension, base);
-        if (baseDirection === "left" || baseDirection === "right") removeItem(vWalls, wallBetween);
-        else removeItem(hWalls, wallBetween);
+    // Repeat until all vertices are finished
+    while (verticesSearching.length > 0) {
+        // Choose a searching vertex as the "extension"
+        // Choose a finished potential neighbor as the "base"
+        // The finished portion will be extended to the extension from the base
+        const extension = chooseRandom(verticesSearching);
+        const potentialNeighborsFinished = (graph.neighbors(extension) as V[])
+            .filter(ver => verticesFinished.includes(ver));
+        const base = chooseRandom(potentialNeighborsFinished);
+
+        // Connect `base` and `extension`
+        resultGraph.connect(base, extension);
 
         // Mark the extension as finished
-        removeItem(squaresSearching, extension);
-        squaresFinished.push(extension);
+        removeItem(verticesSearching, extension);
+        verticesFinished.push(extension);
 
-        // Mark the default squares adjacent to the extension as searching
-        const defaultNeighbors = neighbors(extension, width, height)
-            .filter(square => squaresDefault.includes(square));
+        // Mark the extension's default potential neighbors as searching
+        const defaultNeighbors = (graph.neighbors(extension) as V[])
+            .filter(ver => verticesDefault.includes(ver));
         for (const neighbor of defaultNeighbors) {
-            removeItem(squaresDefault, neighbor);
-            squaresSearching.push(neighbor);
+            removeItem(verticesDefault, neighbor);
+            verticesSearching.push(neighbor);
         }
 
         // Report progress
-        const newProgress = Math.floor(squaresFinished.length / width / height * 100);
+        const newProgress = Math.floor(verticesFinished.length / graph.order() * 100);
         const newReportUnitsElapsed = Math.floor((Date.now() - startTime) / PROGRESS_REPORT_INTERVAL);
         if (newProgress > progress || newReportUnitsElapsed > reportUnitsElapsed) {
             progress = newProgress;
             reportUnitsElapsed = newReportUnitsElapsed;
             postMessage({
                 msg: "progress",
-                progress,
+                progress: `${progress}%`,
                 time: reportUnitsElapsed * PROGRESS_REPORT_INTERVAL
             });
         }
     }
 
-    return { width, height, hWalls, vWalls } as Maze;
+    return resultGraph;
 }

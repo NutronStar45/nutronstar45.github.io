@@ -1,122 +1,195 @@
-/**
- * One of four cardinal directions.
- */
-export type Direction = "left" | "right" | "top" | "bottom";
-
-
-/**
- * A maze, represented with its width, height, and horizontal and vertical walls.
- */
-export type Maze = { width: number, height: number, hWalls: number[], vWalls: number[] };
-
+import { SquareMazeGenerateParams } from "./shapes/maze_square.mjs";
 
 // Time between individual progress reports in milliseconds
 export const PROGRESS_REPORT_INTERVAL = 1000;
 
 
+/** The shape of a maze. */
+export enum MazeShape {
+    Square
+}
+
+
+/** A generation algorithm. */
+export enum GenerateAlgorithm {
+    Prims
+}
+
+
+/** A solving algorithm. */
+export enum SolveAlgorithm {
+    DeadendFilling
+}
+
+
 /**
- * Returns the corresponding index difference of a direction.
- * @param direction The direction.
- * @param width The width of the grid.
- * @returns The corresponding index difference.
+ * Converts a string into a `GenerateAlgorithm`.
+ * @param str A string.
+ * @returns A `GenerateAlgorithm`, or `null` if the string doesn't represent a valid algorithm.
  */
-export function directionDifference(direction: Direction, width: number) {
-    switch (direction) {
-        case "left":
-            return -1;
-        case "right":
-            return 1;
-        case "top":
-            return -width;
-        case "bottom":
-            return width;
+export function generateAlgorithmFromString(str: string) {
+    switch (str) {
+        case "prims":
+            return GenerateAlgorithm.Prims;
+        default:
+            return null;
     }
 }
 
 
 /**
- * Returns directions in which a given square has neighbors.
- * @param square A square.
- * @param width The width of the grid.
- * @param height The height of the grid.
- * @returns The directions in which `square` has neighbors.
+ * Converts a string into a `SolveAlgorithm`.
+ * @param str A string.
+ * @returns A `SolveAlgorithm`, or `null` if the string doesn't represent a valid algorithm.
  */
-export function adjacentDirections(square: number, width: number, height: number) {
-    let directions: Direction[] = [];
+export function solveAlgorithmFromString(str: string) {
+    switch (str) {
+        case "deadendFilling":
+            return SolveAlgorithm.DeadendFilling;
+        default:
+            return null;
+    }
+}
 
-    if (square       % width !== 0)     directions.push("left");
-    if ((square + 1) % width !== 0)     directions.push("right");
-    if (square >= width)                directions.push("top");
-    if (square <  width * (height - 1)) directions.push("bottom");
 
-    return directions;
+/** Parameters for maze generation. */
+export class GenerateParams {
+    private constructor(
+        readonly shape: MazeShape,
+        readonly algorithm: GenerateAlgorithm,
+        readonly params: SquareMazeGenerateParams
+    ) {}
+
+    /**
+     * Constructs a `GenerateParams` for a square maze.
+     * @param params The parameters of the maze.
+     */
+    static newSquare(algorithm: GenerateAlgorithm, params: SquareMazeGenerateParams) {
+        return new GenerateParams(MazeShape.Square, algorithm, params);
+    }
+
+    /** Returns an object containing the options. */
+    toObject() {
+        return {
+            shape: this.shape,
+            algorithm: this.algorithm,
+            params: this.params.toObject()
+        }
+    }
+
+    /**
+     * Constructs a `GenerateParams` from an object, or `null` if the given object is invalid.
+     * @param obj An object.
+     * @returns The constructed `GenerateParams`, or `null` if the given object is invalid.
+     */
+    static fromObject(obj: object) {
+        if (!("shape" in obj) || typeof obj.shape !== "number" || !(obj.shape in MazeShape)) {
+            return null;
+        }
+        if (!("algorithm" in obj) || typeof obj.algorithm !== "number" || !(obj.algorithm in GenerateAlgorithm)) {
+            return null;
+        }
+        if (!("params" in obj) || typeof obj.params !== "object" || obj.params === null) {
+            return null;
+        }
+
+        switch (obj.shape) {
+            case MazeShape.Square: {
+                const params = SquareMazeGenerateParams.fromObject(obj.params);
+                if (params === null) return null;
+                return this.newSquare(obj.algorithm, params);
+            }
+            default:
+                return null;
+        }
+    }
 }
 
 
 /**
- * Returns squares adjacent to a given square.
- * @param square A square.
- * @param width The width of the grid.
- * @param height The height of the grid.
- * @returns The squares adjacent to `square`.
+ * A subgraph of a fixed simple graph.
+ * @template V The type of the vertices.
  */
-export function neighbors(square: number, width: number, height: number) {
-    const adjacentDirections_ = adjacentDirections(square, width, height);
-    return adjacentDirections_.map(dir => square + directionDifference(dir, width));
+export interface Subgraph<V> {
+    /**
+     * Returns the vertices.
+     */
+    vertices(): V[];
+
+    /**
+     * Checks whether a given vertex exists in the graph.
+     * @param vertex The vertex.
+     * @returns Whether a given vertex exists in the graph.
+     */
+    hasVertex(vertex: V): boolean;
+
+    /**
+     * Returns the number of vertices.
+     */
+    order(): number;
+
+    /**
+     * Returns whether two vertices are adjacent, i.e. are joined by an edge.
+     * @param vertex1 One of the endpoints.
+     * @param vertex2 One of the endpoints.
+     * @returns Whether `vertex1` and `vertex2` are adjacent or not.
+     */
+    hasEdge(vertex1: V, vertex2: V): boolean;
+
+    /**
+     * Returns the neighbors of a given vertex, or `null` if `vertex` isn't in the graph.
+     * @param vertex A vertex.
+     */
+    neighbors(vertex: V): V[] | null;
+
+    /**
+     * Returns a copy that preserves references to vertices.
+     */
+    copy(): this;
+
+    /**
+     * Removes all edges.
+     */
+    empty(): void;
+
+    /**
+     * Adds an edge connecting two endpoints, if one doesn't already exist. Doesn't do anything if the edge isn't in the supergraph.
+     * @param vertex1 One of the endpoints.
+     * @param vertex2 One of the endpoints.
+     */
+    connect(vertex1: V, vertex2: V): void;
+
+    /**
+     * Removes an edge connecting two endpoints, if one exists. Doesn't do anything if the edge isn't in the supergraph.
+     * @param vertex1 One of the endpoints.
+     * @param vertex2 One of the endpoints.
+     */
+    disconnect(vertex1: V, vertex2: V): void;
 }
 
 
 /**
- * returns in which directions a given square is connected to.
- * @param square The square whose connectedness is checked.
- * @param maze The maze.
- * @returns An array of directions in which `square` isn't blocked by a wall or the border.
+ * A subgraph of a fixed simple graph on a plane.
+ * @template V The type of the vertices.
  */
-function connectedDirections(square: number, maze: Maze) {
-    let directionsNoWalls: Direction[] = [];
-    if (!maze.vWalls.includes(square - 1)) {
-        directionsNoWalls.push("left");
-    }
-    if (!maze.vWalls.includes(square)) {
-        directionsNoWalls.push("right");
-    }
-    if (!maze.hWalls.includes(square - maze.width)) {
-        directionsNoWalls.push("top");
-    }
-    if (!maze.hWalls.includes(square)) {
-        directionsNoWalls.push("bottom");
-    }
+export interface PlaneSubgraph<V> extends Subgraph<V> {
+    /**
+     * Returns the vertex that would be reached if one start from `previous`, goes to `current`, then takes the path immediately to the right.
+     * @param previous The previous vertex.
+     * @param current The current vertex.
+     * @returns The next vertex, or `null` if:
+     * - one of the given vertices isn't in the graph, or
+     * - the edge from `previous` to `current` isn't in the graph.
+     */
+    rightTurn(previous: V, current: V): V | null;
 
-    return adjacentDirections(square, maze.width, maze.height).filter(dir => directionsNoWalls.includes(dir));
-}
-
-
-/**
- * Returns an array of squares which a given square is connected to.
- * @param square The square to be checked.
- * @param maze The maze.
- * @returns The neighbors which `square` is connected to.
- */
-export function connectedNeighbors(square: number, maze: Maze) {
-    const adjacentDirections_ = adjacentDirections(square, maze.width, maze.height);
-    const connectedDirections_ = connectedDirections(square, maze);
-    return adjacentDirections_
-        .filter(dir => connectedDirections_.includes(dir))
-        .map(dir => square + directionDifference(dir, maze.width));
-}
-
-
-/**
- * Checks if a square is a deadend, i.e. only connected to a single square; if so, returns the direction of the opening.
- * @param square The square to be checked.
- * @param maze The maze.
- * @returns The direction of the opening, or an empty string if `square` is not a deadend.
- */
-export function checkDeadend(square: number, maze: Maze) {
-    const directions = connectedDirections(square, maze);
-    if (directions.length === 1) {
-        return (directions[0] as Direction);
-    } else {
-        return "";
-    }
+    /**
+     * Returns the vertex that would be reached if one start from `previous`, goes to `current`, then takes the path immediately to the left.
+     * @param previous The previous vertex.
+     * @param current The current vertex.
+     * @returns The next vertex, or `null` if:
+     * - one of the given vertices isn't in the graph, or
+     * - the edge from `previous` to `current` isn't in the graph.
+     */
+    leftTurn(previous: V, current: V): V | null;
 }

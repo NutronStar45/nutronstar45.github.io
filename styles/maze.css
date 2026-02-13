@@ -10,7 +10,7 @@ input#width, input#height, input#start-x, input#start-y, input#end-x, input#end-
 }
 
 div#maze-img-container {
-    max-height: 600px;
+    max-height: 80vh;
     overflow: auto;
 }
 

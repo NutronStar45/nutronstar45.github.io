@@ -1,4 +1,4 @@
-export const SITE_VERSION = "4.1";
+export const SITE_VERSION = "4.2";
 
 
 /**
@@ -21,4 +21,26 @@ export function removeItem(array: any[], value: any) {
     if (array.includes(value)) {
         array.splice(array.indexOf(value), 1);
     }
+}
+
+
+/**
+ * Checks whether a number is an integer in a given range.
+ * @param num The number to be checked.
+ * @param low The minimum allowed integer.
+ * @param high The minimum disallowed integer.
+ * @returns Whether `num` is in the range `[low, high)` or not.
+ */
+export function isIntegerInRange(num: number, low: number, high: number) {
+    return Number.isInteger(num) && num >= low && num < high;
+}
+
+
+/**
+ * Checks if a value is a numeric array.
+ * @param x The value to be checked.
+ * @returns Whether `x` is a numeric array or not.
+ */
+export function isNumericArray(x: any): x is number[] {
+    return Array.isArray(x) && x.every(v => typeof v === "number");
 }

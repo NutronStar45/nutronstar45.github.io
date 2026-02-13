@@ -1,19 +1,8 @@
-/*
-Squares are indexed left-to-right, top-to-bottom, starting from 0.
-For example, a maze of width 5 and height 4 is indexed in the following manner:
- 0  1  2  3  4
- 5  6  7  8  9
-10 11 12 13 14
-15 16 17 18 19
-
-Walls are split into horizontal and vertical ones
-Horizontal walls are indexed by the square on their left
-Vertical walls are indexed by the square on their top
-*/
-
 import { $ } from "jquery.mjs";
-import { downloadFile, svgElement, validate } from "../common.mjs";
-import { type Maze } from "./maze_util.mjs";
+import { downloadFile, svgElement, validateInputs } from "../common.mjs";
+import { isIntegerInRange } from "../common_util.mjs";
+import { generateAlgorithmFromString, GenerateParams, solveAlgorithmFromString } from "./maze_util.mjs";
+import { SquareMaze, SquareMazeGenerateParams } from "./shapes/maze_square.mjs";
 
 
 // The width of a square in the resulting SVG
@@ -32,9 +21,16 @@ const FINAL_TIME_PRECISION = 2;
  * Returns the SVG template of a maze of given size.
  * @param width The width of the maze.
  * @param height The height of the maze.
- * @returns The JQuery object containing the SVG template.
+ * @returns The JQuery object containing the SVG template, or `null` if the given parameters are invalid.
  */
-function mazeSVGTemplate(width: number, height: number) {
+function squareMazeSVGTemplate(width: number, height: number) {
+    if (!Number.isInteger(width) || width <= 0) {
+        return null;
+    }
+    if (!Number.isInteger(height) || width <= 0) {
+        return null;
+    }
+
     return svgElement("svg")
         .attr({
             id: "maze-img",
@@ -42,7 +38,7 @@ function mazeSVGTemplate(width: number, height: number) {
             height: height * MAZE_SQUARE_WIDTH + IMAGE_MARGIN * 2,
             viewBox: `-${IMAGE_MARGIN} -${IMAGE_MARGIN} ${width * MAZE_SQUARE_WIDTH + IMAGE_MARGIN * 2} ${height * MAZE_SQUARE_WIDTH + IMAGE_MARGIN * 2}`
         })
-        .append(svgElement("mask").attr("id", "mask")
+        .append(svgElement("mask").attr("id", "maze-mask").attr("maskUnits", "userSpaceOnUse")
             .append(svgElement("path").attr({
                 d: `M${CORNER_RADIUS},0 `
                     + `h${width * MAZE_SQUARE_WIDTH - CORNER_RADIUS * 2} `
@@ -59,7 +55,7 @@ function mazeSVGTemplate(width: number, height: number) {
         )
         .append(svgElement("g").attr({
             id: "cropped",
-            mask: "url(#mask)"
+            mask: "url(#maze-mask)"
         })
             .append(svgElement("g").attr("id", "maze-solution"))
             .append(svgElement("g").attr("id", "maze-endpoints"))
@@ -73,7 +69,7 @@ function mazeSVGTemplate(width: number, height: number) {
  * @param maze The maze.
  * @param $mazeSVG The SVG to draw onto. Expects a template.
  */
-function drawMaze(maze: Maze, $mazeSVG: JQuery<SVGElement>) {
+function drawSquareMaze(maze: SquareMaze, $mazeSVG: JQuery<SVGElement>) {
     const $gWalls = $mazeSVG.find("g#maze-walls");
 
     // Draw horizontal walls
@@ -115,13 +111,19 @@ function drawMaze(maze: Maze, $mazeSVG: JQuery<SVGElement>) {
 
 
 /**
- * Draws the solution.
+ * Draws the solution. Does nothing if the given parameters aren't valid.
  * @param width The width of the maze.
- * @param solution The array of squares tracing out the solution.
- * @param squaresEndpoints The array containing the starting and ending squares.
+ * @param height The height of the maze.
+ * @param solution An array of squares tracing out the solution.
+ * @param endpoints An array containing the start and the destination.
  * @param $mazeSVG The SVG to draw onto. Expects a template with a maze drawn onto it.
  */
-function drawSolution(width: number, solution: number[], squaresEndpoints: number[], $mazeSVG: JQuery<SVGElement>) {
+function drawSquareMazeSolution(width: number, height: number, solution: number[], endpoints: number[], $mazeSVG: JQuery<SVGElement>) {
+    if (!Number.isInteger(width) || width <= 0) return;
+    if (!Number.isInteger(height) || height <= 0) return;
+    if (solution.some(vertex => !isIntegerInRange(vertex, 0, width * height))) return;
+    if (endpoints.some(vertex => !isIntegerInRange(vertex, 0, width * height))) return;
+
     const $gSolution = $mazeSVG.find("g#maze-solution").empty();
     const $gEndpoints = $mazeSVG.find("g#maze-endpoints").empty();
 
@@ -148,7 +150,7 @@ function drawSolution(width: number, solution: number[], squaresEndpoints: numbe
     }
 
     // Draw endpoints
-    for (const square of squaresEndpoints) {
+    for (const square of endpoints) {
         drawSquare(square, $gEndpoints);
     }
 }
@@ -164,7 +166,7 @@ $(() => {
     $("button#solve").prop("disabled", true);
     $("button#solve-cancel").hide();
 
-    let maze: Maze; // Internally stored maze
+    let maze: SquareMaze; // Internally stored maze
     let $mazeSVG: JQuery<SVGElement>; // Internally stored maze SVG
     let solutionVisible: boolean; // Whether `g#maze-solution` is visible or not
     let endpointsVisible: boolean; // Whether `g#maze-endpoints` is visible or not
@@ -183,7 +185,7 @@ $(() => {
     $("button#generate").on("click", function () {
         const $validationTargets = $("input#width, input#height");
 
-        if (validate($validationTargets)) {
+        if (validateInputs($validationTargets)) {
             // Show generator and solver status
             $("div#subsec-generator-status").show();
             $("div#subsec-solver-status").hide();
@@ -202,17 +204,37 @@ $(() => {
             // Generate maze
             const width = Number($("input#width").val() as string);
             const height = Number($("input#height").val() as string);
-            const algorithm = $("select#generate-algorithm").val() as string;
+            const algorithm = generateAlgorithmFromString($("select#generate-algorithm").val() as string);
+
+            // Validate
+            const params = SquareMazeGenerateParams.tryNew(width, height);
+            if (algorithm === null) {
+                console.error("Invalid algorithm");
+                return;
+            }
+            if (params === null) {
+                console.error("Invalid parameters");
+                return;
+            }
+            const options = GenerateParams.newSquare(algorithm, params);
 
             // Spawn worker
             const worker = new Worker("/scripts/maze/maze_worker_generate.mjs", { type: "module" });
-            worker.postMessage({ width, height, algorithm });
+            worker.postMessage(options.toObject());
             worker.addEventListener("message", e => {
                 switch (e.data.msg) {
                     // Complete
                     case "complete":
                         worker.terminate();
-                        maze = e.data.maze;
+
+                        // Store received maze
+                        const receivedMaze = SquareMaze.fromObject(e.data.maze);
+                        if (receivedMaze === null) {
+                            console.error(`Received unknown maze format from generation worker: ${e.data.maze}`);
+                            return;
+                        }
+                        maze = receivedMaze;
+
                         $("span#generate-time").text(`${(e.data.time / 1000).toFixed(FINAL_TIME_PRECISION)}s`);
                         const startTime = Date.now();
 
@@ -221,10 +243,10 @@ $(() => {
                         $("button#generate-cancel").off("click", cancel);
 
                         // Initialize SVG
-                        $mazeSVG = mazeSVGTemplate(maze.width, maze.height);
+                        $mazeSVG = squareMazeSVGTemplate(maze.width, maze.height) as JQuery<SVGElement>;
 
                         // Draw maze
-                        drawMaze(maze, $mazeSVG);
+                        drawSquareMaze(maze, $mazeSVG);
                         $("div#maze-img-container").empty();
                         $("div#maze-img-container").append($mazeSVG.clone());
 
@@ -248,13 +270,14 @@ $(() => {
 
                     // Progress report
                     case "progress":
-                        $("span#generate-progress").text(`${e.data.progress}%`);
+                        $("span#generate-progress").text(e.data.progress);
                         $("span#generate-time").text(`${(e.data.time / 1000).toFixed(TIME_PRECISION)}s`);
                         break;
 
                     // Unknown message
                     default:
                         console.error("Received unknown message from generation worker:", e);
+                        return;
                 }
             });
 
@@ -285,7 +308,7 @@ $(() => {
     $("button#solve").on("click", function () {
         const $validationTargets = $("input#start-x, input#start-y, input#end-x, input#end-y");
 
-        if (validate($validationTargets)) {
+        if (validateInputs($validationTargets)) {
             // Show solver status
             $("div#subsec-solver-status").show();
 
@@ -304,16 +327,23 @@ $(() => {
             const endX = Number($("input#end-x").val() as string);
             const endY = Number($("input#end-y").val() as string);
             const end = (endY - 1) * maze.width + (endX - 1);
-            const algorithm = $("select#solve-algorithm").val() as string;
+            const algorithm = solveAlgorithmFromString($("select#solve-algorithm").val() as string);
+
+            // Validate
+            if (algorithm === null) {
+                console.error("Invalid algorithm");
+                return;
+            }
 
             // Spawn worker
             const worker = new Worker("/scripts/maze/maze_worker_solve.mjs", { type: "module" });
-            worker.postMessage({ maze, start, end, algorithm });
+            worker.postMessage({ maze: maze.toObject(), start, end, algorithm });
             worker.addEventListener("message", e => {
                 switch (e.data.msg) {
                     // Complete
                     case "complete":
                         worker.terminate();
+
                         $("span#solve-time").text(`${(e.data.time / 1000).toFixed(FINAL_TIME_PRECISION)}s`);
                         const startTime = Date.now();
 
@@ -322,7 +352,7 @@ $(() => {
                         $("button#solve-cancel").off("click", cancel);
 
                         // Draw solution
-                        drawSolution(maze.width, e.data.solution, [start, end], $mazeSVG);
+                        drawSquareMazeSolution(maze.width, maze.height, e.data.solution, [start, end], $mazeSVG);
                         $("div#maze-img-container").empty();
                         $("div#maze-img-container").append($mazeSVG.clone());
 
@@ -350,13 +380,14 @@ $(() => {
 
                     // Progress report
                     case "progress":
-                        $("span#solve-progress").text(`${e.data.progress}%`);
+                        $("span#solve-progress").text(e.data.progress);
                         $("span#solve-time").text(`${(e.data.time / 1000).toFixed(TIME_PRECISION)}s`);
                         break;
 
                     // Unknown message
                     default:
                         console.error("Received unknown message from worker:", e);
+                        return;
                 }
             });
 
@@ -425,6 +456,7 @@ $(() => {
             downloadFile($standaloneSVG[0].outerHTML, "maze.svg");
         } else {
             console.error("Maze not yet generated");
+            return;
         }
     });
 });

@@ -1,82 +1,7 @@
 import { $ } from "jquery.mjs";
 import { SITE_VERSION } from "./common_util.mjs";
-
-
-/**
- * Returns default alert messages.
- * @param type The type of the alert.
- * @param args Some arguments. Depends on the type of the alert.
- * @returns The default alert message, or `null` if the `type` isn't supported or `args` is unexpected.
- */
-export function defaultAlert(type: string, args: object) {
-    switch (type) {
-        case "numberMissing":
-            return "A number should be entered";
-        case "numberBadInput":
-            return "A number should be entered";
-        case "numberUnderflow":
-            if ("min" in args && typeof args.min === "number") {
-                return `Number should be at least ${args.min}`;
-            }
-            break;
-        case "numberOverflow":
-            if ("max" in args && typeof args.max === "number") {
-                return `Number should be at most ${args.max}`;
-            }
-            break;
-        case "numberStepMismatch":
-            if ("step" in args && typeof args.step === "number") {
-                if (args.step === 1) {
-                    return `Number should be an integer`;
-                } else {
-                    return `Number should be a multiple of ${args.step}`;
-                }
-            }
-            break;
-
-        case "numbersMissing":
-            return "Number(s) should be entered";
-        case "numbersBadInput":
-            return "Number(s) should be entered";
-        case "numbersLengthUnderflow":
-            if ("lmin" in args && typeof args.lmin === "number") {
-                return `At least ${args.lmin} numbers should be given`;
-            }
-            break;
-        case "numbersLengthOverflow":
-            if ("lmax" in args && typeof args.lmax === "number") {
-                return `At most ${args.lmax} numbers should be given`;
-            }
-            break;
-        case "numbersUnderflow":
-            if ("min" in args && typeof args.min === "number") {
-                return `Number(s) should be at least ${args.min}`;
-            }
-            break;
-        case "numbersOverflow":
-            if ("max" in args && typeof args.max === "number") {
-                return `Number(s) should be at most ${args.max}`;
-            }
-            break;
-        case "numbersStepMismatch":
-            if ("step" in args && typeof args.step === "number") {
-                if (args.step === 1) {
-                    return `Number(s) should be an integer`;
-                } else {
-                    return `Number(s) should be multiple(s) of ${args.step}`;
-                }
-            }
-            break;
-
-        case "custom":
-            if ("text" in args && typeof args.text === "string") {
-                return args.text;
-            }
-            break;
-    }
-
-    return null;
-}
+import { type Alert } from "./alerts.mjs";
+import * as alerts from "./alerts.mjs";
 
 
 /**
@@ -96,12 +21,11 @@ export function svgElement(name: string): JQuery<SVGElement> {
  * @param alert Whether to put an alert after invalid inputs or not. Defaults to `true`.
  * @returns Whether `targets` are valid or not.
  */
-export function validate($targets: JQuery, alert=true): boolean {
+export function validateInputs($targets: JQuery, alert=true): boolean {
     let allValid = true;
 
     for (const target of $targets) {
         const $target = $(target);
-        const $label = $target.parent("label");
         let isTargetValid = true;
 
         // Ignore non-`<input>`s
@@ -116,7 +40,7 @@ export function validate($targets: JQuery, alert=true): boolean {
                 const refMin = $target.attr("ref-min");
                 if (refMin !== undefined) {
                     // Validate reference
-                    if (validate($(refMin), false)) {
+                    if (validateInputs($(refMin), false)) {
                         const val = $(refMin).val();
                         if (typeof val === "number") {
                             $target.attr("min", val);
@@ -130,7 +54,7 @@ export function validate($targets: JQuery, alert=true): boolean {
                 const refMax = $target.attr("ref-max");
                 if (refMax !== undefined) {
                     // Validate reference
-                    if (validate($(refMax), false)) {
+                    if (validateInputs($(refMax), false)) {
                         const val = $(refMax).val();
                         if (typeof val === "number") {
                             $target.attr("max", val);
@@ -144,7 +68,7 @@ export function validate($targets: JQuery, alert=true): boolean {
                 const refStep = $target.attr("ref-step");
                 if (refStep !== undefined) {
                     // Validate reference
-                    if (validate($(refStep)), false) {
+                    if (validateInputs($(refStep)), false) {
                         const val = $(refStep).val();
                         if (typeof val === "number") {
                             $target.attr("step", val);
@@ -160,29 +84,30 @@ export function validate($targets: JQuery, alert=true): boolean {
             const step = Number($target.attr("step") ?? 1);
 
             const validity = target.validity;
+            const message = (target as HTMLInputElement).validationMessage;
 
             if (!validity.valid) {
                 isTargetValid = allValid = false;
 
                 if (alert) {
                     if (validity.valueMissing) {
-                        alertError($label, "numberMissing");
+                        alertError($target, new alerts.AlertNumberMissing());
                     } else if (validity.badInput) {
-                        alertError($label, "numberBadInput");
+                        alertError($target, new alerts.AlertNumberBadInput());
                     }
 
                     else if (validity.rangeUnderflow) {
-                        alertError($label, "numberUnderflow", { min });
+                        alertError($target, new alerts.AlertNumberUnderflow(min));
                     } else if (validity.rangeOverflow) {
-                        alertError($label, "numberOverflow", { max });
+                        alertError($target, new alerts.AlertNumberOverflow(max));
                     }
 
                     else if (validity.stepMismatch) {
-                        alertError($label, "numberStepMismatch", { step });
+                        alertError($target, new alerts.AlertNumberStepMismatch(step));
                     }
 
                     else {
-                        alertError($label, "custom", { text: (target as HTMLInputElement).validationMessage });
+                        alertError($target, new alerts.AlertCustom(message));
                     }
                 }
             }
@@ -199,7 +124,7 @@ export function validate($targets: JQuery, alert=true): boolean {
                     const refMin = $target.attr("ref-min");
                     if (refMin !== undefined) {
                         // Validate reference
-                        if (validate($(refMin), false)) {
+                        if (validateInputs($(refMin), false)) {
                             const val = $(refMin).val();
                             if (typeof val === "number") {
                                 $target.attr("min", val);
@@ -213,7 +138,7 @@ export function validate($targets: JQuery, alert=true): boolean {
                     const refMax = $target.attr("ref-max");
                     if (refMax !== undefined) {
                         // Validate reference
-                        if (validate($(refMax), false)) {
+                        if (validateInputs($(refMax), false)) {
                             const val = $(refMax).val();
                             if (typeof val === "number") {
                                 $target.attr("max", val);
@@ -227,7 +152,7 @@ export function validate($targets: JQuery, alert=true): boolean {
                     const refStep = $target.attr("ref-step");
                     if (refStep !== undefined) {
                         // Validate reference
-                        if (validate($(refStep), false)) {
+                        if (validateInputs($(refStep), false)) {
                             const val = $(refStep).val();
                             if (typeof val === "number") {
                                 $target.attr("step", val);
@@ -241,7 +166,7 @@ export function validate($targets: JQuery, alert=true): boolean {
                     const refLmin = $target.attr("ref-lmin");
                     if (refLmin !== undefined) {
                         // Validate reference
-                        if (validate($(refLmin), false)) {
+                        if (validateInputs($(refLmin), false)) {
                             const val = $(refLmin).val();
                             if (typeof val === "number") {
                                 $target.attr("lmin", val);
@@ -255,7 +180,7 @@ export function validate($targets: JQuery, alert=true): boolean {
                     const refLmax = $target.attr("ref-lmax");
                     if (refLmax !== undefined) {
                         // Validate reference
-                        if (validate($(refLmax), false)) {
+                        if (validateInputs($(refLmax), false)) {
                             const val = $(refLmax).val();
                             if (typeof val === "number") {
                                 $target.attr("lmax", val);
@@ -278,38 +203,38 @@ export function validate($targets: JQuery, alert=true): boolean {
 
                     // Too few numbers
                     if (values.length < lmin) {
-                        target.setCustomValidity("numbersLengthUnderflow");
+                        target.setCustomValidity("lengthUnderflow");
                         return;
                     }
 
                     // Too many numbers
                     if (values.length > lmax) {
-                        target.setCustomValidity("numbersLengthOverflow");
+                        target.setCustomValidity("lengthOverflow");
                         return;
                     }
 
                     for (const value of values) {
                         // Invalid
                         if (value === "" || Number.isNaN(Number(value))) {
-                            target.setCustomValidity("numbersBadInput");
+                            target.setCustomValidity("badInput");
                             return;
                         }
 
                         // Too small
                         if (Number(value) < min) {
-                            target.setCustomValidity("numbersUnderflow");
+                            target.setCustomValidity("underflow");
                             return;
                         }
 
                         // Too big
                         if (Number(value) > max) {
-                            target.setCustomValidity("numbersOverflow");
+                            target.setCustomValidity("overflow");
                             return;
                         }
 
                         // Step mismatch
                         if (Number(value) % step !== 0) {
-                            target.setCustomValidity("numbersStepMismatch");
+                            target.setCustomValidity("stepMismatch");
                             return;
                         }
                     }
@@ -322,29 +247,29 @@ export function validate($targets: JQuery, alert=true): boolean {
 
                     if (alert) {
                         if (validity.valueMissing) {
-                            alertError($label, "numbersMissing");
-                        } else if (message === "numbersBadInput") {
-                            alertError($label, "numbersBadInput");
+                            alertError($target, new alerts.AlertNumbersMissing());
+                        } else if (message === "badInput") {
+                            alertError($target, new alerts.AlertNumbersBadInput());
                         }
 
-                        else if (message === "numbersLengthUnderflow") {
-                            alertError($label, "numbersLengthUnderflow", { lmin });
-                        } else if (message === "numbersLengthOverflow") {
-                            alertError($label, "numbersLengthOverflow", { lmax });
+                        else if (message === "lengthUnderflow") {
+                            alertError($target, new alerts.AlertNumbersLengthUnderflow(lmin));
+                        } else if (message === "lengthOverflow") {
+                            alertError($target, new alerts.AlertNumbersLengthOverflow(lmax));
                         }
 
-                        else if (message === "numbersUnderflow") {
-                            alertError($label, "numbersUnderflow", { min });
-                        } else if (message === "numbersOverflow") {
-                            alertError($label, "numbersOverflow", { max });
+                        else if (message === "underflow") {
+                            alertError($target, new alerts.AlertNumbersUnderflow(min));
+                        } else if (message === "overflow") {
+                            alertError($target, new alerts.AlertNumbersOverflow(max));
                         }
 
-                        else if (message === "numbersStepMismatch") {
-                            alertError($label, "numbersStepMismatch", { step });
+                        else if (message === "stepMismatch") {
+                            alertError($target, new alerts.AlertNumbersStepMismatch(step));
                         }
 
                         else {
-                            alertError($label, "custom", { text: message });
+                            alertError($target, new alerts.AlertCustom(message));
                         }
                     }
                 }
@@ -352,7 +277,7 @@ export function validate($targets: JQuery, alert=true): boolean {
         }
 
         if (isTargetValid) {
-            $label.next("span.alert").remove(); // Remove previous alert
+            $target.parent("label").next("span.alert").remove(); // Remove previous alert
         }
     }
 
@@ -361,19 +286,18 @@ export function validate($targets: JQuery, alert=true): boolean {
 
 
 /**
- * Places an alert after an element.
- * @param $target The element.
- * @param type The type of the alert.
- * @param args Arguments that gets passed into the function which generates the alert. Defaults to an empty object.
+ * Places an alert after an `<input>`.
+ * @param $target The `<input>`.
+ * @param alert The alert.
  */
-function alertError($target: JQuery, type: string, args: object = {}) {
+function alertError($target: JQuery, alert: Alert) {
     // Use the alert text if provided
     // Otherwise pass the arguments to the default alert text function if it exists
     // Otherwise use a generic text
-    const alertText = $target.attr("alert-" + type) ?? defaultAlert(type, args) ?? "Error";
+    const alertText = $target.attr(alert.identifier) ?? alert.message();
 
-    $target.next("span.alert").remove(); // Remove previous alert if one exists
-    $target.after(`<span class="alert alert-${type}">${alertText}</span>`); // Place alert
+    $target.parent("label").next("span.alert").remove(); // Remove previous alert if one exists
+    $target.parent("label").after(`<span class="alert ${alert.identifier}">${alertText}</span>`); // Place alert
 }
 
 

@@ -61,23 +61,23 @@
             <h3>Solver</h3>
 
             <div>
-                <label alert-numberUnderflow="Coordinate outside maze" alert-numberOverflow="Coordinate outside maze">
+                <label>
                     Start: X
-                    <input id="start-x" type="number" min="1" required>
+                    <input id="start-x" type="number" min="1" alert-underflow="Coordinate outside maze" alert-overflow="Coordinate outside maze" required>
                 </label>
-                <label alert-numberUnderflow="Coordinate outside maze" alert-numberOverflow="Coordinate outside maze">
+                <label>
                     Y
-                    <input id="start-y" type="number" min="1" required>
+                    <input id="start-y" type="number" min="1" alert-underflow="Coordinate outside maze" alert-overflow="Coordinate outside maze" required>
                 </label>
                 <br>
 
-                <label alert-numberUnderflow="Coordinate outside maze" alert-numberOverflow="Coordinate outside maze">
+                <label>
                     End: X
-                    <input id="end-x" type="number" min="1" required>
+                    <input id="end-x" type="number" min="1" alert-underflow="Coordinate outside maze" alert-overflow="Coordinate outside maze" required>
                 </label>
-                <label alert-numberUnderflow="Coordinate outside maze" alert-numberOverflow="Coordinate outside maze">
+                <label>
                     Y
-                    <input id="end-y" type="number" min="1" required>
+                    <input id="end-y" type="number" min="1" alert-underflow="Coordinate outside maze" alert-overflow="Coordinate outside maze" required>
                 </label>
                 <br>
 
@@ -85,6 +85,11 @@
                     Algorithm:
                     <select id="solve-algorithm">
                         <option value="deadendFilling">Deadend filling</option>
+                        <!-- <optgroup label="Depth-first search">
+                            <option value="leftHandRule">Left hand rule</option>
+                            <option value="rightHandRule">Right hand rule</option>
+                            <option value="randomDFS">Random</option>
+                        </optgroup> -->
                     </select>
                 </label>
                 <br>
@@ -100,7 +105,7 @@
             </div>
 
             <div id="subsec-solver-status">
-                Calculating solution <span id="solve-progress"></span> (<span id="solve-time"></span>)
+                Solving <span id="solve-progress"></span> (<span id="solve-time"></span>)
                 <br>
                 <!-- `span#draw-solution-progress` will only be 0% or 100% because the UI will be freezed when drawing -->
                 <!-- It is only put here for consistency -->
