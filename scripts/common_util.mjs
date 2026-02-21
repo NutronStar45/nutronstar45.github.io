@@ -1,4 +1,4 @@
-export const SITE_VERSION = "4.2";
+export const SITE_VERSION = "4.3";
 /**
  * Chooses a random element from the array.
  * @param array An array to choose an element from.
@@ -8,8 +8,8 @@ export function chooseRandom(array) {
     return array[Math.floor(Math.random() * array.length)];
 }
 /**
- * Removes the first occurrence of `value` in `array`.
- * Does nothing if `value` isn't contained in `array`.
+ * Removes the first occurrence of {@linkcode value} in {@linkcode array}.
+ * Does nothing if {@linkcode value} isn't contained in {@linkcode array}.
  * @param array The array to remove an element from.
  * @param value The value to remove from the array.
  */
@@ -23,7 +23,7 @@ export function removeItem(array, value) {
  * @param num The number to be checked.
  * @param low The minimum allowed integer.
  * @param high The minimum disallowed integer.
- * @returns Whether `num` is in the range `[low, high)` or not.
+ * @returns Whether {@linkcode num} is in the range [{@linkcode low}, {@linkcode high}) or not.
  */
 export function isIntegerInRange(num, low, high) {
     return Number.isInteger(num) && num >= low && num < high;
@@ -31,7 +31,7 @@ export function isIntegerInRange(num, low, high) {
 /**
  * Checks if a value is a numeric array.
  * @param x The value to be checked.
- * @returns Whether `x` is a numeric array or not.
+ * @returns Whether {@linkcode x} is a numeric array or not.
  */
 export function isNumericArray(x) {
     return Array.isArray(x) && x.every(v => typeof v === "number");

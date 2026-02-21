@@ -8,7 +8,7 @@ var SquareDirection;
     SquareDirection[SquareDirection["TOP"] = 2] = "TOP";
     SquareDirection[SquareDirection["BOTTOM"] = 3] = "BOTTOM";
 })(SquareDirection || (SquareDirection = {}));
-export class SquareMazeGenerateParams {
+export class SquareMazeGenParams {
     width;
     height;
     constructor(width, height) {
@@ -16,10 +16,9 @@ export class SquareMazeGenerateParams {
         this.height = height;
     }
     /**
-     * Tries to construct a `SquareMazeGenerateParams`; returns `null` if the given parameters are invalid.
+     * Constructs a {@linkcode SquareMazeGenParams}. Returns `null` if the given parameters are invalid.
      * @param width The width of the maze.
      * @param height The height of the maze.
-     * @returns The `SquareMaze` with the given parameters, or `null` if the given parameters are invalid.
      */
     static tryNew(width, height) {
         if (!Number.isInteger(width) || width <= 0) {
@@ -28,16 +27,15 @@ export class SquareMazeGenerateParams {
         if (!Number.isInteger(height) || width <= 0) {
             return null;
         }
-        return new SquareMazeGenerateParams(width, height);
+        return new SquareMazeGenParams(width, height);
     }
     /** Returns an object containing the parameters. */
     toObject() {
         return { width: this.width, height: this.height };
     }
     /**
-     * Constructs a `SquareMazeGenerateParams` from an object, or `null` if the given object is invalid.
+     * Constructs a {@linkcode SquareMazeGenParams} from an object. Returns `null` if the given object is invalid.
      * @param obj An object.
-     * @returns The constructed `SquareMazeGenerateParams`, or `null` if the given object is invalid.
      */
     static fromObject(obj) {
         if (!("width" in obj) || typeof obj.width !== "number") {
@@ -77,12 +75,11 @@ export class SquareMaze {
         return this.vWalls_;
     }
     /**
-     * Tries to construct a `SquareMaze`, returns `null` if the given parameters are invalid.
+     * Constructs a {@linkcode SquareMaze}. Returns `null` if the given parameters are invalid.
      * @param width The width of the maze.
      * @param height The height of the maze.
      * @param hWalls Horizontal walls.
      * @param vWalls Vertical walls.
-     * @returns The `SquareMaze` with the given parameters, or `null` if the given parameters are invalid.
      */
     static tryNew(width, height, hWalls, vWalls) {
         if (!Number.isInteger(width) || width <= 0) {
@@ -109,9 +106,8 @@ export class SquareMaze {
         };
     }
     /**
-     * Constructs a `SquareMaze` from an object, or `null` if the given object is invalid.
+     * Constructs a {@linkcode SquareMaze} from an object. Returns `null` if the given object is invalid.
      * @param obj An object.
-     * @returns The constructed `SquareMaze`, or `null` if the given object is invalid.
      */
     static fromObject(obj) {
         if (!("width" in obj) || typeof obj.width !== "number") {
@@ -150,7 +146,7 @@ export class SquareMaze {
             && isIntegerInRange(vertex, 0, width * height);
     }
     /**
-     * Returns the direction of `vertex` relative to `origin`, or `null` if:
+     * Returns the direction of {@linkcode vertex} relative to {@linkcode origin}, or `null` if:
      * - the given size is invalid,
      * - one of the given vertices isn't in the grid, or
      * - the given vertices aren't adjacent in the grid.
@@ -179,9 +175,9 @@ export class SquareMaze {
         }
     }
     /**
-     * Returns the neighbors of a `vertex` and their relative positions on a grid of the given size, or `null` if:
+     * Returns the neighbors of a {@linkcode vertex} and their relative positions on a grid of the given size, or `null` if:
      * - the given size is invalid, or
-     * - `vertex` isn't in the grid.
+     * - {@linkcode vertex} isn't in the grid.
      * @param width The width of the grid.
      * @param height The height of the grid.
      * @param vertex A vertex.
@@ -209,7 +205,7 @@ export class SquareMaze {
         return neighborsWithDirections;
     }
     /**
-     * Returns the neighbors of `vertex` and their relative positions, or `null` if `vertex` isn't in the graph.
+     * Returns the neighbors of {@linkcode vertex} and their relative positions, or `null` if {@linkcode vertex} isn't in the graph.
      * @param vertex A vertex.
      */
     neighborsWithDirections(vertex) {
@@ -235,9 +231,9 @@ export class SquareMaze {
         return neighborsWithDirections;
     }
     /**
-     * Returns the neighbor of `vertex` in the direction `direction`, or `null` if:
+     * Returns the neighbor of {@linkcode vertex} in the direction {@linkcode direction}, or `null` if:
      * - the given size is invalid,
-     * - `vertex` isn't in the grid, or
+     * - {@linkcode vertex} isn't in the grid, or
      * - the neighbor doesn't exist.
      * @param width The width of the grid.
      * @param height The height of the grid.

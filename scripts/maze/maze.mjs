@@ -1,8 +1,8 @@
 import { $ } from "jquery.mjs";
 import { downloadFile, svgElement, validateInputs } from "../common.mjs";
 import { isIntegerInRange } from "../common_util.mjs";
-import { generateAlgorithmFromString, GenerateParams, solveAlgorithmFromString } from "./maze_util.mjs";
-import { SquareMaze, SquareMazeGenerateParams } from "./shapes/maze_square.mjs";
+import { genAlgFromString, solveAlgFromString, GenParams, SolveParams } from "./maze_util.mjs";
+import { SquareMaze, SquareMazeGenParams } from "./shapes/maze_square.mjs";
 // The width of a square in the resulting SVG
 const MAZE_SQUARE_WIDTH = 20;
 // The radius of the rounded corners
@@ -144,7 +144,7 @@ $(() => {
     $("div#subsec-solver-status").hide();
     $("div#subsec-download").hide();
     $("div#subsec-solution-visibility").hide();
-    $("button#generate-cancel").hide();
+    $("button#gen-cancel").hide();
     $("button#solve").prop("disabled", true);
     $("button#solve-cancel").hide();
     let maze; // Internally stored maze
@@ -160,7 +160,7 @@ $(() => {
         $("g#maze-endpoints").toggle(endpointsVisible);
     });
     // "Generate" pressed
-    $("button#generate").on("click", function () {
+    $("button#gen").on("click", function () {
         const $validationTargets = $("input#width, input#height");
         if (validateInputs($validationTargets)) {
             // Show generator and solver status
@@ -177,21 +177,21 @@ $(() => {
             // Generate maze
             const width = Number($("input#width").val());
             const height = Number($("input#height").val());
-            const algorithm = generateAlgorithmFromString($("select#generate-algorithm").val());
+            const alg = genAlgFromString($("select#gen-alg").val());
             // Validate
-            const params = SquareMazeGenerateParams.tryNew(width, height);
-            if (algorithm === null) {
+            const shapeParams = SquareMazeGenParams.tryNew(width, height);
+            if (alg === null) {
                 console.error("Invalid algorithm");
                 return;
             }
-            if (params === null) {
+            if (shapeParams === null) {
                 console.error("Invalid parameters");
                 return;
             }
-            const options = GenerateParams.newSquare(algorithm, params);
+            const params = GenParams.newSquare(alg, shapeParams);
             // Spawn worker
-            const worker = new Worker("/scripts/maze/maze_worker_generate.mjs", { type: "module" });
-            worker.postMessage(options.toObject());
+            const worker = new Worker("/scripts/maze/maze_worker_gen.mjs", { type: "module" });
+            worker.postMessage(params.toObject());
             worker.addEventListener("message", e => {
                 switch (e.data.msg) {
                     // Complete
@@ -204,11 +204,11 @@ $(() => {
                             return;
                         }
                         maze = receivedMaze;
-                        $("span#generate-time").text(`${(e.data.time / 1000).toFixed(FINAL_TIME_PRECISION)}s`);
+                        $("span#gen-time").text(`${(e.data.time / 1000).toFixed(FINAL_TIME_PRECISION)}s`);
                         const startTime = Date.now();
                         // Disable canceling
-                        $("button#generate-cancel").hide();
-                        $("button#generate-cancel").off("click", cancel);
+                        $("button#gen-cancel").hide();
+                        $("button#gen-cancel").off("click", cancel);
                         // Initialize SVG
                         $mazeSVG = squareMazeSVGTemplate(maze.width, maze.height);
                         // Draw maze
@@ -226,13 +226,13 @@ $(() => {
                         $("input#end-x").attr("max", maze.width);
                         $("input#end-y").attr("max", maze.height);
                         // Enable generation and solving
-                        $("button#generate").prop("disabled", false);
+                        $("button#gen").prop("disabled", false);
                         $("button#solve").prop("disabled", false);
                         break;
                     // Progress report
                     case "progress":
-                        $("span#generate-progress").text(e.data.progress);
-                        $("span#generate-time").text(`${(e.data.time / 1000).toFixed(TIME_PRECISION)}s`);
+                        $("span#gen-progress").text(e.data.progress);
+                        $("span#gen-time").text(`${(e.data.time / 1000).toFixed(TIME_PRECISION)}s`);
                         break;
                     // Unknown message
                     default:
@@ -247,15 +247,15 @@ $(() => {
                 $("div#subsec-generator-status").hide();
                 // Enable generation
                 // Enable solving if maze is generated
-                $("button#generate").prop("disabled", false);
+                $("button#gen").prop("disabled", false);
                 if (maze !== undefined) {
                     $("button#solve").prop("disabled", false);
                 }
                 worker.terminate();
             }
             // Enable canceling
-            $("button#generate-cancel").on("click", cancel);
-            $("button#generate-cancel").show();
+            $("button#gen-cancel").on("click", cancel);
+            $("button#gen-cancel").show();
         }
     });
     // "Solve" pressed
@@ -268,7 +268,7 @@ $(() => {
             $("span#draw-solution-progress").text("0%");
             $("span#draw-solution-time").text("0s");
             // Prevent generation and solving
-            $("button#generate").prop("disabled", true);
+            $("button#gen").prop("disabled", true);
             $(this).prop("disabled", true);
             // Calculate solution
             const startX = Number($("input#start-x").val());
@@ -277,15 +277,20 @@ $(() => {
             const endX = Number($("input#end-x").val());
             const endY = Number($("input#end-y").val());
             const end = (endY - 1) * maze.width + (endX - 1);
-            const algorithm = solveAlgorithmFromString($("select#solve-algorithm").val());
+            const alg = solveAlgFromString($("select#solve-alg").val());
             // Validate
-            if (algorithm === null) {
+            if (alg === null) {
                 console.error("Invalid algorithm");
+                return;
+            }
+            const params = SolveParams.newSquare(maze, start, end, alg);
+            if (params === null) {
+                console.error("Invalid parameters");
                 return;
             }
             // Spawn worker
             const worker = new Worker("/scripts/maze/maze_worker_solve.mjs", { type: "module" });
-            worker.postMessage({ maze: maze.toObject(), start, end, algorithm });
+            worker.postMessage(params.toObject());
             worker.addEventListener("message", e => {
                 switch (e.data.msg) {
                     // Complete
@@ -314,7 +319,7 @@ $(() => {
                         // Show visibility toggles
                         $("div#subsec-solution-visibility").show();
                         // Enable generation and solving
-                        $("button#generate").prop("disabled", false);
+                        $("button#gen").prop("disabled", false);
                         $("button#solve").prop("disabled", false);
                         break;
                     // Progress report
@@ -334,7 +339,7 @@ $(() => {
                 // Hide solver status
                 $("div#subsec-solver-status").hide();
                 // Enable generation and solving
-                $("button#generate").prop("disabled", false);
+                $("button#gen").prop("disabled", false);
                 $("button#solve").prop("disabled", false);
                 worker.terminate();
             }

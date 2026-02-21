@@ -1,15 +1,14 @@
 import { removeItem } from "../common_util.mjs";
-import { PROGRESS_REPORT_INTERVAL, SolveAlgorithm } from "./maze_util.mjs";
-import { SquareMaze } from "./shapes/maze_square.mjs";
+import { PROGRESS_REPORT_INTERVAL, SolveAlg, SolveParams } from "./maze_util.mjs";
 // Timestamp at the start of a step
 let startTime;
 addEventListener("message", e => {
-    const maze = SquareMaze.fromObject(e.data.maze);
-    if (maze === null) {
+    const params = SolveParams.fromObject(e.data);
+    if (params === null) {
         console.error("Solving worker received invalid message: ", e.data);
         return;
     }
-    const solution = solvePlane(maze, e.data.start, e.data.end, e.data.algorithm);
+    const solution = solvePlane(params);
     if (solution !== null) {
         postMessage({ msg: "complete", solution, time: Date.now() - startTime });
     }
@@ -20,36 +19,30 @@ addEventListener("message", e => {
 });
 /**
  * Specialized version of {@linkcode solve()} that can handle plane graphs.
- * @param maze The maze.
- * @param start The start.
- * @param end The destination.
- * @param algorithm The solving algorithm.
+ * @param params The solving parameters.
  * @returns An array of vertices tracing out the solution, or `null` if the given parameters are invalid.
  */
-function solvePlane(maze, start, end, algorithm) {
-    switch (algorithm) {
-        // case "leftHandRule":
-        //     return leftHandRule(maze, start, end);
-        // case "rightHandRule":
-        //     return rightHandRule(maze, start, end);
+function solvePlane(params) {
+    switch (params.alg) {
+        // case SolveAlg.LeftHandRule:
+        //     return leftHandRule(params.maze, params.start, params.end);
+        // case SolveAlg.RightHandRule:
+        //     return rightHandRule(params.maze, params.start, params.end);
         default:
-            return solve(maze, start, end, algorithm);
+            return solve(params);
     }
 }
 /**
  * Finds a path between two given vertices in a spanning tree using the given algorithm.
- * @param maze The maze.
- * @param start The start.
- * @param end The destination.
- * @param algorithm The solving algorithm.
+ * @param params The solving parameters.
  * @returns An array of vertices tracing out the solution, or `null` if the given parameters are invalid.
  */
-function solve(maze, start, end, algorithm) {
-    switch (algorithm) {
-        case SolveAlgorithm.DeadendFilling:
-            return deadendFilling(maze, start, end);
-        // case "randomDFS":
-        //     return randomDFS(maze, start, end);
+function solve(params) {
+    switch (params.alg) {
+        case SolveAlg.DeadendFilling:
+            return deadendFilling(params.maze, params.start, params.end);
+        // case SolveAlg.RandomDFS:
+        //     return randomDFS(params.maze, params.start, params.end);
         default:
             return null;
     }

@@ -15,7 +15,7 @@ export function svgElement(name) {
  * Validates zero or more `<input>`s and returns `true` if all inputs are valid. References to other inputs are validated but no alert is placed after, because those inputs are assumed to already be validated on their own.
  * @param $targets Targets for validation; a JQuery object that contains an arbitrary number of elements. Non-`<input>`s will be ignored.
  * @param alert Whether to put an alert after invalid inputs or not. Defaults to `true`.
- * @returns Whether `targets` are valid or not.
+ * @returns Whether all {@linkcode $targets} are valid or not.
  */
 export function validateInputs($targets, alert = true) {
     let allValid = true;
@@ -284,7 +284,7 @@ export function downloadFile(content, filename) {
     URL.revokeObjectURL(url);
 }
 /**
- * Shows/hides the corner box and the "show corner box" button, and stores to `localStorage`.
+ * Shows/hides the corner box and the "show corner box" button, and stores to {@linkcode localStorage}.
  * @param visible Whether the corner box is visible or not.
  */
 function updateCornerBoxVisibility(visible) {
