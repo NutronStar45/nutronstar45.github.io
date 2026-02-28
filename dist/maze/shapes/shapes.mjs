@@ -1,47 +1,5 @@
-import { SquareMazeGenParams, SquareMaze } from "./shapes/maze_square.mjs";
-// Time between individual progress reports in milliseconds
-export const PROGRESS_REPORT_INTERVAL = 1000;
-/** The shape of a maze. */
-export var MazeShape;
-(function (MazeShape) {
-    MazeShape[MazeShape["Square"] = 0] = "Square";
-})(MazeShape || (MazeShape = {}));
-/** A generation algorithm. */
-export var GenAlg;
-(function (GenAlg) {
-    GenAlg[GenAlg["Prims"] = 0] = "Prims";
-})(GenAlg || (GenAlg = {}));
-/** A solving algorithm. */
-export var SolveAlg;
-(function (SolveAlg) {
-    SolveAlg[SolveAlg["DeadendFilling"] = 0] = "DeadendFilling";
-})(SolveAlg || (SolveAlg = {}));
-/**
- * Converts a string into a {@linkcode GenAlg}.
- * @param str A string.
- * @returns A {@linkcode GenAlg}, or `null` if the string doesn't represent a valid algorithm.
- */
-export function genAlgFromString(str) {
-    switch (str) {
-        case "prims":
-            return GenAlg.Prims;
-        default:
-            return null;
-    }
-}
-/**
- * Converts a string into a {@linkcode SolveAlg}.
- * @param str A string.
- * @returns A {@linkcode SolveAlg}, or `null` if the string doesn't represent a valid algorithm.
- */
-export function solveAlgFromString(str) {
-    switch (str) {
-        case "deadendFilling":
-            return SolveAlg.DeadendFilling;
-        default:
-            return null;
-    }
-}
+import { MazeShape, GenAlg, SolveAlg } from "../util.mjs";
+import { SquareMazeGenParams, SquareMaze } from "./square.mjs";
 /** Parameters for maze generation. */
 export class GenParams {
     shape;
@@ -68,28 +26,27 @@ export class GenParams {
         };
     }
     /**
-     * Constructs a {@linkcode GenParams} from an object. Returns `null` if the given object is invalid.
+     * Constructs a {@linkcode GenParams} from an object.
      * @param obj An object.
+     * @throws {TypeError} Thrown if {@linkcode obj} doesn't have the required properties or they are invalid.
      */
     static fromObject(obj) {
         if (!("shape" in obj) || typeof obj.shape !== "number" || !(obj.shape in MazeShape)) {
-            return null;
+            throw new TypeError("Property doesn't exist or isn't valid: shape");
         }
         if (!("alg" in obj) || typeof obj.alg !== "number" || !(obj.alg in GenAlg)) {
-            return null;
+            throw new TypeError("Property doesn't exist or isn't valid: alg");
         }
         if (!("params" in obj) || typeof obj.params !== "object" || obj.params === null) {
-            return null;
+            throw new TypeError("Property doesn't exist or isn't valid: params");
         }
         switch (obj.shape) {
             case MazeShape.Square: {
                 const params = SquareMazeGenParams.fromObject(obj.params);
-                if (params === null)
-                    return null;
                 return this.newSquare(obj.alg, params);
             }
             default:
-                return null;
+                throw new Error("Property doesn't exist or isn't valid: shape");
         }
     }
 }
@@ -108,15 +65,16 @@ export class SolveParams {
         this.alg = alg;
     }
     /**
-     * Constructs a {@linkcode SolveParams} for a square maze. Returns `null` if {@linkcode start} or {@linkcode end} isn't in the maze.
+     * Constructs a {@linkcode SolveParams} for a square maze.
      * @param maze The maze to be solved.
      * @param start The start.
      * @param end The destination.
      * @param alg The solving algorithm.
+     * @throws {TypeError} Thrown if {@linkcode start} or {@linkcode end} isn't in the maze.
      */
     static newSquare(maze, start, end, alg) {
         if (!maze.hasVertex(start) || !maze.hasVertex(end)) {
-            return null;
+            throw new TypeError("Vertices not in graph");
         }
         return new this(MazeShape.Square, maze, start, end, alg);
     }
@@ -131,34 +89,33 @@ export class SolveParams {
         };
     }
     /**
-     * Constructs a {@linkcode SolveParams} from an object. Returns `null` if the given object is invalid.
+     * Constructs a {@linkcode SolveParams} from an object.
      * @param obj An object.
+     * @throws {TypeError} Thrown if {@linkcode obj} doesn't have the required properties or they are invalid.
      */
     static fromObject(obj) {
         if (!("shape" in obj) || typeof obj.shape !== "number" || !(obj.shape in MazeShape)) {
-            return null;
+            throw new TypeError("Property doesn't exist or isn't valid: shape");
         }
         if (!("maze" in obj) || typeof obj.maze !== "object" || obj.maze === null) {
-            return null;
+            throw new TypeError("Property doesn't exist or isn't valid: maze");
         }
         if (!("start" in obj) || typeof obj.start !== "number") {
-            return null;
+            throw new TypeError("Property doesn't exist or isn't valid: start");
         }
         if (!("end" in obj) || typeof obj.end !== "number") {
-            return null;
+            throw new TypeError("Property doesn't exist or isn't valid: end");
         }
         if (!("alg" in obj) || typeof obj.alg !== "number" || !(obj.alg in SolveAlg)) {
-            return null;
+            throw new TypeError("Property doesn't exist or isn't valid: alg");
         }
         switch (obj.shape) {
             case MazeShape.Square: {
                 const maze = SquareMaze.fromObject(obj.maze);
-                if (maze === null)
-                    return null;
                 return this.newSquare(maze, obj.start, obj.end, obj.alg);
             }
             default:
-                return null;
+                throw new TypeError("Property doesn't exist or isn't valid: shape");
         }
     }
 }

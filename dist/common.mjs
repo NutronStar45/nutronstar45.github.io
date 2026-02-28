@@ -1,5 +1,5 @@
-import { $ } from "jquery.mjs";
-import { SITE_VERSION } from "./common_util.mjs";
+import $ from "jquery";
+import { SITE_VERSION } from "./util.mjs";
 import {} from "./alerts.mjs";
 import * as alerts from "./alerts.mjs";
 /**

@@ -1,8 +1,9 @@
-import { $ } from "jquery.mjs";
+import $ from "jquery";
 import { downloadFile, svgElement, validateInputs } from "../common.mjs";
-import { isIntegerInRange } from "../common_util.mjs";
-import { genAlgFromString, solveAlgFromString, GenParams, SolveParams } from "./maze_util.mjs";
-import { SquareMaze, SquareMazeGenParams } from "./shapes/maze_square.mjs";
+import { isIntegerInRange } from "../util.mjs";
+import { genAlgFromString, solveAlgFromString } from "./util.mjs";
+import { GenParams, SolveParams } from "./shapes/shapes.mjs";
+import { SquareMaze, SquareMazeGenParams } from "./shapes/square.mjs";
 // The width of a square in the resulting SVG
 const MAZE_SQUARE_WIDTH = 20;
 // The radius of the rounded corners
@@ -17,14 +18,15 @@ const FINAL_TIME_PRECISION = 2;
  * Returns the SVG template of a maze of given size.
  * @param width The width of the maze.
  * @param height The height of the maze.
- * @returns The JQuery object containing the SVG template, or `null` if the given parameters are invalid.
+ * @returns The JQuery object containing the SVG template.
+ * @throws {TypeError} Thrown if the given parameters are invalid.
  */
 function squareMazeSVGTemplate(width, height) {
     if (!Number.isInteger(width) || width <= 0) {
-        return null;
+        throw new TypeError("Width must be a positive integer");
     }
     if (!Number.isInteger(height) || width <= 0) {
-        return null;
+        throw new TypeError("Height must be a positive integer");
     }
     return svgElement("svg")
         .attr({
@@ -174,36 +176,21 @@ $(() => {
             // Prevent generation and solving
             $(this).prop("disabled", true);
             $("button#solve").prop("disabled", true);
-            // Generate maze
+            // Fetch parameters
             const width = Number($("input#width").val());
             const height = Number($("input#height").val());
             const alg = genAlgFromString($("select#gen-alg").val());
-            // Validate
             const shapeParams = SquareMazeGenParams.tryNew(width, height);
-            if (alg === null) {
-                console.error("Invalid algorithm");
-                return;
-            }
-            if (shapeParams === null) {
-                console.error("Invalid parameters");
-                return;
-            }
             const params = GenParams.newSquare(alg, shapeParams);
             // Spawn worker
-            const worker = new Worker("/scripts/maze/maze_worker_gen.mjs", { type: "module" });
+            const worker = new Worker("/dist/maze/worker_gen.mjs", { type: "module" });
             worker.postMessage(params.toObject());
             worker.addEventListener("message", e => {
                 switch (e.data.msg) {
                     // Complete
                     case "complete":
                         worker.terminate();
-                        // Store received maze
-                        const receivedMaze = SquareMaze.fromObject(e.data.maze);
-                        if (receivedMaze === null) {
-                            console.error(`Received unknown maze format from generation worker: ${e.data.maze}`);
-                            return;
-                        }
-                        maze = receivedMaze;
+                        maze = SquareMaze.fromObject(e.data.maze);
                         $("span#gen-time").text(`${(e.data.time / 1000).toFixed(FINAL_TIME_PRECISION)}s`);
                         const startTime = Date.now();
                         // Disable canceling
@@ -236,8 +223,7 @@ $(() => {
                         break;
                     // Unknown message
                     default:
-                        console.error("Received unknown message from generation worker:", e);
-                        return;
+                        throw new Error(`Received unknown message from generation worker: ${e.data}`);
                 }
             });
             // Handle canceling
@@ -270,7 +256,7 @@ $(() => {
             // Prevent generation and solving
             $("button#gen").prop("disabled", true);
             $(this).prop("disabled", true);
-            // Calculate solution
+            // Fetch parameters
             const startX = Number($("input#start-x").val());
             const startY = Number($("input#start-y").val());
             const start = (startY - 1) * maze.width + (startX - 1);
@@ -278,18 +264,9 @@ $(() => {
             const endY = Number($("input#end-y").val());
             const end = (endY - 1) * maze.width + (endX - 1);
             const alg = solveAlgFromString($("select#solve-alg").val());
-            // Validate
-            if (alg === null) {
-                console.error("Invalid algorithm");
-                return;
-            }
             const params = SolveParams.newSquare(maze, start, end, alg);
-            if (params === null) {
-                console.error("Invalid parameters");
-                return;
-            }
             // Spawn worker
-            const worker = new Worker("/scripts/maze/maze_worker_solve.mjs", { type: "module" });
+            const worker = new Worker("/dist/maze/worker_solve.mjs", { type: "module" });
             worker.postMessage(params.toObject());
             worker.addEventListener("message", e => {
                 switch (e.data.msg) {
@@ -329,7 +306,7 @@ $(() => {
                         break;
                     // Unknown message
                     default:
-                        console.error("Received unknown message from worker:", e);
+                        throw new Error(`Received unknown message from worker: ${e.data}`);
                         return;
                 }
             });
@@ -386,12 +363,6 @@ $(() => {
         if (!endpointsVisible) {
             $standaloneSVG.find("g#maze-endpoints").empty();
         }
-        if ($standaloneSVG[0] !== undefined) {
-            downloadFile($standaloneSVG[0].outerHTML, "maze.svg");
-        }
-        else {
-            console.error("Maze not yet generated");
-            return;
-        }
+        downloadFile($standaloneSVG[0].outerHTML, "maze.svg");
     });
 });

@@ -112,24 +112,15 @@ a.external {
 button {
     cursor: pointer;
     user-select: none;
+    border: 3px outset var(--button-border-color);
 
-    /* Regular buttons */
-    &:not(.plain-button) {
-        border: 3px outset var(--button-border-color);
-
-        &:active:not(:disabled) {
-            border-style: inset;
-        }
-
-        &:disabled {
-            background-color: var(--button-disabled-bg-color);
-            cursor: not-allowed;
-        }
+    &:enabled:active {
+        border-style: inset;
     }
 
-    /* Plain buttons */
-    &.plain-button {
-        border: none;
+    &:disabled {
+        background-color: var(--button-disabled-bg-color);
+        cursor: not-allowed;
     }
 }
 

@@ -1,12 +1,12 @@
-export const SITE_VERSION = "4.3";
+export const SITE_VERSION = "4.4";
 
 
 /**
  * Chooses a random element from the array.
  * @param array An array to choose an element from.
- * @returns A random element from the array.
+ * @returns A random element from the array, or `undefined` if the array is empty.
  */
-export function chooseRandom(array: any[]) {
+export function chooseRandom<T>(array: T[]) {
     return array[Math.floor(Math.random() * array.length)];
 }
 
@@ -17,7 +17,7 @@ export function chooseRandom(array: any[]) {
  * @param array The array to remove an element from.
  * @param value The value to remove from the array.
  */
-export function removeItem(array: any[], value: any) {
+export function removeItem<T>(array: T[], value: T) {
     if (array.includes(value)) {
         array.splice(array.indexOf(value), 1);
     }

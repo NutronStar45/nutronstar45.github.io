@@ -1,5 +1,5 @@
-import { $ } from "jquery.mjs";
-import { SITE_VERSION } from "./common_util.mjs";
+import $ from "jquery";
+import { SITE_VERSION } from "./util.mjs";
 import { type Alert } from "./alerts.mjs";
 import * as alerts from "./alerts.mjs";
 
@@ -84,7 +84,7 @@ export function validateInputs($targets: JQuery, alert=true): boolean {
             const step = Number($target.attr("step") ?? 1);
 
             const validity = target.validity;
-            const message = (target as HTMLInputElement).validationMessage;
+            const message = target.validationMessage;
 
             if (!validity.valid) {
                 isTargetValid = allValid = false;
@@ -309,7 +309,7 @@ function alertError($target: JQuery, alert: Alert) {
 export function downloadFile(content: string, filename: string) {
     const blob = new Blob([content]);
     const url = URL.createObjectURL(blob);
-    ($("<a></a>").attr("download", filename).attr("href", url)[0] as HTMLElement).click();
+    $("<a></a>").attr("download", filename).attr("href", url)[0]!.click();
     URL.revokeObjectURL(url);
 }
 

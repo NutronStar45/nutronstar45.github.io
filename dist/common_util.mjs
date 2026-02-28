@@ -1,8 +1,8 @@
-export const SITE_VERSION = "4.3";
+export const SITE_VERSION = "4.4";
 /**
  * Chooses a random element from the array.
  * @param array An array to choose an element from.
- * @returns A random element from the array.
+ * @returns A random element from the array, or `undefined` if the array is empty.
  */
 export function chooseRandom(array) {
     return array[Math.floor(Math.random() * array.length)];
