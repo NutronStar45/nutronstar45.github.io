@@ -101,11 +101,15 @@ a {
     color: var(--anchor-fg-color);
     cursor: pointer;
     text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
 }
 
 /* External anchor */
-a.external {
-    color: var(--external-anchor-fg-color);
+a.external::after {
+    content: "\2197";
 }
 
 /* Buttons */

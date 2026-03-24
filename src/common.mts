@@ -333,7 +333,7 @@ $(() => {
     $("code#404-location").html(location.pathname.slice(1));
 
     // Header
-    const headerHTML = '<nav><a href="/">Home</a><a href="/projs">Projects</a></nav>'
+    const headerHTML = '<nav><a href="/">Home</a><a href="/projects">Projects</a></nav>'
         + '<button id="show-corner-box">Show corner box</button>';
     $("header").html(headerHTML);
     $("button#show-corner-box").hide();

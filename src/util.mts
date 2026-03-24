@@ -1,4 +1,4 @@
-export const SITE_VERSION = "4.4";
+export const SITE_VERSION = "4.5";
 
 
 /**

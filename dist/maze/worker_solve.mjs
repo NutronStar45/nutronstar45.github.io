@@ -44,7 +44,7 @@ function solve(params) {
     }
 }
 /**
- * Finds the path between two vertices of a connected graph using deadend filling.
+ * Finds the path between two vertices of a tree graph using deadend filling.
  * @param graph A connected graph.
  * @param start The start.
  * @param end The destination.
@@ -137,7 +137,7 @@ const dfsRules = {
     }
 };
 /**
- * Finds the path between two vertices of a connected graph using depth-first search.
+ * Finds the path between two vertices of a tree graph using depth-first search.
  * @param graph A connected graph.
  * @param start The start.
  * @param end The destination.
@@ -199,7 +199,7 @@ function dfs(graph, start, end, rule) {
     return path;
 }
 /**
- * Finds the path between two vertices of a connected graph by walking randomly.
+ * Finds the path between two vertices of a connected graph by walking randomly. This function might run for an arbitrary amount of time.
  * @param graph A connected graph.
  * @param start The start.
  * @param end The destination.
