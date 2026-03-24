@@ -1,5 +1,4 @@
 import $ from "jquery";
-import { SITE_VERSION } from "./util.mjs";
 import { type Alert } from "./alerts.mjs";
 import * as alerts from "./alerts.mjs";
 
@@ -349,7 +348,7 @@ $(() => {
     }).get();
 
     // Corner box
-    let cornerBoxHTML = `<button id="hide-corner-box">Hide</button><br><a href="#">To top</a><br><span>Version ${SITE_VERSION}</span>`;
+    let cornerBoxHTML = `<button id="hide-corner-box">Hide</button><br><a href="#">To top</a>`;
 
     // Section links
     if (sections.length > 0) {

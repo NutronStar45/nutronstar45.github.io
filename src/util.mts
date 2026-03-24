@@ -1,6 +1,3 @@
-export const SITE_VERSION = "4.5";
-
-
 /**
  * Chooses a random element from the array.
  * @param array An array to choose an element from.
