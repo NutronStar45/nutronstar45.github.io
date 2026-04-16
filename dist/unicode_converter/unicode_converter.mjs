@@ -1,7 +1,11 @@
 import $ from "jquery";
+/** Clears messages */
+function clearMessages() {
+    $("div#text-message").empty();
+}
 /**
  * Converts a string to a code point sequence.
- * @throws {TypeError} Thrown when an isolated surrogate is present within the given text.
+ * @throws {TypeError} Thrown when the given text contains an isolated surrogate.
  */
 function fromText(text) {
     let i = 0;
@@ -21,7 +25,10 @@ function fromText(text) {
     }
     return sequence;
 }
-/** Converts a code point sequence to UTF-32. */
+/**
+ * Converts a code point sequence to UTF-32.
+ * @throws {TypeError} Thrown when the given sequence is invalid.
+ */
 function toUTF32(sequence) {
     let string = "";
     for (const [i, codePoint] of sequence.entries()) {
@@ -42,9 +49,20 @@ function toUTF32(sequence) {
 }
 /** Converts text to other encodings. */
 function convertFromText() {
-    let codePoints = fromText($("textarea#text").val());
-    let utf32 = toUTF32(codePoints);
-    $("textarea#utf32").val(utf32);
+    try {
+        let codePoints = fromText($("textarea#text").val());
+        let utf32 = toUTF32(codePoints);
+        $("textarea#utf32").val(utf32);
+        clearMessages();
+    }
+    catch (e) {
+        if (e instanceof TypeError) {
+            $("div#text-message").text("Error: " + e.message);
+        }
+        else {
+            throw e;
+        }
+    }
 }
 $(() => {
     $("button#convert-from-text").on("click", convertFromText);

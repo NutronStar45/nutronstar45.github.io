@@ -1,5 +1,10 @@
 import $ from "jquery";
 
+/** Clears messages */
+function clearMessages() {
+    $("div#text-message").empty();
+}
+
 /**
  * Converts a string to a code point sequence.
  * @throws {TypeError} Thrown when the given text contains an isolated surrogate.
@@ -46,10 +51,20 @@ function toUTF32(sequence: number[]) {
 
 /** Converts text to other encodings. */
 function convertFromText() {
-    let codePoints = fromText($("textarea#text").val() as string);
+    try {
+        let codePoints = fromText($("textarea#text").val() as string);
 
-    let utf32 = toUTF32(codePoints);
-    $("textarea#utf32").val(utf32);
+        let utf32 = toUTF32(codePoints);
+        $("textarea#utf32").val(utf32);
+
+        clearMessages();
+    } catch (e) {
+        if (e instanceof TypeError) {
+            $("div#text-message").text("Error: " + e.message);
+        } else {
+            throw e;
+        }
+    }
 }
 
 $(() => {
