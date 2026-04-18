@@ -11,13 +11,19 @@ const HEX_DIGITS_REGEX = /[0-9a-fA-F]/;
  */
 function validateCodePoint(codePoint: number) {
     if (!Number.isInteger(codePoint)) {
-        throw new TypeError("Non-integer code point");
+        throw new TypeError(`Non-integer code point: ${codePoint}`);
     }
     if (codePoint < 0 || codePoint > 0x10FFFF) {
-        throw new TypeError("Code point outside valid range");
+        let codePointDisplay = Math.abs(codePoint).toString(16).toUpperCase();
+        if (codePoint >= 0) {
+            codePointDisplay = "0x" + codePointDisplay.padStart(4, "0");
+        } else {
+            codePointDisplay = "-0x" + codePointDisplay;
+        }
+        throw new TypeError(`Code point outside valid range: ${codePointDisplay}`);
     }
     if (codePoint >= 0xD800 && codePoint <= 0xDFFF) {
-        throw new TypeError("Surrogate code point");
+        throw new TypeError(`Surrogate code point: 0x${codePoint.toString(16).toUpperCase()}`);
     }
 }
 
@@ -47,13 +53,15 @@ function fromUTF32(str: string) {
     let sequence = [];
     let partialCodeUnit = 0; // A partially-built code unit
     let place = 7; // The place of the current digit; 0 indicates the 16^0 place and 7 indicates the 16^7 place
+    let digitIndex = 0; // The index of the current character
 
     for (const char of str) {
         if (/\s/.test(char)) continue;
         if (HEX_DIGITS_REGEX.test(char)) {
             partialCodeUnit = (partialCodeUnit << 4) + Number.parseInt(char, 16);
+            digitIndex++;
         } else {
-            throw TypeError("Characters must be hexadecimal digits or whitespaces");
+            throw TypeError(`Encountered a character that is neither a hexadecimal digit or a whitespace (\"${char}\")`);
         }
 
         if (place === 0) {
@@ -67,7 +75,7 @@ function fromUTF32(str: string) {
     }
 
     if (place !== 7) {
-        throw new TypeError("Invalid number of digits");
+        throw new TypeError(`Invalid number of digits (${digitIndex})`);
     }
 
     return sequence;
