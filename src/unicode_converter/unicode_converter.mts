@@ -58,7 +58,7 @@ function fromUTF32(str: string) {
     for (const char of str) {
         if (/\s/.test(char)) continue;
         if (HEX_DIGITS_REGEX.test(char)) {
-            partialCodeUnit = (partialCodeUnit << 4) + Number.parseInt(char, 16);
+            partialCodeUnit = partialCodeUnit * 16 + Number.parseInt(char, 16);
             digitIndex++;
         } else {
             throw TypeError(`Encountered a character that is neither a hexadecimal digit or a whitespace (\"${char}\")`);
