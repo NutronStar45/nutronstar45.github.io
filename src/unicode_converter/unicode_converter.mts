@@ -3,6 +3,14 @@ import $ from "jquery";
 const HEX_DIGIT_REGEX = /[0-9a-fA-F]/;
 const DEC_DIGIT_REGEX = /[0-9]/;
 
+/** A Unicode representation. */
+enum Representation {
+    Text = "text",
+    CodePointsHex = "code-points-hex",
+    CodePointsDec = "code-points-dec",
+    UTF32Hex = "utf32"
+}
+
 /**
  * Throws an error if the given code point isn't valid.
  * @param decimal Whether to display the code point in decimal in an error message. Defaults to displaying in hex.
@@ -232,93 +240,66 @@ function toUTF32Hex(sequence: number[]) {
     return string;
 }
 
-/** Clears messages */
-function clearMessages() {
-    $("div#text-message").empty();
-    $("div#code-points-hex-message").empty();
-    $("div#code-points-dec-message").empty();
-    $("div#utf32-message").empty();
-}
-
-/** Converts text into other representations. */
-function convertFromText() {
-    try {
-        let codePoints = fromText($("textarea#text").val() as string);
-
-        $("textarea#code-points-hex").val(toCodePointsHex(codePoints));
-        $("textarea#code-points-dec").val(toCodePointsDec(codePoints));
-        $("textarea#utf32").val(toUTF32Hex(codePoints));
-
-        clearMessages();
-    } catch (e) {
-        if (e instanceof TypeError) {
-            $("div#text-message").text("Error: " + e.message);
-        } else {
-            throw e;
-        }
+/**
+ * Converts the specified representation of a string into a code point sequence.
+ * @throws {TypeError} Thrown when the given string is invalid. Exact conditions can be seen in the docs of individual conversions.
+ */
+function fromRepresentation(str: string, representation: Representation) {
+    switch (representation) {
+        case Representation.Text:
+            return fromText(str);
+        case Representation.CodePointsHex:
+            return fromCodePointsHex(str);
+        case Representation.CodePointsDec:
+            return fromCodePointsDec(str);
+        case Representation.UTF32Hex:
+            return fromUTF32Hex(str);
     }
 }
 
-/** Converts the hex representation of a code point sequence into other representations. */
-function convertFromCodePointsHex() {
-    try {
-        let codePoints = fromCodePointsHex($("textarea#code-points-hex").val() as string);
-
-        $("textarea#text").val(toText(codePoints));
-        $("textarea#code-points-dec").val(toCodePointsDec(codePoints));
-        $("textarea#utf32").val(toUTF32Hex(codePoints));
-
-        clearMessages();
-    } catch (e) {
-        if (e instanceof TypeError) {
-            $("div#code-points-hex-message").text("Error: " + e.message);
-        } else {
-            throw e;
-        }
-    }
-}
-
-/** Converts the decimal representation of a code point sequence into other representations. */
-function convertFromCodePointsDec() {
-    try {
-        let codePoints = fromCodePointsDec($("textarea#code-points-dec").val() as string);
-
-        $("textarea#text").val(toText(codePoints));
-        $("textarea#code-points-hex").val(toCodePointsHex(codePoints));
-        $("textarea#utf32").val(toUTF32Hex(codePoints));
-
-        clearMessages();
-    } catch (e) {
-        if (e instanceof TypeError) {
-            $("div#code-points-dec-message").text("Error: " + e.message);
-        } else {
-            throw e;
-        }
-    }
-}
-
-/** Converts the hex representation of a UTF-32 string into other representations. */
-function convertFromUTF32Hex() {
-    try {
-        let codePoints = fromUTF32Hex($("textarea#utf32").val() as string);
-
-        $("textarea#text").val(toText(codePoints));
-        $("textarea#code-points-hex").val(toCodePointsHex(codePoints));
-        $("textarea#code-points-dec").val(toCodePointsDec(codePoints));
-
-        clearMessages();
-    } catch (e) {
-        if (e instanceof TypeError) {
-            $("div#utf32-message").text("Error: " + e.message);
-        } else {
-            throw e;
-        }
+/**
+ * Converts a code point sequence into the specified representation.
+ * @throws {TypeError} Thrown when the given sequence contains a code point that is:
+ * - not an integer,
+ * - outside the valid range, or
+ * - reserved for a surrogate.
+ */
+function toRepresentation(codePoints: number[], representation: Representation) {
+    switch (representation) {
+        case Representation.Text:
+            return toText(codePoints);
+        case Representation.CodePointsHex:
+            return toCodePointsHex(codePoints);
+        case Representation.CodePointsDec:
+            return toCodePointsDec(codePoints);
+        case Representation.UTF32Hex:
+            return toUTF32Hex(codePoints);
     }
 }
 
 $(() => {
-    $("button#convert-from-text").on("click", convertFromText);
-    $("button#convert-from-code-points-hex").on("click", convertFromCodePointsHex);
-    $("button#convert-from-code-points-dec").on("click", convertFromCodePointsDec);
-    $("button#convert-from-utf32").on("click", convertFromUTF32Hex);
+    // Attach listener to every convert button
+    for (const key in Representation) {
+        const repr = Representation[key as keyof typeof Representation];
+
+        $(`button#convert-from-${repr}`).on("click", () => {
+            try {
+                // Convert into code points
+                let codePoints = fromRepresentation($(`textarea#${repr}`).val() as string, repr);
+
+                // Convert code points into every representation
+                for (const target_key in Representation) {
+                    const target_repr = Representation[target_key as keyof typeof Representation];
+                    $(`textarea#${target_repr}`).val(toRepresentation(codePoints, target_repr));
+                    $(`div#${target_repr}-message`).empty();
+                }
+            } catch (e) {
+                if (e instanceof TypeError) {
+                    $(`div#${repr}-message`).text("Error: " + e.message);
+                } else {
+                    throw e;
+                }
+            }
+        });
+    }
 });
