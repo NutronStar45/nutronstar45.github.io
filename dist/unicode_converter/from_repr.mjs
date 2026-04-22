@@ -1,4 +1,4 @@
-import { HEX_DIGIT_REGEX, DEC_DIGIT_REGEX, Representation, validateCodePoint } from "./util.mjs";
+import { HEX_DIGIT_REGEX, DEC_DIGIT_REGEX, Representation, validateCodePoint, sequenceHexDisplay } from "./util.mjs";
 /**
  * Converts a string into a code point sequence.
  * @throws {TypeError} Thrown when the given text contains an isolated surrogate.
@@ -87,23 +87,6 @@ export function fromCodePointsDec(str) {
     return sequence;
 }
 /**
- * Formats a byte sequence for display.
- * @throws {TypeError} Thrown if the input array contains a non-byte number.
- */
-function bytesDisplay(bytes) {
-    let string = "";
-    for (const [i, byte] of bytes.entries()) {
-        if (!Number.isInteger(byte) || byte < 0 || byte > 255) {
-            throw new TypeError("Input is not a byte");
-        }
-        if (i > 0) {
-            string += " ";
-        }
-        string += "0x" + byte.toString(16).toUpperCase().padStart(2, "0");
-    }
-    return string;
-}
-/**
  * Converts the hex representation of a UTF-8 string into a code point sequence.
  * @throws {TypeError} Thrown when the given string:
  * - contains a character that is neither a hex digit nor a whitespace,
@@ -131,7 +114,7 @@ export function fromUTF8Hex(str) {
             if (codeUnit <= 0x7F) {
                 // After an incomplete code unit sequence
                 if (partialCodeUnitSequence.length !== 0) {
-                    throw new TypeError(`Incomplete code unit sequence (${bytesDisplay(partialCodeUnitSequence)})`);
+                    throw new TypeError(`Incomplete code unit sequence (${sequenceHexDisplay(partialCodeUnitSequence, 2, true)})`);
                 }
                 sequence.push(codeUnit);
             }
@@ -148,7 +131,7 @@ export function fromUTF8Hex(str) {
                         const codePoint = ((partialCodeUnitSequence[0] - 0xC0) << 6)
                             + (partialCodeUnitSequence[1] - 0x80);
                         if (codePoint <= 0x7F) {
-                            throw new TypeError(`Non-shortest form code unit sequence (${bytesDisplay(partialCodeUnitSequence)})`);
+                            throw new TypeError(`Non-shortest form code unit sequence (${sequenceHexDisplay(partialCodeUnitSequence, 2, true)})`);
                         }
                         sequence.push(codePoint);
                         partialCodeUnitSequence = [];
@@ -161,7 +144,7 @@ export function fromUTF8Hex(str) {
                             + ((partialCodeUnitSequence[1] - 0x80) << 6)
                             + (partialCodeUnitSequence[2] - 0x80);
                         if (codePoint <= 0x7FF) {
-                            throw new TypeError(`Non-shortest form code unit sequence (${bytesDisplay(partialCodeUnitSequence)})`);
+                            throw new TypeError(`Non-shortest form code unit sequence (${sequenceHexDisplay(partialCodeUnitSequence, 2, true)})`);
                         }
                         validateCodePoint(codePoint); // Check for code points assigned to surrogates
                         sequence.push(codePoint);
@@ -176,7 +159,7 @@ export function fromUTF8Hex(str) {
                             + ((partialCodeUnitSequence[2] - 0x80) << 6)
                             + (partialCodeUnitSequence[3] - 0x80);
                         if (codePoint <= 0xFFFF) {
-                            throw new TypeError(`Non-shortest form code unit sequence (${bytesDisplay(partialCodeUnitSequence)})`);
+                            throw new TypeError(`Non-shortest form code unit sequence (${sequenceHexDisplay(partialCodeUnitSequence, 2, true)})`);
                         }
                         validateCodePoint(codePoint); // Check for code points greater than 0x10FFFF
                         sequence.push(codePoint);
@@ -188,7 +171,7 @@ export function fromUTF8Hex(str) {
             else if (codeUnit <= 0xF7) {
                 // After an incomplete code unit sequence
                 if (partialCodeUnitSequence.length !== 0) {
-                    throw new TypeError(`Incomplete code unit sequence (${bytesDisplay(partialCodeUnitSequence)})`);
+                    throw new TypeError(`Incomplete code unit sequence (${sequenceHexDisplay(partialCodeUnitSequence, 2, true)})`);
                 }
                 partialCodeUnitSequence.push(codeUnit);
             }
@@ -203,7 +186,7 @@ export function fromUTF8Hex(str) {
         throw new TypeError(`Invalid number of hex digits (${digitIndex})`);
     }
     if (partialCodeUnitSequence.length !== 0) {
-        throw new TypeError(`Incomplete code unit sequence (${bytesDisplay(partialCodeUnitSequence)})`);
+        throw new TypeError(`Incomplete code unit sequence (${sequenceHexDisplay(partialCodeUnitSequence, 2, true)})`);
     }
     return sequence;
 }

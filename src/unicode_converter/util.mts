@@ -43,3 +43,34 @@ export function validateCodePoint(codePoint: number, decimal=false) {
         throw new TypeError(`Code point reserved for a surrogate (${codePointDisplay})`);
     }
 }
+
+/**
+ * Formats a non-negative integer sequence into fixed-width hex numbers separated by spaces. "0x" can be optionally prepended to every number.
+ * @param width The width to display the numbers in; must be a positive integer. The sequence must not contain numbers whose width exceeds this parameter.
+ * @param prefix If true, "0x" is prepended to every number.
+ * @throws {TypeError} Thrown if the input array contains a number:
+ * - that is not a non-negative integer, or
+ * - whose width exceeds {@linkcode width}.
+ */
+export function sequenceHexDisplay(sequence: number[], width: number, prefix: boolean) {
+    let string = "";
+
+    for (const [i, number] of sequence.entries()) {
+        if (!Number.isInteger(number) || number < 0) {
+            throw new TypeError("Encountered a number that is not a non-negative integer");
+        }
+        if (number >= 16 ** width) {
+            throw new TypeError("Encountered a number whose width exceeds the specified limit");
+        }
+
+        if (i > 0) {
+            string += " ";
+        }
+        if (prefix) {
+            string += "0x";
+        }
+        string += number.toString(16).toUpperCase().padStart(width, "0");
+    }
+
+    return string;
+}
