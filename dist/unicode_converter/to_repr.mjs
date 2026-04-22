@@ -1,4 +1,4 @@
-import { Representation, validateCodePoint } from "./util.mjs";
+import { Representation, sequenceHexDisplay, validateCodePoint } from "./util.mjs";
 /**
  * Converts a code point sequence into text.
  * @throws {TypeError} Thrown when the given sequence contains a code point that is:
@@ -47,95 +47,76 @@ export function toCodePointsDec(sequence) {
     return string;
 }
 /**
- * Converts a code point sequence into UTF-8.
+ * Converts a code point sequence into the hex representation of a UTF-8 string.
  * @throws {TypeError} Thrown when the given sequence contains a code point that is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
 export function toUTF8Hex(sequence) {
-    let string = "";
-    for (const [i, codePoint] of sequence.entries()) {
+    let codeUnits = [];
+    for (const codePoint of sequence) {
         validateCodePoint(codePoint);
-        if (i > 0)
-            string += " ";
         // 1 code unit
         if (codePoint <= 0xFF) {
-            string += codePoint.toString(16).toUpperCase().padStart(2, "0");
+            codeUnits.push(codePoint);
         }
         // 2 code units
         else if (codePoint <= 0x7FF) {
-            const firstUnit = 0xC0 + (codePoint >> 6);
-            const secondUnit = 0x80 + (codePoint & 0x3F);
-            string += firstUnit.toString(16).toUpperCase() + " "
-                + secondUnit.toString(16).toUpperCase();
+            codeUnits.push(0xC0 + (codePoint >> 6));
+            codeUnits.push(0x80 + (codePoint & 0x3F));
         }
         // 3 code units
         else if (codePoint <= 0xFFFF) {
-            const firstUnit = 0xE0 + (codePoint >> 12);
-            const secondUnit = 0x80 + ((codePoint >> 6) & 0x3F);
-            const thirdUnit = 0x80 + (codePoint & 0x3F);
-            string += firstUnit.toString(16).toUpperCase() + " "
-                + secondUnit.toString(16).toUpperCase() + " "
-                + thirdUnit.toString(16).toUpperCase();
+            codeUnits.push(0xE0 + (codePoint >> 12));
+            codeUnits.push(0x80 + ((codePoint >> 6) & 0x3F));
+            codeUnits.push(0x80 + (codePoint & 0x3F));
         }
         // 4 code units
         else {
-            const firstUnit = 0xF0 + (codePoint >> 18);
-            const secondUnit = 0x80 + ((codePoint >> 12) & 0x3F);
-            const thirdUnit = 0x80 + ((codePoint >> 6) & 0x3F);
-            const fourthUnit = 0x80 + (codePoint & 0x3F);
-            string += firstUnit.toString(16).toUpperCase() + " "
-                + secondUnit.toString(16).toUpperCase() + " "
-                + thirdUnit.toString(16).toUpperCase() + " "
-                + fourthUnit.toString(16).toUpperCase();
+            codeUnits.push(0xF0 + (codePoint >> 18));
+            codeUnits.push(0x80 + ((codePoint >> 12) & 0x3F));
+            codeUnits.push(0x80 + ((codePoint >> 6) & 0x3F));
+            codeUnits.push(0x80 + (codePoint & 0x3F));
         }
     }
-    return string;
+    return sequenceHexDisplay(codeUnits, 2, false);
 }
 /**
- * Converts a code point sequence into UTF-16.
+ * Converts a code point sequence into the hex representation of a UTF-16 string.
  * @throws {TypeError} Thrown when the given sequence contains a code point that is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
 export function toUTF16Hex(sequence) {
-    let string = "";
-    for (const [i, codePoint] of sequence.entries()) {
+    let codeUnits = [];
+    for (const codePoint of sequence) {
         validateCodePoint(codePoint);
-        if (i > 0)
-            string += " ";
         // 1 code unit
         if (codePoint <= 0xFFFF) {
-            string += codePoint.toString(16).toUpperCase().padStart(4, "0");
+            codeUnits.push(codePoint);
         }
         // 2 code units
         else {
-            const firstUnit = 0xD800 + ((codePoint >> 10) - 0x40);
-            const secondUnit = 0xDC00 + (codePoint & 0x3FF);
-            string += firstUnit.toString(16).toUpperCase() + " "
-                + secondUnit.toString(16).toUpperCase();
+            codeUnits.push(0xD800 + ((codePoint >> 10) - 0x40));
+            codeUnits.push(0xDC00 + (codePoint & 0x3FF));
         }
     }
-    return string;
+    return sequenceHexDisplay(codeUnits, 4, false);
 }
 /**
- * Converts a code point sequence into UTF-32.
+ * Converts a code point sequence into the hex representation of a UTF-32 string.
  * @throws {TypeError} Thrown when the given sequence contains a code point that is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
 export function toUTF32Hex(sequence) {
-    let string = "";
-    for (const [i, codePoint] of sequence.entries()) {
+    for (const codePoint of sequence) {
         validateCodePoint(codePoint);
-        if (i > 0)
-            string += " ";
-        string += codePoint.toString(16).toUpperCase().padStart(8, "0");
     }
-    return string;
+    return sequenceHexDisplay(sequence, 8, false);
 }
 /**
  * Converts a code point sequence into the specified representation.
