@@ -6,8 +6,9 @@ export enum Representation {
     Text = "text",
     CodePointsHex = "code-points-hex",
     CodePointsDec = "code-points-dec",
-    UTF16Hex = "utf16",
-    UTF32Hex = "utf32"
+    UTF8Hex = "utf8-hex",
+    UTF16Hex = "utf16-hex",
+    UTF32Hex = "utf32-hex"
 }
 
 /**

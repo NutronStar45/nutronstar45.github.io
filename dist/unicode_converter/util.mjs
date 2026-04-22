@@ -6,8 +6,9 @@ export var Representation;
     Representation["Text"] = "text";
     Representation["CodePointsHex"] = "code-points-hex";
     Representation["CodePointsDec"] = "code-points-dec";
-    Representation["UTF16Hex"] = "utf16";
-    Representation["UTF32Hex"] = "utf32";
+    Representation["UTF8Hex"] = "utf8-hex";
+    Representation["UTF16Hex"] = "utf16-hex";
+    Representation["UTF32Hex"] = "utf32-hex";
 })(Representation || (Representation = {}));
 /**
  * Throws an error if the given code point isn't valid.

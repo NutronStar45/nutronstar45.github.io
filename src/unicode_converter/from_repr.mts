@@ -94,6 +94,146 @@ export function fromCodePointsDec(str: string) {
 }
 
 /**
+ * Formats a byte sequence for display.
+ * @throws {TypeError} Thrown if the input array contains a non-byte number.
+ */
+function bytesDisplay(bytes: number[]) {
+    let string = "";
+
+    for (const [i, byte] of bytes.entries()) {
+        if (!Number.isInteger(byte) || byte < 0 || byte > 255) {
+            throw new TypeError("Input is not a byte");
+        }
+
+        if (i > 0) {
+            string += " ";
+        }
+        string += "0x" + byte.toString(16).toUpperCase().padStart(2, "0");
+    }
+
+    return string;
+}
+
+/**
+ * Converts the hex representation of a UTF-8 string into a code point sequence.
+ * @throws {TypeError} Thrown when the given string:
+ * - contains a character that is neither a hex digit nor a whitespace,
+ * - contains an ill-formed code unit sequence, or
+ * - contains an invalid number of digits.
+ */
+export function fromUTF8Hex(str: string) {
+    let sequence = [];
+    let digitIndex = 0; // The index of the current digit
+    let partialCodeUnitHex = ""; // A partially-built code unit (in hex representation)
+    let partialCodeUnitSequence = []; // Code units of a partially built character
+
+    for (const char of str) {
+        if (/\s/.test(char)) continue;
+        if (HEX_DIGIT_REGEX.test(char)) {
+            partialCodeUnitHex += char.toUpperCase();
+        } else {
+            throw new TypeError(`Encountered a character that is neither a hex digit nor a whitespace (\"${char}\")`);
+        }
+
+        if (partialCodeUnitHex.length === 2) {
+            const codeUnit = Number.parseInt(partialCodeUnitHex, 16);
+            partialCodeUnitHex = "";
+
+            // 1-code-unit character (0xxx_xxxx)
+            if (codeUnit <= 0x7F) {
+                // After an incomplete code unit sequence
+                if (partialCodeUnitSequence.length !== 0) {
+                    throw new TypeError(`Incomplete code unit sequence (${bytesDisplay(partialCodeUnitSequence)})`);
+                }
+
+                sequence.push(codeUnit);
+            }
+
+            // Trail code unit (10xx_xxxx)
+            else if (codeUnit <= 0xBF) {
+                // Not after an incomplete code unit sequence
+                if (partialCodeUnitSequence.length === 0) {
+                    throw new TypeError(`Lone trail code unit (0x${codeUnit.toString(16).toUpperCase()})`);
+                }
+
+                partialCodeUnitSequence.push(codeUnit);
+
+                // Combine 2-code-unit character (110x_xxxx)
+                if (partialCodeUnitSequence[0]! <= 0xDF) {
+                    if (partialCodeUnitSequence.length === 2) {
+                        const codePoint = ((partialCodeUnitSequence[0]! - 0xC0) << 6)
+                            + (partialCodeUnitSequence[1]! - 0x80);
+                        if (codePoint <= 0x7F) {
+                            throw new TypeError(`Non-shortest form code unit sequence (${bytesDisplay(partialCodeUnitSequence)})`);
+                        }
+                        sequence.push(codePoint);
+                        partialCodeUnitSequence = [];
+                    }
+                }
+
+                // Combine 3-code-unit character (1110_xxxx)
+                if (partialCodeUnitSequence[0]! <= 0xEF) {
+                    if (partialCodeUnitSequence.length === 3) {
+                        const codePoint = ((partialCodeUnitSequence[0]! - 0xE0) << 12)
+                            + ((partialCodeUnitSequence[1]! - 0x80) << 6)
+                            + (partialCodeUnitSequence[2]! - 0x80);
+                        if (codePoint <= 0x7FF) {
+                            throw new TypeError(`Non-shortest form code unit sequence (${bytesDisplay(partialCodeUnitSequence)})`);
+                        }
+                        validateCodePoint(codePoint); // Check for code points assigned to surrogates
+                        sequence.push(codePoint);
+                        partialCodeUnitSequence = [];
+                    }
+                }
+
+                // Combine 4-code-unit character (1111_xxxx)
+                else {
+                    if (partialCodeUnitSequence.length === 4) {
+                        const codePoint = ((partialCodeUnitSequence[0]! - 0xF0) << 18)
+                            + ((partialCodeUnitSequence[1]! - 0x80) << 12)
+                            + ((partialCodeUnitSequence[2]! - 0x80) << 6)
+                            + (partialCodeUnitSequence[3]! - 0x80);
+                        if (codePoint <= 0xFFFF) {
+                            throw new TypeError(`Non-shortest form code unit sequence (${bytesDisplay(partialCodeUnitSequence)})`);
+                        }
+                        validateCodePoint(codePoint); // Check for code points greater than 0x10FFFF
+                        sequence.push(codePoint);
+                        partialCodeUnitSequence = [];
+                    }
+                }
+            }
+
+            // Lead code unit (110x_xxxx ~ 1111_0xxx)
+            else if (codeUnit <= 0xF7) {
+                // After an incomplete code unit sequence
+                if (partialCodeUnitSequence.length !== 0) {
+                    throw new TypeError(`Incomplete code unit sequence (${bytesDisplay(partialCodeUnitSequence)})`);
+                }
+
+                partialCodeUnitSequence.push(codeUnit);
+            }
+
+            // Invalid code unit
+            else {
+                throw new TypeError(`Invalid code unit (0x${codeUnit.toString(16).toUpperCase()})`);
+            }
+        }
+
+        digitIndex++;
+    }
+
+    if (partialCodeUnitHex !== "") {
+        throw new TypeError(`Invalid number of hex digits (${digitIndex})`);
+    }
+
+    if (partialCodeUnitSequence.length !== 0) {
+        throw new TypeError(`Incomplete code unit sequence (${bytesDisplay(partialCodeUnitSequence)})`);
+    }
+
+    return sequence;
+}
+
+/**
  * Converts the hex representation of a UTF-16 string into a code point sequence.
  * @throws {TypeError} Thrown when the given string:
  * - contains a character that is neither a hex digit nor a whitespace,
@@ -104,7 +244,7 @@ export function fromUTF16Hex(str: string) {
     let sequence = [];
     let digitIndex = 0; // The index of the current digit
     let partialCodeUnitHex = ""; // A partially-built code unit (in hex representation)
-    let lowSurrogate = null; // Temporary storage of low surrogate; `null` when not storing one
+    let lowSurrogate = null; // Leading low surrogate, or `null` when not storing one
 
     for (const char of str) {
         if (/\s/.test(char)) continue;
@@ -216,6 +356,8 @@ export function fromRepresentation(str: string, representation: Representation) 
             return fromCodePointsHex(str);
         case Representation.CodePointsDec:
             return fromCodePointsDec(str);
+        case Representation.UTF8Hex:
+            return fromUTF8Hex(str);
         case Representation.UTF16Hex:
             return fromUTF16Hex(str);
         case Representation.UTF32Hex:
