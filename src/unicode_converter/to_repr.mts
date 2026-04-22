@@ -1,4 +1,4 @@
-import { Representation, sequenceHexDisplay, validateCodePoint } from "./util.mjs";
+import { Representation, sequenceDisplayHex, validateCodePoint } from "./util.mjs";
 
 /**
  * Converts a code point sequence into text.
@@ -86,7 +86,7 @@ export function toUTF8Hex(sequence: number[]) {
             codeUnits.push(0x80 + (codePoint & 0x3F));
         }
     }
-    return sequenceHexDisplay(codeUnits, 2, false);
+    return sequenceDisplayHex(codeUnits, 2, false);
 }
 
 /**
@@ -112,7 +112,7 @@ export function toUTF16Hex(sequence: number[]) {
             codeUnits.push(0xDC00 + (codePoint & 0x3FF));
         }
     }
-    return sequenceHexDisplay(codeUnits, 4, false);
+    return sequenceDisplayHex(codeUnits, 4, false);
 }
 
 /**
@@ -126,7 +126,7 @@ export function toUTF32Hex(sequence: number[]) {
     for (const codePoint of sequence) {
         validateCodePoint(codePoint);
     }
-    return sequenceHexDisplay(sequence, 8, false);
+    return sequenceDisplayHex(sequence, 8, false);
 }
 
 /**

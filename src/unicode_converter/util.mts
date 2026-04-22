@@ -52,7 +52,11 @@ export function validateCodePoint(codePoint: number, decimal=false) {
  * - that is not a non-negative integer, or
  * - whose width exceeds {@linkcode width}.
  */
-export function sequenceHexDisplay(sequence: number[], width: number, prefix: boolean) {
+export function sequenceDisplayHex(sequence: number[], width: number, prefix: boolean) {
+    if (!Number.isInteger(width) || width < 0) {
+        throw new TypeError("Width must be a positive integer");
+    }
+
     let string = "";
 
     for (const [i, number] of sequence.entries()) {
