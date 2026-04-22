@@ -6,6 +6,7 @@ export var Representation;
     Representation["Text"] = "text";
     Representation["CodePointsHex"] = "code-points-hex";
     Representation["CodePointsDec"] = "code-points-dec";
+    Representation["UTF16Hex"] = "utf16";
     Representation["UTF32Hex"] = "utf32";
 })(Representation || (Representation = {}));
 /**
@@ -37,6 +38,6 @@ export function validateCodePoint(codePoint, decimal = false) {
         throw new TypeError(`Code point outside valid range (${codePointDisplay})`);
     }
     if (codePoint >= 0xD800 && codePoint <= 0xDFFF) {
-        throw new TypeError(`Surrogate code point (${codePointDisplay})`);
+        throw new TypeError(`Code point reserved for a surrogate (${codePointDisplay})`);
     }
 }

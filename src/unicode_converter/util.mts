@@ -6,6 +6,7 @@ export enum Representation {
     Text = "text",
     CodePointsHex = "code-points-hex",
     CodePointsDec = "code-points-dec",
+    UTF16Hex = "utf16",
     UTF32Hex = "utf32"
 }
 
@@ -38,6 +39,6 @@ export function validateCodePoint(codePoint: number, decimal=false) {
         throw new TypeError(`Code point outside valid range (${codePointDisplay})`);
     }
     if (codePoint >= 0xD800 && codePoint <= 0xDFFF) {
-        throw new TypeError(`Surrogate code point (${codePointDisplay})`);
+        throw new TypeError(`Code point reserved for a surrogate (${codePointDisplay})`);
     }
 }
