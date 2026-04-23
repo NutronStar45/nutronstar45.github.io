@@ -1,9 +1,9 @@
 /** An allowed radix. */
 export var Radix;
 (function (Radix) {
-    Radix[Radix["Hexadecimal"] = 0] = "Hexadecimal";
-    Radix[Radix["Binary"] = 1] = "Binary";
-    Radix[Radix["Decimal"] = 2] = "Decimal";
+    Radix[Radix["Hexadecimal"] = 16] = "Hexadecimal";
+    Radix[Radix["Binary"] = 2] = "Binary";
+    Radix[Radix["Decimal"] = 10] = "Decimal";
 })(Radix || (Radix = {}));
 /** Returns a RegExp matching an allowed digit of the specified radix. */
 export function radixDigitsRegex(radix) {

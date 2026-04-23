@@ -13,18 +13,17 @@ export function fromText(str) {
     return sequence;
 }
 /**
- * Converts the specified representation of a code point sequence into the code point sequence.
+ * Converts the specified representation of a code point sequence into the code point sequence. Code points should be separated by whitespaces.
  * @param radix The radix of the representation.
  * @param maxLength The maximum allowed number of digits of a digit sequence.
  * @throws {TypeError} Thrown when:
- * - the given radix isn't an integer between 2 and 36,
  * - the given max length isn't a positive integer,
  * - the given string contains a character that is neither an allowed digit of the radix nor a whitespace,
  * - the given string contains a digit sequence with length greater than the specified max length,
  * - the given string contains a code point outside the valid range, or
  * - the given string contains a code point reserved for an surrogate.
  */
-function fromCodePoints(str, radix, maxLength) {
+function fromCodePointsRepr(str, radix, maxLength) {
     if (!Number.isInteger(maxLength) || maxLength < 0) {
         throw new TypeError("Max length must be a positive integer");
     }
@@ -65,7 +64,7 @@ function fromCodePoints(str, radix, maxLength) {
  * - contains a code point reserved for an surrogate.
  */
 export function fromCodePointsHex(str) {
-    return fromCodePoints(str, Radix.Hexadecimal, 6);
+    return fromCodePointsRepr(str, Radix.Hexadecimal, 6);
 }
 /**
  * Converts the decimal representation of a code point sequence into the code point sequence.
@@ -76,38 +75,43 @@ export function fromCodePointsHex(str) {
  * - contains a code point reserved for an surrogate.
  */
 export function fromCodePointsDec(str) {
-    return fromCodePoints(str, Radix.Decimal, 7);
+    return fromCodePointsRepr(str, Radix.Decimal, 7);
 }
 /**
- * Parses the code units or bytes in the hex representation of an encoding form or scheme.
- * @param width The width of the code units; must be a positive integer.
- * @throws {TypeError} Thrown when the given string:
- * - contains a character that is neither a hex digit nor a whitespace, or
- * - contains an invalid number of digits.
+ * Parses fixed-width digit sequences (code units, bytes, etc.) in the specified representation of an encoding form or scheme; ignores whitespaces.
+ * @param radix The radix of the representation.
+ * @param width The width of the digit sequences; must be a positive integer.
+ * @throws {TypeError} Thrown when:
+ * - the given width isn't a positive integer,
+ * - the given string contains a character that is neither an allowed digit nor a whitespace, or
+ * - the given string contains an invalid number of digits.
  */
-function parseCodeUnitsHex(str, width) {
+function parseUnits(str, radix, width) {
+    if (!Number.isInteger(width) || width < 0) {
+        throw new TypeError("Width must be a positive integer");
+    }
     let sequence = [];
     let digitIndex = 0; // The index of the current digit
-    let partialCodeUnitHex = ""; // A partially-built code unit (in hex representation)
+    let partialUnit = ""; // A partially-built code unit (in hex representation)
     for (const char of str) {
         if (/\s/.test(char))
             continue;
-        if (/[\da-fA-F]/.test(char)) {
-            partialCodeUnitHex += char.toUpperCase();
+        if (radixDigitsRegex(radix).test(char)) {
+            partialUnit += char.toUpperCase();
         }
         else {
-            throw new TypeError(`Encountered a character that is neither a hex digit nor a whitespace (\"${char}\")`);
+            throw new TypeError(`Encountered a character that is neither an allowed digit nor a whitespace (\"${char}\")`);
         }
         // Parse code unit
-        if (partialCodeUnitHex.length === width) {
-            const codeUnit = Number.parseInt(partialCodeUnitHex, 16);
-            sequence.push(codeUnit);
-            partialCodeUnitHex = "";
+        if (partialUnit.length === width) {
+            const unit = Number.parseInt(partialUnit, radix);
+            sequence.push(unit);
+            partialUnit = "";
         }
         digitIndex++;
     }
-    if (partialCodeUnitHex !== "") {
-        throw new TypeError(`Invalid number of hex digits (${digitIndex})`);
+    if (partialUnit !== "") {
+        throw new TypeError(`Invalid number of digits (${digitIndex})`);
     }
     return sequence;
 }
@@ -121,7 +125,7 @@ function parseCodeUnitsHex(str, width) {
 export function fromUTF8Hex(str) {
     let sequence = [];
     let partialCodeUnitSequence = []; // Code units of a partially built character
-    for (const codeUnit of parseCodeUnitsHex(str, 2)) {
+    for (const codeUnit of parseUnits(str, Radix.Hexadecimal, 2)) {
         // 1-code-unit character (0xxx_xxxx)
         if (codeUnit <= 0x7F) {
             // After an incomplete code unit sequence
@@ -207,7 +211,7 @@ export function fromUTF8Hex(str) {
 export function fromUTF16Hex(str) {
     let sequence = [];
     let lowSurrogate = null; // Leading low surrogate, or `null` when not storing one
-    for (const codeUnit of parseCodeUnitsHex(str, 4)) {
+    for (const codeUnit of parseUnits(str, Radix.Hexadecimal, 4)) {
         // Low surrogate
         if (codeUnit >= 0xD800 && codeUnit <= 0xDBFF) {
             // After a low surrogate
@@ -251,7 +255,7 @@ export function fromUTF16Hex(str) {
  */
 export function fromUTF32Hex(str) {
     let sequence = [];
-    for (const codeUnit of parseCodeUnitsHex(str, 8)) {
+    for (const codeUnit of parseUnits(str, Radix.Hexadecimal, 8)) {
         validateCodePoint(codeUnit);
         sequence.push(codeUnit);
     }

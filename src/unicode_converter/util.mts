@@ -1,8 +1,8 @@
 /** An allowed radix. */
 export enum Radix {
-    Hexadecimal,
-    Binary,
-    Decimal
+    Hexadecimal = 16,
+    Binary = 2,
+    Decimal = 10
 }
 
 /** Returns a RegExp matching an allowed digit of the specified radix. */
