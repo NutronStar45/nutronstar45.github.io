@@ -1,19 +1,12 @@
-/** An allowed radix. */
-export var Radix;
-(function (Radix) {
-    Radix[Radix["Hexadecimal"] = 16] = "Hexadecimal";
-    Radix[Radix["Binary"] = 2] = "Binary";
-    Radix[Radix["Decimal"] = 10] = "Decimal";
-})(Radix || (Radix = {}));
 /** Returns a RegExp matching an allowed digit of the specified radix. */
 export function radixDigitsRegex(radix) {
     switch (radix) {
-        case Radix.Hexadecimal:
-            return /[\da-fA-F]/;
-        case Radix.Binary:
+        case 2:
             return /0|1/;
-        case Radix.Decimal:
+        case 10:
             return /\d/;
+        case 16:
+            return /[\da-fA-F]/;
         default:
             throw new TypeError("Invalid radix");
     }

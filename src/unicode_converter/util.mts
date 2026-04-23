@@ -1,19 +1,15 @@
 /** An allowed radix. */
-export enum Radix {
-    Hexadecimal = 16,
-    Binary = 2,
-    Decimal = 10
-}
+export type Radix = 2 | 10 | 16;
 
 /** Returns a RegExp matching an allowed digit of the specified radix. */
 export function radixDigitsRegex(radix: Radix) {
     switch (radix) {
-        case Radix.Hexadecimal:
-            return /[\da-fA-F]/;
-        case Radix.Binary:
+        case 2:
             return /0|1/;
-        case Radix.Decimal:
+        case 10:
             return /\d/;
+        case 16:
+            return /[\da-fA-F]/;
         default:
             throw new TypeError("Invalid radix");
     }

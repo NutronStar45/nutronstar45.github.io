@@ -1,4 +1,4 @@
-import { Radix, radixDigitsRegex, Representation, validateCodePoint, sequenceDisplayHex } from "./util.mjs";
+import { radixDigitsRegex, Representation, validateCodePoint, sequenceDisplayHex } from "./util.mjs";
 /**
  * Converts a string into a code point sequence.
  * @throws {TypeError} Thrown when the given text contains an isolated surrogate.
@@ -64,7 +64,7 @@ function fromCodePointsRepr(str, radix, maxLength) {
  * - contains a code point reserved for an surrogate.
  */
 export function fromCodePointsHex(str) {
-    return fromCodePointsRepr(str, Radix.Hexadecimal, 6);
+    return fromCodePointsRepr(str, 16, 6);
 }
 /**
  * Converts the decimal representation of a code point sequence into the code point sequence.
@@ -75,7 +75,7 @@ export function fromCodePointsHex(str) {
  * - contains a code point reserved for an surrogate.
  */
 export function fromCodePointsDec(str) {
-    return fromCodePointsRepr(str, Radix.Decimal, 7);
+    return fromCodePointsRepr(str, 10, 7);
 }
 /**
  * Parses fixed-width digit sequences (code units, bytes, etc.) in the specified representation of an encoding form or scheme; ignores whitespaces.
@@ -125,7 +125,7 @@ function parseUnits(str, radix, width) {
 export function fromUTF8Hex(str) {
     let sequence = [];
     let partialCodeUnitSequence = []; // Code units of a partially built character
-    for (const codeUnit of parseUnits(str, Radix.Hexadecimal, 2)) {
+    for (const codeUnit of parseUnits(str, 16, 2)) {
         // 1-code-unit character (0xxx_xxxx)
         if (codeUnit <= 0x7F) {
             // After an incomplete code unit sequence
@@ -211,7 +211,7 @@ export function fromUTF8Hex(str) {
 export function fromUTF16Hex(str) {
     let sequence = [];
     let lowSurrogate = null; // Leading low surrogate, or `null` when not storing one
-    for (const codeUnit of parseUnits(str, Radix.Hexadecimal, 4)) {
+    for (const codeUnit of parseUnits(str, 16, 4)) {
         // Low surrogate
         if (codeUnit >= 0xD800 && codeUnit <= 0xDBFF) {
             // After a low surrogate
@@ -255,7 +255,7 @@ export function fromUTF16Hex(str) {
  */
 export function fromUTF32Hex(str) {
     let sequence = [];
-    for (const codeUnit of parseUnits(str, Radix.Hexadecimal, 8)) {
+    for (const codeUnit of parseUnits(str, 16, 8)) {
         validateCodePoint(codeUnit);
         sequence.push(codeUnit);
     }

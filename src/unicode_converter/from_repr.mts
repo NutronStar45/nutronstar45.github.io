@@ -1,4 +1,4 @@
-import { Radix, radixDigitsRegex, Representation, validateCodePoint, sequenceDisplayHex } from "./util.mjs";
+import { type Radix, radixDigitsRegex, Representation, validateCodePoint, sequenceDisplayHex } from "./util.mjs";
 
 /**
  * Converts a string into a code point sequence.
@@ -69,7 +69,7 @@ function fromCodePointsRepr(str: string, radix: Radix, maxLength: number) {
  * - contains a code point reserved for an surrogate.
  */
 export function fromCodePointsHex(str: string) {
-    return fromCodePointsRepr(str, Radix.Hexadecimal, 6);
+    return fromCodePointsRepr(str, 16, 6);
 }
 
 /**
@@ -81,7 +81,7 @@ export function fromCodePointsHex(str: string) {
  * - contains a code point reserved for an surrogate.
  */
 export function fromCodePointsDec(str: string) {
-    return fromCodePointsRepr(str, Radix.Decimal, 7);
+    return fromCodePointsRepr(str, 10, 7);
 }
 
 /**
@@ -138,7 +138,7 @@ export function fromUTF8Hex(str: string) {
     let sequence = [];
     let partialCodeUnitSequence = []; // Code units of a partially built character
 
-    for (const codeUnit of parseUnits(str, Radix.Hexadecimal, 2)) {
+    for (const codeUnit of parseUnits(str, 16, 2)) {
         // 1-code-unit character (0xxx_xxxx)
         if (codeUnit <= 0x7F) {
             // After an incomplete code unit sequence
@@ -237,7 +237,7 @@ export function fromUTF16Hex(str: string) {
     let sequence = [];
     let lowSurrogate = null; // Leading low surrogate, or `null` when not storing one
 
-    for (const codeUnit of parseUnits(str, Radix.Hexadecimal, 4)) {
+    for (const codeUnit of parseUnits(str, 16, 4)) {
         // Low surrogate
         if (codeUnit >= 0xD800 && codeUnit <= 0xDBFF) {
             // After a low surrogate
@@ -290,7 +290,7 @@ export function fromUTF16Hex(str: string) {
 export function fromUTF32Hex(str: string) {
     let sequence = [];
 
-    for (const codeUnit of parseUnits(str, Radix.Hexadecimal, 8)) {
+    for (const codeUnit of parseUnits(str, 16, 8)) {
         validateCodePoint(codeUnit);
         sequence.push(codeUnit);
     }
