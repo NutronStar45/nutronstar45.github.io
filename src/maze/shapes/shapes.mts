@@ -50,7 +50,7 @@ export class GenParams {
                 return this.newSquare(obj.alg, params);
             }
             default:
-                throw new Error("Property doesn't exist or isn't valid: shape");
+                throw new TypeError("Property doesn't exist or isn't valid: shape");
         }
     }
 }
