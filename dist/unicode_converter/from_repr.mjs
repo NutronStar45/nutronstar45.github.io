@@ -279,5 +279,7 @@ export function fromRepresentation(str, representation) {
             return fromUTF16Hex(str);
         case Representation.UTF32Hex:
             return fromUTF32Hex(str);
+        default:
+            throw new TypeError("Invalid representation");
     }
 }

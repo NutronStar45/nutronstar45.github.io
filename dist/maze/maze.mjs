@@ -223,7 +223,7 @@ $(() => {
                         break;
                     // Unknown message
                     default:
-                        throw new Error(`Received unknown message from generation worker: ${e.data}`);
+                        throw new TypeError(`Received unknown message from generation worker: ${e.data}`);
                 }
             });
             // Handle canceling
@@ -306,8 +306,7 @@ $(() => {
                         break;
                     // Unknown message
                     default:
-                        throw new Error(`Received unknown message from worker: ${e.data}`);
-                        return;
+                        throw new TypeError(`Received unknown message from worker: ${e.data}`);
                 }
             });
             // Handle canceling

@@ -13,7 +13,9 @@ export function radixDigitsRegex(radix: Radix) {
         case Radix.Binary:
             return /0|1/;
         case Radix.Decimal:
-            return /\d/
+            return /\d/;
+        default:
+            throw new TypeError("Invalid radix");
     }
 }
 

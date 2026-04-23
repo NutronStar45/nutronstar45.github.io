@@ -150,5 +150,7 @@ export function toRepresentation(codePoints: number[], representation: Represent
             return toUTF16Hex(codePoints);
         case Representation.UTF32Hex:
             return toUTF32Hex(codePoints);
+        default:
+            throw new TypeError("Invalid representation");
     }
 }

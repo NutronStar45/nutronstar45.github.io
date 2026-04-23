@@ -14,6 +14,8 @@ export function radixDigitsRegex(radix) {
             return /0|1/;
         case Radix.Decimal:
             return /\d/;
+        default:
+            throw new TypeError("Invalid radix");
     }
 }
 /** A Unicode representation. */
