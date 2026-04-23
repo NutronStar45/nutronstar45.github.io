@@ -1,4 +1,4 @@
-import { HEX_DIGIT_REGEX, DEC_DIGIT_REGEX, Representation, validateCodePoint, sequenceDisplayHex } from "./util.mjs";
+import { Radix, radixDigitsRegex, Representation, validateCodePoint, sequenceDisplayHex } from "./util.mjs";
 
 /**
  * Converts a string into a code point sequence.
@@ -15,6 +15,53 @@ export function fromText(str: string) {
 }
 
 /**
+ * Converts the specified representation of a code point sequence into the code point sequence.
+ * @param radix The radix of the representation.
+ * @param maxLength The maximum allowed number of digits of a digit sequence.
+ * @throws {TypeError} Thrown when:
+ * - the given radix isn't an integer between 2 and 36,
+ * - the given max length isn't a positive integer,
+ * - the given string contains a character that is neither an allowed digit of the radix nor a whitespace,
+ * - the given string contains a digit sequence with length greater than the specified max length,
+ * - the given string contains a code point outside the valid range, or
+ * - the given string contains a code point reserved for an surrogate.
+ */
+function fromCodePoints(str: string, radix: Radix, maxLength: number) {
+    if (!Number.isInteger(maxLength) || maxLength < 0) {
+        throw new TypeError("Max length must be a positive integer");
+    }
+
+    let sequence = [];
+    let partialCodePoint = ""; // The representation of a partially-built code point
+
+    for (const char of str) {
+        if (/\s/.test(char)) {
+            if (partialCodePoint !== "") {
+                const codePoint = Number.parseInt(partialCodePoint, radix);
+                validateCodePoint(codePoint);
+                sequence.push(codePoint);
+                partialCodePoint = "";
+            }
+        } else if (radixDigitsRegex(radix).test(char)) {
+            partialCodePoint += char.toUpperCase();
+            if (partialCodePoint.length > maxLength) {
+                throw new TypeError(`Digit sequence longer than ${maxLength} digits (${partialCodePoint})`);
+            }
+        } else {
+            throw new TypeError(`Encountered a character that is neither an allowed digit nor a whitespace (\"${char}\")`);
+        }
+    }
+
+    if (partialCodePoint !== "") {
+        const codePoint = Number.parseInt(partialCodePoint, radix);
+        validateCodePoint(codePoint);
+        sequence.push(codePoint);
+    }
+
+    return sequence;
+}
+
+/**
  * Converts the hex representation of a code point sequence into the code point sequence.
  * @throws {TypeError} Thrown when the given string:
  * - contains a character that is neither a hex digit nor a whitespace,
@@ -23,34 +70,7 @@ export function fromText(str: string) {
  * - contains a code point reserved for an surrogate.
  */
 export function fromCodePointsHex(str: string) {
-    let sequence = [];
-    let partialCodePointHex = ""; // A partially-built code point (in hex representation)
-
-    for (const char of str) {
-        if (/\s/.test(char)) {
-            if (partialCodePointHex !== "") {
-                const codePoint = Number.parseInt(partialCodePointHex, 16);
-                validateCodePoint(codePoint);
-                sequence.push(codePoint);
-                partialCodePointHex = "";
-            }
-        } else if (HEX_DIGIT_REGEX.test(char)) {
-            partialCodePointHex += char.toUpperCase();
-            if (partialCodePointHex.length > 6) {
-                throw new TypeError(`Hex digit sequence longer than 6 digits (${partialCodePointHex})`);
-            }
-        } else {
-            throw new TypeError(`Encountered a character that is neither a hex digit nor a whitespace (\"${char}\")`);
-        }
-    }
-
-    if (partialCodePointHex !== "") {
-        const codePoint = Number.parseInt(partialCodePointHex, 16);
-        validateCodePoint(codePoint);
-        sequence.push(codePoint);
-    }
-
-    return sequence;
+    return fromCodePoints(str, Radix.Hexadecimal, 6);
 }
 
 /**
@@ -62,35 +82,7 @@ export function fromCodePointsHex(str: string) {
  * - contains a code point reserved for an surrogate.
  */
 export function fromCodePointsDec(str: string) {
-    let sequence = [];
-    let partialCodePointDec = ""; // A partially-built code point (in decimal representation)
-
-    for (const char of str) {
-        if (/\s/.test(char)) {
-            if (partialCodePointDec !== "") {
-                const codePoint = Number(partialCodePointDec);
-                validateCodePoint(codePoint, true);
-                sequence.push(codePoint);
-                partialCodePointDec = "";
-            }
-        } else if (DEC_DIGIT_REGEX.test(char)) {
-            partialCodePointDec += char;
-
-            if (partialCodePointDec.length > 7) {
-                throw new TypeError(`Decimal digit sequence longer than 7 digits (${partialCodePointDec})`);
-            }
-        } else {
-            throw new TypeError(`Encountered a character that is neither a decimal digit nor a whitespace (\"${char}\")`);
-        }
-    }
-
-    if (partialCodePointDec !== "") {
-        const codePoint = Number(partialCodePointDec);
-        validateCodePoint(codePoint, true);
-        sequence.push(codePoint);
-    }
-
-    return sequence;
+    return fromCodePoints(str, Radix.Decimal, 7);
 }
 
 /**
@@ -107,7 +99,7 @@ function parseCodeUnitsHex(str: string, width: number) {
 
     for (const char of str) {
         if (/\s/.test(char)) continue;
-        if (HEX_DIGIT_REGEX.test(char)) {
+        if (/[\da-fA-F]/.test(char)) {
             partialCodeUnitHex += char.toUpperCase();
         } else {
             throw new TypeError(`Encountered a character that is neither a hex digit nor a whitespace (\"${char}\")`);

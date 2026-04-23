@@ -1,5 +1,21 @@
-export const HEX_DIGIT_REGEX = /[0-9a-fA-F]/;
-export const DEC_DIGIT_REGEX = /[0-9]/;
+/** An allowed radix. */
+export enum Radix {
+    Hexadecimal,
+    Binary,
+    Decimal
+}
+
+/** Returns a RegExp matching an allowed digit of the specified radix. */
+export function radixDigitsRegex(radix: Radix) {
+    switch (radix) {
+        case Radix.Hexadecimal:
+            return /[\da-fA-F]/;
+        case Radix.Binary:
+            return /0|1/;
+        case Radix.Decimal:
+            return /\d/
+    }
+}
 
 /** A Unicode representation. */
 export enum Representation {
