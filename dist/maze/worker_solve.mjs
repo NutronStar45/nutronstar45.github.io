@@ -13,7 +13,7 @@ addEventListener("message", e => {
  * Specialized version of {@linkcode solve()} that can handle plane graphs.
  * @param params The solving parameters.
  * @returns An array of vertices tracing out the solution.
- * @throws {TypeError} Thrown if the given parameters are invalid.
+ * @throws {RangeError} Thrown if the given parameters are invalid.
  */
 function solvePlane(params) {
     switch (params.alg) {
@@ -29,7 +29,7 @@ function solvePlane(params) {
  * Finds a path between two given vertices in a spanning tree using the given algorithm.
  * @param params The solving parameters.
  * @returns An array of vertices tracing out the solution.
- * @throws {TypeError} Thrown if the given parameters are invalid.
+ * @throws {RangeError} Thrown if the given parameters are invalid.
  */
 function solve(params) {
     switch (params.alg) {
@@ -40,7 +40,7 @@ function solve(params) {
         case SolveAlg.RandomMouse:
             return randomMouse(params.maze, params.start, params.end);
         default:
-            throw new TypeError("Invalid algorithm");
+            throw new RangeError("Invalid algorithm");
     }
 }
 /**
@@ -49,7 +49,7 @@ function solve(params) {
  * @param start The start.
  * @param end The destination.
  * @returns An array of vertices tracing out the path.
- * @throws {TypeError} Thrown if the given parameters are invalid.
+ * @throws {RangeError} Thrown if the given parameters are invalid.
  */
 function deadendFilling(graph, start, end) {
     startTime = Date.now();
@@ -148,7 +148,7 @@ const dfsRules = {
  * - `path`, the recorded path, excluding the current vertex.
  * - `visited`, an array of visited neighbors.
  * @returns An array of vertices tracing out the path.
- * @throws {TypeError} Thrown if the given parameters are invalid.
+ * @throws {RangeError} Thrown if the given parameters are invalid.
  */
 function dfs(graph, start, end, rule) {
     startTime = Date.now();
@@ -204,7 +204,7 @@ function dfs(graph, start, end, rule) {
  * @param start The start.
  * @param end The destination.
  * @returns An array of vertices tracing out the path.
- * @throws {TypeError} Thrown if the given parameters are invalid.
+ * @throws {RangeError} Thrown if the given parameters are invalid.
  */
 function randomMouse(graph, start, end) {
     startTime = Date.now();

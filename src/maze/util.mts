@@ -38,14 +38,14 @@ export enum SolveAlg {
  * Converts a string into a {@linkcode GenAlg}.
  * @param str A string.
  * @returns The corresponding {@linkcode GenAlg}.
- * @throws {TypeError} Thrown if the string doesn't represent a valid algorithm.
+ * @throws {RangeError} Thrown if the string doesn't represent a valid algorithm.
  */
 export function genAlgFromString(str: string) {
     switch (str) {
         case "prims":
             return GenAlg.Prims;
         default:
-            throw new TypeError("Invalid algorithm");
+            throw new RangeError("Invalid algorithm");
     }
 }
 
@@ -54,7 +54,7 @@ export function genAlgFromString(str: string) {
  * Converts a string into a {@linkcode SolveAlg}.
  * @param str A string.
  * @returns The corresponding {@linkcode SolveAlg}.
- * @throws {TypeError} Thrown if the string doesn't represent a valid algorithm.
+ * @throws {RangeError} Thrown if the string doesn't represent a valid algorithm.
  */
 export function solveAlgFromString(str: string) {
     switch (str) {
@@ -69,7 +69,7 @@ export function solveAlgFromString(str: string) {
         case "randomMouse":
             return SolveAlg.RandomMouse;
         default:
-            throw new TypeError("Invalid algorithm");
+            throw new RangeError("Invalid algorithm");
     }
 }
 
@@ -97,13 +97,14 @@ export interface Subgraph<V> {
      * @param vertex1 One of the endpoints.
      * @param vertex2 One of the endpoints.
      * @returns Whether {@linkcode vertex1} and {@linkcode vertex2} are adjacent or not.
+     * @throws {RangeError} Thrown if one of the given vertices is not in the graph.
      */
     hasEdge(vertex1: V, vertex2: V): boolean;
 
     /**
      * Returns the neighbors of a given vertex.
      * @param vertex A vertex.
-     * @throws {TypeError} Thrown if {@linkcode vertex} isn't in the graph.
+     * @throws {RangeError} Thrown if {@linkcode vertex} is not in the graph.
      */
     neighbors(vertex: V): V[];
 
@@ -139,7 +140,7 @@ export interface PlaneSubgraph<V> extends Subgraph<V> {
      * @param previous The previous vertex.
      * @param current The current vertex.
      * @returns The next vertex.
-     * @throws {TypeError} Thrown if one of the given vertices is not in the graph.
+     * @throws {RangeError} Thrown if one of the given vertices is not in the graph.
      * @throws {GraphError} Thrown if the given vertices aren't adjacent.
      */
     leftTurn(previous: V, current: V): V;
@@ -149,7 +150,7 @@ export interface PlaneSubgraph<V> extends Subgraph<V> {
      * @param previous The previous vertex.
      * @param current The current vertex.
      * @returns The next vertex.
-     * @throws {TypeError} Thrown if one of the given vertices is not in the graph.
+     * @throws {RangeError} Thrown if one of the given vertices is not in the graph.
      * @throws {GraphError} Thrown if the given vertices aren't adjacent.
      */
     rightTurn(previous: V, current: V): V;

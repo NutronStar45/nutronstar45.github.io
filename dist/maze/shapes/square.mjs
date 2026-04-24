@@ -20,14 +20,14 @@ export class SquareMazeGenParams {
      * Constructs a {@linkcode SquareMazeGenParams}.
      * @param width The width of the maze.
      * @param height The height of the maze.
-     * @throws {TypeError} Thrown if the given parameters are invalid.
+     * @throws {RangeError} Thrown if the given parameters are invalid.
      */
     static tryNew(width, height) {
         if (!Number.isInteger(width) || width <= 0) {
-            throw new TypeError("Width must be a positive integer");
+            throw new RangeError("Width must be a positive integer");
         }
         if (!Number.isInteger(height) || width <= 0) {
-            throw new TypeError("Height must be a positive integer");
+            throw new RangeError("Height must be a positive integer");
         }
         return new SquareMazeGenParams(width, height);
     }
@@ -38,7 +38,8 @@ export class SquareMazeGenParams {
     /**
      * Constructs a {@linkcode SquareMazeGenParams} from an object.
      * @param obj An object.
-     * @throws {TypeError} Thrown if {@linkcode obj} doesn't have the required properties or they are invalid.
+     * @throws {TypeError} Thrown if {@linkcode obj} doesn't have the required properties or their types are incorrect.
+     * @throws {RangeError} Thrown if the given parameters are incorrect.
      */
     static fromObject(obj) {
         if (!("width" in obj) || typeof obj.width !== "number") {
@@ -137,20 +138,20 @@ export class SquareMaze {
      * @param height The height of the maze.
      * @param hWalls Horizontal walls.
      * @param vWalls Vertical walls.
-     * @throws {TypeError} Thrown if the given parameters are invalid.
+     * @throws {RangeError} Thrown if the given parameters are invalid.
      */
     static tryNew(width, height, hWalls, vWalls) {
         if (!Number.isInteger(width) || width <= 0) {
-            throw new TypeError("Width must be a positive integer");
+            throw new RangeError("Width must be a positive integer");
         }
         if (!Number.isInteger(height) || width <= 0) {
-            throw new TypeError("Height must be a positive integer");
+            throw new RangeError("Height must be a positive integer");
         }
         if (hWalls.some(wall => !isIntegerInRange(wall, 0, width * (height - 1)))) {
-            throw new TypeError("Horizontal walls must be inside the maze");
+            throw new RangeError("Horizontal walls must be inside the maze");
         }
         if (vWalls.some(wall => !isIntegerInRange(wall, 0, width * height) || (wall + 1) % width === 0)) {
-            throw new TypeError("Vertical walls must be inside the maze");
+            throw new RangeError("Vertical walls must be inside the maze");
         }
         return new this(width, height, [...new Set(hWalls)], [...new Set(vWalls)]);
     }
@@ -166,7 +167,8 @@ export class SquareMaze {
     /**
      * Constructs a {@linkcode SquareMaze} from an object.
      * @param obj An object.
-     * @throws {TypeError} Thrown if {@linkcode obj} doesn't have the required properties or they are invalid.
+     * @throws {TypeError} Thrown if {@linkcode obj} doesn't have the required properties or their types are incorrect.
+     * @throws {RangeError} Thrown if the given parameters are invalid.
      */
     static fromObject(obj) {
         if (!("width" in obj) || typeof obj.width !== "number") {
@@ -188,7 +190,7 @@ export class SquareMaze {
      * @param width The width.
      * @param height The height.
      * @returns The square grid.
-     * @throws {TypeError} Thrown if the given parameters are invalid.
+     * @throws {RangeError} Thrown if the given parameters are invalid.
      */
     static supergraph(width, height) {
         return this.tryNew(width, height, [], []);
@@ -199,14 +201,14 @@ export class SquareMaze {
      * @param height The height of the grid.
      * @param vertex The vertex.
      * @returns Whether the given vertex exists in the grid.
-     * @throws {TypeError} Thrown if the given size is invalid.
+     * @throws {RangeError} Thrown if the given size is invalid.
      */
     static sizeHasVertex(width, height, vertex) {
         if (!Number.isInteger(width) || width <= 0) {
-            throw new TypeError("Width must be a positive integer");
+            throw new RangeError("Width must be a positive integer");
         }
         if (!Number.isInteger(height) || height <= 0) {
-            throw new TypeError("Height must be a positive integer");
+            throw new RangeError("Height must be a positive integer");
         }
         return isIntegerInRange(vertex, 0, width * height);
     }
@@ -215,7 +217,7 @@ export class SquareMaze {
      * @param width The width of the grid.
      * @param origin The origin.
      * @param vertex A vertex.
-     * @throws {TypeError} Thrown if the given size is invalid.
+     * @throws {RangeError} Thrown if the given size is invalid.
      * @throws {GraphError} Thrown if one of the given vertices isn't in the grid
      * or the given vertices aren't adjacent in the grid.
      */
@@ -245,7 +247,7 @@ export class SquareMaze {
      * @param width The width of the grid.
      * @param height The height of the grid.
      * @param vertex A vertex.
-     * @throws {TypeError} Thrown if the given size is invalid.
+     * @throws {RangeError} Thrown if the given size is invalid.
      * @throws {GraphError} Thrown if the given vertex isn't in the grid.
      */
     static gridNeighborsWithDirections(width, height, vertex) {
@@ -274,11 +276,11 @@ export class SquareMaze {
     /**
      * Returns the neighbors of {@linkcode vertex} and their relative positions.
      * @param vertex A vertex.
-     * @throws {TypeError} Thrown if the given vertex isn't in the graph.
+     * @throws {RangeError} Thrown if the given vertex isn't in the graph.
      */
     neighborsWithDirections(vertex) {
         if (!this.hasVertex(vertex)) {
-            throw new TypeError("Vertex not in graph");
+            throw new RangeError("Vertex not in graph");
         }
         let neighborsWithDirections = [];
         // Left
@@ -305,7 +307,7 @@ export class SquareMaze {
      * @param height The height of the grid.
      * @param vertex A vertex.
      * @param direction A direction.
-     * @throws {TypeError} Thrown if the given size is invalid.
+     * @throws {RangeError} Thrown if the given size is invalid.
      * @throws {GraphError} Thrown if the given vertex isn't in the grid or the neighbor doesn't exist.
      */
     static inDirection(width, height, vertex, direction) {
@@ -328,8 +330,9 @@ export class SquareMaze {
         return this.width * this.height;
     }
     hasEdge(vertex1, vertex2) {
-        if (!this.hasVertex(vertex1) || !this.hasVertex(vertex2))
-            return false;
+        if (!this.hasVertex(vertex1) || !this.hasVertex(vertex2)) {
+            throw new RangeError("Vertex not in graph");
+        }
         if (Math.abs(vertex1 - vertex2) === this.width) {
             return !this.hWalls.includes(Math.min(vertex1, vertex2));
         }
@@ -389,7 +392,7 @@ export class SquareMaze {
      * @param current The current vertex.
      * @param direction The direction to turn to.
      * @returns The next vertex.
-     * @throws {TypeError} Thrown if {@linkcode previous} or {@linkcode current} is not in the graph.
+     * @throws {RangeError} Thrown if {@linkcode previous} or {@linkcode current} is not in the graph.
      * @throws {GraphError} Thrown if {@linkcode previous} and {@linkcode current} aren't adjacent.
      */
     turn(previous, current, direction) {

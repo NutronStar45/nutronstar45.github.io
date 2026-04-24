@@ -19,14 +19,14 @@ const FINAL_TIME_PRECISION = 2;
  * @param width The width of the maze.
  * @param height The height of the maze.
  * @returns The JQuery object containing the SVG template.
- * @throws {TypeError} Thrown if the given parameters are invalid.
+ * @throws {RangeError} Thrown if the given parameters are invalid.
  */
 function squareMazeSVGTemplate(width, height) {
     if (!Number.isInteger(width) || width <= 0) {
-        throw new TypeError("Width must be a positive integer");
+        throw new RangeError("Width must be a positive integer");
     }
     if (!Number.isInteger(height) || width <= 0) {
-        throw new TypeError("Height must be a positive integer");
+        throw new RangeError("Height must be a positive integer");
     }
     return svgElement("svg")
         .attr({
@@ -223,7 +223,7 @@ $(() => {
                         break;
                     // Unknown message
                     default:
-                        throw new TypeError(`Received unknown message from generation worker: ${e.data}`);
+                        throw new RangeError(`Received unknown message from generation worker: ${e.data}`);
                 }
             });
             // Handle canceling
@@ -306,7 +306,7 @@ $(() => {
                         break;
                     // Unknown message
                     default:
-                        throw new TypeError(`Received unknown message from worker: ${e.data}`);
+                        throw new RangeError(`Received unknown message from worker: ${e.data}`);
                 }
             });
             // Handle canceling

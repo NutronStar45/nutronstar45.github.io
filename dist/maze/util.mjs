@@ -31,21 +31,21 @@ export var SolveAlg;
  * Converts a string into a {@linkcode GenAlg}.
  * @param str A string.
  * @returns The corresponding {@linkcode GenAlg}.
- * @throws {TypeError} Thrown if the string doesn't represent a valid algorithm.
+ * @throws {RangeError} Thrown if the string doesn't represent a valid algorithm.
  */
 export function genAlgFromString(str) {
     switch (str) {
         case "prims":
             return GenAlg.Prims;
         default:
-            throw new TypeError("Invalid algorithm");
+            throw new RangeError("Invalid algorithm");
     }
 }
 /**
  * Converts a string into a {@linkcode SolveAlg}.
  * @param str A string.
  * @returns The corresponding {@linkcode SolveAlg}.
- * @throws {TypeError} Thrown if the string doesn't represent a valid algorithm.
+ * @throws {RangeError} Thrown if the string doesn't represent a valid algorithm.
  */
 export function solveAlgFromString(str) {
     switch (str) {
@@ -60,6 +60,6 @@ export function solveAlgFromString(str) {
         case "randomMouse":
             return SolveAlg.RandomMouse;
         default:
-            throw new TypeError("Invalid algorithm");
+            throw new RangeError("Invalid algorithm");
     }
 }

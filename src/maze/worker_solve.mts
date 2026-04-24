@@ -19,7 +19,7 @@ addEventListener("message", e => {
  * Specialized version of {@linkcode solve()} that can handle plane graphs.
  * @param params The solving parameters.
  * @returns An array of vertices tracing out the solution.
- * @throws {TypeError} Thrown if the given parameters are invalid.
+ * @throws {RangeError} Thrown if the given parameters are invalid.
  */
 function solvePlane(params: SolveParams) {
     switch (params.alg) {
@@ -37,7 +37,7 @@ function solvePlane(params: SolveParams) {
  * Finds a path between two given vertices in a spanning tree using the given algorithm.
  * @param params The solving parameters.
  * @returns An array of vertices tracing out the solution.
- * @throws {TypeError} Thrown if the given parameters are invalid.
+ * @throws {RangeError} Thrown if the given parameters are invalid.
  */
 function solve(params: SolveParams) {
     switch (params.alg) {
@@ -48,7 +48,7 @@ function solve(params: SolveParams) {
         case SolveAlg.RandomMouse:
             return randomMouse(params.maze, params.start, params.end);
         default:
-            throw new TypeError("Invalid algorithm");
+            throw new RangeError("Invalid algorithm");
     }
 }
 
@@ -59,7 +59,7 @@ function solve(params: SolveParams) {
  * @param start The start.
  * @param end The destination.
  * @returns An array of vertices tracing out the path.
- * @throws {TypeError} Thrown if the given parameters are invalid.
+ * @throws {RangeError} Thrown if the given parameters are invalid.
  */
 function deadendFilling<V>(graph: Subgraph<V>, start: V, end: V) {
     startTime = Date.now();
@@ -170,7 +170,7 @@ const dfsRules = {
  * - `path`, the recorded path, excluding the current vertex.
  * - `visited`, an array of visited neighbors.
  * @returns An array of vertices tracing out the path.
- * @throws {TypeError} Thrown if the given parameters are invalid.
+ * @throws {RangeError} Thrown if the given parameters are invalid.
  */
 function dfs<V, T extends Subgraph<V>>(graph: T, start: V, end: V,
         rule: (graph: T, previous: V | null, current: V, path: V[], visited: V[]) => V) {
@@ -234,7 +234,7 @@ function dfs<V, T extends Subgraph<V>>(graph: T, start: V, end: V,
  * @param start The start.
  * @param end The destination.
  * @returns An array of vertices tracing out the path.
- * @throws {TypeError} Thrown if the given parameters are invalid.
+ * @throws {RangeError} Thrown if the given parameters are invalid.
  */
 function randomMouse<V>(graph: Subgraph<V>, start: V, end: V) {
     startTime = Date.now();

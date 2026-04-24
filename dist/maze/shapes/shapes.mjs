@@ -28,7 +28,7 @@ export class GenParams {
     /**
      * Constructs a {@linkcode GenParams} from an object.
      * @param obj An object.
-     * @throws {TypeError} Thrown if {@linkcode obj} doesn't have the required properties or they are invalid.
+     * @throws {TypeError} Thrown if {@linkcode obj} doesn't have the required properties or their types are incorrect.
      */
     static fromObject(obj) {
         if (!("shape" in obj) || typeof obj.shape !== "number" || !(obj.shape in MazeShape)) {
@@ -46,7 +46,7 @@ export class GenParams {
                 return this.newSquare(obj.alg, params);
             }
             default:
-                throw new TypeError("Property doesn't exist or isn't valid: shape");
+                throw new RangeError("Invalid shape");
         }
     }
 }
@@ -70,11 +70,11 @@ export class SolveParams {
      * @param start The start.
      * @param end The destination.
      * @param alg The solving algorithm.
-     * @throws {TypeError} Thrown if {@linkcode start} or {@linkcode end} isn't in the maze.
+     * @throws {RangeError} Thrown if {@linkcode start} or {@linkcode end} isn't in the maze.
      */
     static newSquare(maze, start, end, alg) {
         if (!maze.hasVertex(start) || !maze.hasVertex(end)) {
-            throw new TypeError("Vertices not in graph");
+            throw new RangeError("Vertices not in graph");
         }
         return new this(MazeShape.Square, maze, start, end, alg);
     }
@@ -91,7 +91,7 @@ export class SolveParams {
     /**
      * Constructs a {@linkcode SolveParams} from an object.
      * @param obj An object.
-     * @throws {TypeError} Thrown if {@linkcode obj} doesn't have the required properties or they are invalid.
+     * @throws {TypeError} Thrown if {@linkcode obj} doesn't have the required properties or their types are incorrect.
      */
     static fromObject(obj) {
         if (!("shape" in obj) || typeof obj.shape !== "number" || !(obj.shape in MazeShape)) {
@@ -115,7 +115,7 @@ export class SolveParams {
                 return this.newSquare(maze, obj.start, obj.end, obj.alg);
             }
             default:
-                throw new TypeError("Property doesn't exist or isn't valid: shape");
+                throw new RangeError("Invalid shape");
         }
     }
 }

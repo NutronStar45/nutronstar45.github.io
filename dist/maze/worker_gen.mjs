@@ -15,7 +15,7 @@ addEventListener("message", e => {
  * Generates a spanning tree of a square grid using the given algorithm.
  * @param params The generation parameters.
  * @returns The generated maze.
- * @throws {TypeError} Thrown if the given parameters are invalid.
+ * @throws {RangeError} Thrown if the given parameters are invalid.
  */
 function gen(params) {
     const shapeParams = params.params;
@@ -26,13 +26,13 @@ function gen(params) {
             graph = SquareMaze.supergraph(shapeParams.width, shapeParams.height);
             break;
         default:
-            throw new TypeError("Invalid shape");
+            throw new RangeError("Invalid shape");
     }
     switch (params.alg) {
         case GenAlg.Prims:
             return prims(graph);
         default:
-            throw new TypeError("Invalid algorithm");
+            throw new RangeError("Invalid algorithm");
     }
 }
 /**
