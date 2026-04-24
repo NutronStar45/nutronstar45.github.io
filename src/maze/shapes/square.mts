@@ -271,40 +271,6 @@ export class SquareMaze implements PlaneSubgraph<number> {
     }
 
     /**
-     * Returns the neighbors of a {@linkcode vertex} and their relative positions on a grid of the given size.
-     * @param width The width of the grid.
-     * @param height The height of the grid.
-     * @param vertex A vertex.
-     * @throws {RangeError} Thrown if the given size is invalid.
-     * @throws {GraphError} Thrown if the given vertex isn't in the grid.
-     */
-    static gridNeighborsWithDirections(width: number, height: number, vertex: number) {
-        if (!this.sizeHasVertex(width, height, vertex)) {
-            throw new GraphError("Vertex not in grid");
-        }
-        let neighborsWithDirections = [];
-
-        // Left
-        if (vertex % width !== 0) {
-            neighborsWithDirections.push({ vertex: vertex - 1, direction: SquareDirection.Left });
-        }
-        // Right
-        if ((vertex + 1) % width !== 0) {
-            neighborsWithDirections.push({ vertex: vertex + 1, direction: SquareDirection.Right });
-        }
-        // Top
-        if (vertex >= width) {
-            neighborsWithDirections.push({ vertex: vertex - width, direction: SquareDirection.Top });
-        }
-        // Bottom
-        if (vertex < width * (height - 1)) {
-            neighborsWithDirections.push({ vertex: vertex + width, direction: SquareDirection.Bottom });
-        }
-
-        return neighborsWithDirections;
-    }
-
-    /**
      * Returns the neighbors of {@linkcode vertex} and their relative positions.
      * @param vertex A vertex.
      * @throws {RangeError} Thrown if the given vertex isn't in the graph.
@@ -333,28 +299,6 @@ export class SquareMaze implements PlaneSubgraph<number> {
         }
 
         return neighborsWithDirections;
-    }
-
-    /**
-     * Returns the neighbor of {@linkcode vertex} in the direction {@linkcode direction}.
-     * @param width The width of the grid.
-     * @param height The height of the grid.
-     * @param vertex A vertex.
-     * @param direction A direction.
-     * @throws {RangeError} Thrown if the given size is invalid.
-     * @throws {GraphError} Thrown if the given vertex isn't in the grid or the neighbor doesn't exist.
-     */
-    static inDirection(width: number, height: number, vertex: number, direction: SquareDirection) {
-        const gridNeighborsWithDirections = this.gridNeighborsWithDirections(width, height, vertex);
-
-        // An array containing the neighbor in the given direction, if one exists
-        // An empty array otherwise
-        const neighbor = gridNeighborsWithDirections.filter(({ vertex: _ver, direction: dir }) => dir === direction);
-        if (neighbor[0] === undefined) {
-            throw new GraphError("Neighbor doesn't exist in specified direction");
-        }
-
-        return neighbor[0].vertex;
     }
 
     vertices() {
