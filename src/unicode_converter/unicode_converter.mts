@@ -20,7 +20,7 @@ $(() => {
                     $(`div#${target_repr}-message`).empty();
                 }
             } catch (e) {
-                if (e instanceof TypeError) {
+                if (e instanceof RangeError) {
                     $(`div#${repr}-message`).text("Error: " + e.message);
                 } else {
                     throw e;

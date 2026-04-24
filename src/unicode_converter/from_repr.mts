@@ -2,7 +2,7 @@ import { type Radix, radixDigitsRegex, Representation, validateCodePoint, sequen
 
 /**
  * Converts a string into a code point sequence.
- * @throws {TypeError} Thrown when the given text contains an isolated surrogate.
+ * @throws {RangeError} Thrown when the given text contains an isolated surrogate.
  */
 export function fromText(str: string) {
     let sequence = [];
@@ -18,7 +18,7 @@ export function fromText(str: string) {
  * Converts the specified representation of a code point sequence into the code point sequence. Code points should be separated by whitespaces.
  * @param radix The radix of the representation.
  * @param maxLength The maximum allowed number of digits of a digit sequence.
- * @throws {TypeError} Thrown when:
+ * @throws {RangeError} Thrown when:
  * - the given max length isn't a positive integer,
  * - the given string contains a character that is neither an allowed digit of the radix nor a whitespace,
  * - the given string contains a digit sequence with length greater than the specified max length,
@@ -27,7 +27,7 @@ export function fromText(str: string) {
  */
 function fromCodePointsRepr(str: string, radix: Radix, maxLength: number) {
     if (!Number.isInteger(maxLength) || maxLength < 0) {
-        throw new TypeError("Max length must be a positive integer");
+        throw new RangeError("Max length must be a positive integer");
     }
 
     let sequence = [];
@@ -44,10 +44,10 @@ function fromCodePointsRepr(str: string, radix: Radix, maxLength: number) {
         } else if (radixDigitsRegex(radix).test(char)) {
             partialCodePoint += char.toUpperCase();
             if (partialCodePoint.length > maxLength) {
-                throw new TypeError(`Digit sequence longer than ${maxLength} digits (${partialCodePoint})`);
+                throw new RangeError(`Digit sequence longer than ${maxLength} digits (${partialCodePoint})`);
             }
         } else {
-            throw new TypeError(`Encountered a character that is neither an allowed digit nor a whitespace (\"${char}\")`);
+            throw new RangeError(`Encountered a character that is neither an allowed digit nor a whitespace (\"${char}\")`);
         }
     }
 
@@ -62,7 +62,7 @@ function fromCodePointsRepr(str: string, radix: Radix, maxLength: number) {
 
 /**
  * Converts the hex representation of a code point sequence into the code point sequence.
- * @throws {TypeError} Thrown when the given string:
+ * @throws {RangeError} Thrown when the given string:
  * - contains a character that is neither a hex digit nor a whitespace,
  * - contains a hex digit sequence with length greater than 6 digits,
  * - contains a code point outside the valid range, or
@@ -74,7 +74,7 @@ export function fromCodePointsHex(str: string) {
 
 /**
  * Converts the decimal representation of a code point sequence into the code point sequence.
- * @throws {TypeError} Thrown when the given string:
+ * @throws {RangeError} Thrown when the given string:
  * - contains a character that is neither a decimal digit nor a whitespace,
  * - contains a decimal digit sequence with length greater than 7 digits,
  * - contains a code point outside the valid range, or
@@ -88,14 +88,14 @@ export function fromCodePointsDec(str: string) {
  * Parses fixed-width digit sequences (code units, bytes, etc.) in the specified representation of an encoding form or scheme; ignores whitespaces.
  * @param radix The radix of the representation.
  * @param width The width of the digit sequences; must be a positive integer.
- * @throws {TypeError} Thrown when:
+ * @throws {RangeError} Thrown when:
  * - the given width isn't a positive integer,
  * - the given string contains a character that is neither an allowed digit nor a whitespace, or
  * - the given string contains an invalid number of digits.
  */
 function parseUnits(str: string, radix: Radix, width: number) {
     if (!Number.isInteger(width) || width < 0) {
-        throw new TypeError("Width must be a positive integer");
+        throw new RangeError("Width must be a positive integer");
     }
 
     let sequence = [];
@@ -107,7 +107,7 @@ function parseUnits(str: string, radix: Radix, width: number) {
         if (radixDigitsRegex(radix).test(char)) {
             partialUnit += char.toUpperCase();
         } else {
-            throw new TypeError(`Encountered a character that is neither an allowed digit nor a whitespace (\"${char}\")`);
+            throw new RangeError(`Encountered a character that is neither an allowed digit nor a whitespace (\"${char}\")`);
         }
 
         // Parse code unit
@@ -121,7 +121,7 @@ function parseUnits(str: string, radix: Radix, width: number) {
     }
 
     if (partialUnit !== "") {
-        throw new TypeError(`Invalid number of digits (${digitIndex})`);
+        throw new RangeError(`Invalid number of digits (${digitIndex})`);
     }
 
     return sequence;
@@ -129,7 +129,7 @@ function parseUnits(str: string, radix: Radix, width: number) {
 
 /**
  * Converts the hex representation of a UTF-8 string into a code point sequence.
- * @throws {TypeError} Thrown when the given string:
+ * @throws {RangeError} Thrown when the given string:
  * - contains a character that is neither a hex digit nor a whitespace,
  * - contains an invalid number of digits, or
  * - contains an ill-formed code unit sequence.
@@ -143,7 +143,7 @@ export function fromUTF8Hex(str: string) {
         if (codeUnit <= 0x7F) {
             // After an incomplete code unit sequence
             if (partialCodeUnitSequence.length !== 0) {
-                throw new TypeError(`Incomplete code unit sequence (${sequenceDisplayHex(partialCodeUnitSequence, 2, true)})`);
+                throw new RangeError(`Incomplete code unit sequence (${sequenceDisplayHex(partialCodeUnitSequence, 2, true)})`);
             }
 
             sequence.push(codeUnit);
@@ -153,7 +153,7 @@ export function fromUTF8Hex(str: string) {
         else if (codeUnit <= 0xBF) {
             // Not after an incomplete code unit sequence
             if (partialCodeUnitSequence.length === 0) {
-                throw new TypeError(`Lone trail code unit (0x${codeUnit.toString(16).toUpperCase()})`);
+                throw new RangeError(`Lone trail code unit (0x${codeUnit.toString(16).toUpperCase()})`);
             }
 
             partialCodeUnitSequence.push(codeUnit);
@@ -164,7 +164,7 @@ export function fromUTF8Hex(str: string) {
                     const codePoint = ((partialCodeUnitSequence[0]! - 0xC0) << 6)
                         + (partialCodeUnitSequence[1]! - 0x80);
                     if (codePoint <= 0x7F) {
-                        throw new TypeError(`Non-shortest form code unit sequence (${sequenceDisplayHex(partialCodeUnitSequence, 2, true)})`);
+                        throw new RangeError(`Non-shortest form code unit sequence (${sequenceDisplayHex(partialCodeUnitSequence, 2, true)})`);
                     }
                     sequence.push(codePoint);
                     partialCodeUnitSequence = [];
@@ -178,7 +178,7 @@ export function fromUTF8Hex(str: string) {
                         + ((partialCodeUnitSequence[1]! - 0x80) << 6)
                         + (partialCodeUnitSequence[2]! - 0x80);
                     if (codePoint <= 0x7FF) {
-                        throw new TypeError(`Non-shortest form code unit sequence (${sequenceDisplayHex(partialCodeUnitSequence, 2, true)})`);
+                        throw new RangeError(`Non-shortest form code unit sequence (${sequenceDisplayHex(partialCodeUnitSequence, 2, true)})`);
                     }
                     validateCodePoint(codePoint); // Check for code points assigned to surrogates
                     sequence.push(codePoint);
@@ -194,7 +194,7 @@ export function fromUTF8Hex(str: string) {
                         + ((partialCodeUnitSequence[2]! - 0x80) << 6)
                         + (partialCodeUnitSequence[3]! - 0x80);
                     if (codePoint <= 0xFFFF) {
-                        throw new TypeError(`Non-shortest form code unit sequence (${sequenceDisplayHex(partialCodeUnitSequence, 2, true)})`);
+                        throw new RangeError(`Non-shortest form code unit sequence (${sequenceDisplayHex(partialCodeUnitSequence, 2, true)})`);
                     }
                     validateCodePoint(codePoint); // Check for code points greater than 0x10FFFF
                     sequence.push(codePoint);
@@ -207,7 +207,7 @@ export function fromUTF8Hex(str: string) {
         else if (codeUnit <= 0xF7) {
             // After an incomplete code unit sequence
             if (partialCodeUnitSequence.length !== 0) {
-                throw new TypeError(`Incomplete code unit sequence (${sequenceDisplayHex(partialCodeUnitSequence, 2, true)})`);
+                throw new RangeError(`Incomplete code unit sequence (${sequenceDisplayHex(partialCodeUnitSequence, 2, true)})`);
             }
 
             partialCodeUnitSequence.push(codeUnit);
@@ -215,12 +215,12 @@ export function fromUTF8Hex(str: string) {
 
         // Invalid code unit
         else {
-            throw new TypeError(`Invalid code unit (0x${codeUnit.toString(16).toUpperCase()})`);
+            throw new RangeError(`Invalid code unit (0x${codeUnit.toString(16).toUpperCase()})`);
         }
     }
 
     if (partialCodeUnitSequence.length !== 0) {
-        throw new TypeError(`Incomplete code unit sequence (${sequenceDisplayHex(partialCodeUnitSequence, 2, true)})`);
+        throw new RangeError(`Incomplete code unit sequence (${sequenceDisplayHex(partialCodeUnitSequence, 2, true)})`);
     }
 
     return sequence;
@@ -228,7 +228,7 @@ export function fromUTF8Hex(str: string) {
 
 /**
  * Converts the hex representation of a UTF-16 string into a code point sequence.
- * @throws {TypeError} Thrown when the given string:
+ * @throws {RangeError} Thrown when the given string:
  * - contains a character that is neither a hex digit nor a whitespace,
  * - contains an invalid number of digits, or
  * - contains a lone surrogate.
@@ -242,7 +242,7 @@ export function fromUTF16Hex(str: string) {
         if (codeUnit >= 0xD800 && codeUnit <= 0xDBFF) {
             // After a low surrogate
             if (lowSurrogate !== null) {
-                throw new TypeError(`Lone low surrogate (0x${lowSurrogate.toString(16).toUpperCase()})`);
+                throw new RangeError(`Lone low surrogate (0x${lowSurrogate.toString(16).toUpperCase()})`);
             }
 
             lowSurrogate = codeUnit;
@@ -252,7 +252,7 @@ export function fromUTF16Hex(str: string) {
         else if (codeUnit >= 0xDC00 && codeUnit <= 0xDFFF) {
             // Not after a low surrogate
             if (lowSurrogate === null) {
-                throw new TypeError(`Lone high surrogate (0x${codeUnit.toString(16).toUpperCase()})`);
+                throw new RangeError(`Lone high surrogate (0x${codeUnit.toString(16).toUpperCase()})`);
             }
 
             // Combine surrogate pair
@@ -265,7 +265,7 @@ export function fromUTF16Hex(str: string) {
         else {
             // After a low surrogate
             if (lowSurrogate !== null) {
-                throw new TypeError(`Lone low surrogate (0x${lowSurrogate.toString(16).toUpperCase()})`);
+                throw new RangeError(`Lone low surrogate (0x${lowSurrogate.toString(16).toUpperCase()})`);
             }
 
             sequence.push(codeUnit);
@@ -273,7 +273,7 @@ export function fromUTF16Hex(str: string) {
     }
 
     if (lowSurrogate !== null) {
-        throw new TypeError(`Lone low surrogate (0x${lowSurrogate.toString(16).toUpperCase()})`);
+        throw new RangeError(`Lone low surrogate (0x${lowSurrogate.toString(16).toUpperCase()})`);
     }
 
     return sequence;
@@ -281,7 +281,7 @@ export function fromUTF16Hex(str: string) {
 
 /**
  * Converts the hex representation of a UTF-32 string into a code point sequence.
- * @throws {TypeError} Thrown when the given string:
+ * @throws {RangeError} Thrown when the given string:
  * - contains a character that is neither a hex digit nor a whitespace,
  * - contains an invalid number of digits,
  * - contains a code point outside the valid range, or
@@ -300,7 +300,7 @@ export function fromUTF32Hex(str: string) {
 
 /**
  * Converts the specified representation of a string into a code point sequence.
- * @throws {TypeError} Thrown when the given string is invalid. Exact conditions can be seen in the docs of individual conversions.
+ * @throws {RangeError} Thrown when the given string is invalid. Exact conditions can be seen in the docs of individual conversions.
  */
 export function fromRepresentation(str: string, representation: Representation) {
     switch (representation) {
@@ -317,6 +317,6 @@ export function fromRepresentation(str: string, representation: Representation) 
         case Representation.UTF32Hex:
             return fromUTF32Hex(str);
         default:
-            throw new TypeError("Invalid representation");
+            throw new RangeError("Invalid representation");
     }
 }

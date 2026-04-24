@@ -8,7 +8,7 @@ export function radixDigitsRegex(radix) {
         case 16:
             return /[\da-fA-F]/;
         default:
-            throw new TypeError("Invalid radix");
+            throw new RangeError("Invalid radix");
     }
 }
 /** A Unicode representation. */
@@ -24,14 +24,14 @@ export var Representation;
 /**
  * Throws an error if the given code point isn't valid.
  * @param decimal Whether to display the code point in decimal in an error message. Defaults to displaying in hex.
- * @throws {TypeError} Thrown when the given code point is:
+ * @throws {RangeError} Thrown when the given code point is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
 export function validateCodePoint(codePoint, decimal = false) {
     if (!Number.isInteger(codePoint)) {
-        throw new TypeError(`Non-integer code point (${codePoint})`);
+        throw new RangeError(`Non-integer code point (${codePoint})`);
     }
     let codePointDisplay;
     if (decimal) {
@@ -47,31 +47,31 @@ export function validateCodePoint(codePoint, decimal = false) {
         }
     }
     if (codePoint < 0 || codePoint > 0x10FFFF) {
-        throw new TypeError(`Code point outside valid range (${codePointDisplay})`);
+        throw new RangeError(`Code point outside valid range (${codePointDisplay})`);
     }
     if (codePoint >= 0xD800 && codePoint <= 0xDFFF) {
-        throw new TypeError(`Code point reserved for a surrogate (${codePointDisplay})`);
+        throw new RangeError(`Code point reserved for a surrogate (${codePointDisplay})`);
     }
 }
 /**
  * Formats a non-negative integer sequence into fixed-width hex numbers separated by spaces. "0x" can be optionally prepended to every number.
  * @param width The width to display the numbers in; must be a positive integer. The sequence must not contain numbers whose width exceeds this parameter.
  * @param prefix If true, "0x" is prepended to every number.
- * @throws {TypeError} Thrown if the input array contains a number:
+ * @throws {RangeError} Thrown if the input array contains a number:
  * - that is not a non-negative integer, or
  * - whose width exceeds {@linkcode width}.
  */
 export function sequenceDisplayHex(sequence, width, prefix) {
     if (!Number.isInteger(width) || width < 0) {
-        throw new TypeError("Width must be a positive integer");
+        throw new RangeError("Width must be a positive integer");
     }
     let string = "";
     for (const [i, number] of sequence.entries()) {
         if (!Number.isInteger(number) || number < 0) {
-            throw new TypeError("Encountered a number that is not a non-negative integer");
+            throw new RangeError("Encountered a number that is not a non-negative integer");
         }
         if (number >= 16 ** width) {
-            throw new TypeError("Encountered a number whose width exceeds the specified limit");
+            throw new RangeError("Encountered a number whose width exceeds the specified limit");
         }
         if (i > 0) {
             string += " ";

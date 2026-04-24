@@ -18,7 +18,7 @@ $(() => {
                 }
             }
             catch (e) {
-                if (e instanceof TypeError) {
+                if (e instanceof RangeError) {
                     $(`div#${repr}-message`).text("Error: " + e.message);
                 }
                 else {

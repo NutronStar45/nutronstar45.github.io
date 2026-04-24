@@ -1,7 +1,7 @@
 import { Representation, sequenceDisplayHex, validateCodePoint } from "./util.mjs";
 /**
  * Converts a code point sequence into text.
- * @throws {TypeError} Thrown when the given sequence contains a code point that is:
+ * @throws {RangeError} Thrown when the given sequence contains a code point that is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
@@ -14,7 +14,7 @@ export function toText(sequence) {
 }
 /**
  * Converts a code point sequence into its hex representation.
- * @throws {TypeError} Thrown when the given sequence contains a code point that is:
+ * @throws {RangeError} Thrown when the given sequence contains a code point that is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
@@ -31,7 +31,7 @@ export function toCodePointsHex(sequence) {
 }
 /**
  * Converts a code point sequence into its decimal representation.
- * @throws {TypeError} Thrown when the given sequence contains a code point that is:
+ * @throws {RangeError} Thrown when the given sequence contains a code point that is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
@@ -48,7 +48,7 @@ export function toCodePointsDec(sequence) {
 }
 /**
  * Converts a code point sequence into the hex representation of a UTF-8 string.
- * @throws {TypeError} Thrown when the given sequence contains a code point that is:
+ * @throws {RangeError} Thrown when the given sequence contains a code point that is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
@@ -84,7 +84,7 @@ export function toUTF8Hex(sequence) {
 }
 /**
  * Converts a code point sequence into the hex representation of a UTF-16 string.
- * @throws {TypeError} Thrown when the given sequence contains a code point that is:
+ * @throws {RangeError} Thrown when the given sequence contains a code point that is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
@@ -107,7 +107,7 @@ export function toUTF16Hex(sequence) {
 }
 /**
  * Converts a code point sequence into the hex representation of a UTF-32 string.
- * @throws {TypeError} Thrown when the given sequence contains a code point that is:
+ * @throws {RangeError} Thrown when the given sequence contains a code point that is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
@@ -120,7 +120,7 @@ export function toUTF32Hex(sequence) {
 }
 /**
  * Converts a code point sequence into the specified representation.
- * @throws {TypeError} Thrown when the given sequence contains a code point that is:
+ * @throws {RangeError} Thrown when the given sequence contains a code point that is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
@@ -140,6 +140,6 @@ export function toRepresentation(codePoints, representation) {
         case Representation.UTF32Hex:
             return toUTF32Hex(codePoints);
         default:
-            throw new TypeError("Invalid representation");
+            throw new RangeError("Invalid representation");
     }
 }
