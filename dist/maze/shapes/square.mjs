@@ -51,60 +51,78 @@ export class SquareMazeGenParams {
         return this.tryNew(obj.width, obj.height);
     }
 }
-const directionPriority = {
-    [TurnDirection.Left]: {
-        [SquareDirection.Left]: [
-            SquareDirection.Top,
-            SquareDirection.Right,
-            SquareDirection.Bottom,
-            SquareDirection.Left
-        ],
-        [SquareDirection.Right]: [
-            SquareDirection.Bottom,
-            SquareDirection.Left,
-            SquareDirection.Top,
-            SquareDirection.Right
-        ],
-        [SquareDirection.Top]: [
-            SquareDirection.Right,
-            SquareDirection.Bottom,
-            SquareDirection.Left,
-            SquareDirection.Top
-        ],
-        [SquareDirection.Bottom]: [
-            SquareDirection.Left,
-            SquareDirection.Top,
-            SquareDirection.Right,
-            SquareDirection.Bottom
-        ]
-    },
-    [TurnDirection.Right]: {
-        [SquareDirection.Left]: [
-            SquareDirection.Bottom,
-            SquareDirection.Right,
-            SquareDirection.Top,
-            SquareDirection.Left
-        ],
-        [SquareDirection.Right]: [
-            SquareDirection.Top,
-            SquareDirection.Left,
-            SquareDirection.Bottom,
-            SquareDirection.Right
-        ],
-        [SquareDirection.Top]: [
-            SquareDirection.Left,
-            SquareDirection.Bottom,
-            SquareDirection.Right,
-            SquareDirection.Top
-        ],
-        [SquareDirection.Bottom]: [
-            SquareDirection.Right,
-            SquareDirection.Top,
-            SquareDirection.Left,
-            SquareDirection.Bottom
-        ]
+/**
+ * Returns the priority of the next direction given the direction of the previous vertex and the turning direction.
+ * @param turnDirection The turning direction.
+ * @param fromDirection The direction of the previous vertex.
+ * @returns An array of directions ordered from most to least prioritized.
+ */
+function directionPriority(turnDirection, fromDirection) {
+    switch (turnDirection) {
+        case TurnDirection.Left:
+            switch (fromDirection) {
+                case SquareDirection.Left:
+                    return [
+                        SquareDirection.Top,
+                        SquareDirection.Right,
+                        SquareDirection.Bottom,
+                        SquareDirection.Left
+                    ];
+                case SquareDirection.Right:
+                    return [
+                        SquareDirection.Bottom,
+                        SquareDirection.Left,
+                        SquareDirection.Top,
+                        SquareDirection.Right
+                    ];
+                case SquareDirection.Top:
+                    return [
+                        SquareDirection.Right,
+                        SquareDirection.Bottom,
+                        SquareDirection.Left,
+                        SquareDirection.Top
+                    ];
+                case SquareDirection.Bottom:
+                    return [
+                        SquareDirection.Left,
+                        SquareDirection.Top,
+                        SquareDirection.Right,
+                        SquareDirection.Bottom
+                    ];
+            }
+        case TurnDirection.Right:
+            switch (fromDirection) {
+                case SquareDirection.Left:
+                    return [
+                        SquareDirection.Bottom,
+                        SquareDirection.Right,
+                        SquareDirection.Top,
+                        SquareDirection.Left
+                    ];
+                case SquareDirection.Right:
+                    return [
+                        SquareDirection.Top,
+                        SquareDirection.Left,
+                        SquareDirection.Bottom,
+                        SquareDirection.Right
+                    ];
+                case SquareDirection.Top:
+                    return [
+                        SquareDirection.Left,
+                        SquareDirection.Bottom,
+                        SquareDirection.Right,
+                        SquareDirection.Top
+                    ];
+                case SquareDirection.Bottom:
+                    return [
+                        SquareDirection.Right,
+                        SquareDirection.Top,
+                        SquareDirection.Left,
+                        SquareDirection.Bottom
+                    ];
+            }
     }
-};
+}
 /**
  * A maze on a square grid, represented with its width, height, and horizontal and vertical walls.
  *
@@ -399,7 +417,7 @@ export class SquareMaze {
         if (!this.hasEdge(previous, current)) {
             throw new GraphError("Vertices not adjacent");
         }
-        let priority = directionPriority[direction][SquareMaze.direction(this.width, this.height, current, previous)];
+        let priority = directionPriority(direction, SquareMaze.direction(this.width, this.height, current, previous));
         const neighborsWithDirections = this.neighborsWithDirections(current);
         for (const direction of priority) {
             const neighbor = neighborsWithDirections
