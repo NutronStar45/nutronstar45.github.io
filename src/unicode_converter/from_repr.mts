@@ -4,14 +4,14 @@ import { type Radix, radixDigitsRegex, Representation, validateCodePoint, sequen
  * Converts a string into a code point sequence.
  * @throws {RangeError} Thrown when the given text contains an isolated surrogate.
  */
-export function fromText(str: string) {
-    let sequence = [];
+function fromText(str: string) {
+    let codePoints = [];
     for (const char of str) {
         let codePoint = char.codePointAt(0)!;
         validateCodePoint(codePoint);
-        sequence.push(codePoint);
+        codePoints.push(codePoint);
     }
-    return sequence;
+    return codePoints;
 }
 
 /**
@@ -23,19 +23,19 @@ export function fromText(str: string) {
  * - the given string contains a character that is neither an allowed digit of the radix nor a whitespace, or
  * - the given string contains a digit sequence with length greater than the specified max length.
  */
-function parseIntegerSequence(str: string, radix: Radix, maxLength: number) {
+function parseIntegerSequenceWhitespace(str: string, radix: Radix, maxLength: number) {
     if (!Number.isInteger(maxLength) || maxLength < 0) {
         throw new RangeError("Max length must be a positive integer");
     }
 
-    let sequence = [];
+    let integers = [];
     let partialInteger = ""; // The representation of a partially-built integer
 
     for (const char of str) {
         if (/\s/.test(char)) {
             if (partialInteger !== "") {
                 const integer = Number.parseInt(partialInteger, radix);
-                sequence.push(integer);
+                integers.push(integer);
                 partialInteger = "";
             }
         } else if (radixDigitsRegex(radix).test(char)) {
@@ -50,10 +50,53 @@ function parseIntegerSequence(str: string, radix: Radix, maxLength: number) {
 
     if (partialInteger !== "") {
         const integer = Number.parseInt(partialInteger, radix);
-        sequence.push(integer);
+        integers.push(integer);
     }
 
-    return sequence;
+    return integers;
+}
+
+/**
+ * Parses fixed-width integers in the specified representation of an encoding form or scheme; ignores whitespaces.
+ * @param radix The radix of the representation.
+ * @param width The width of the digit sequences; must be a positive integer.
+ * @throws {RangeError} Thrown when:
+ * - the given width isn't a positive integer,
+ * - the given string contains a character that is neither an allowed digit nor a whitespace, or
+ * - the given string contains an invalid number of digits.
+ */
+function parseIntegerSequence(str: string, radix: Radix, width: number) {
+    if (!Number.isInteger(width) || width < 0) {
+        throw new RangeError("Width must be a positive integer");
+    }
+
+    let integers = [];
+    let digitIndex = 0; // The index of the current digit
+    let partialInteger = ""; // The representation of a partially-built integer
+
+    for (const char of str) {
+        if (/\s/.test(char)) continue;
+        if (radixDigitsRegex(radix).test(char)) {
+            partialInteger += char.toUpperCase();
+        } else {
+            throw new RangeError(`Encountered a character that is neither an allowed digit nor a whitespace (\"${char}\")`);
+        }
+
+        // Parse code unit
+        if (partialInteger.length === width) {
+            const unit = Number.parseInt(partialInteger, radix);
+            integers.push(unit);
+            partialInteger = "";
+        }
+
+        digitIndex++;
+    }
+
+    if (partialInteger !== "") {
+        throw new RangeError(`Invalid number of digits (${digitIndex})`);
+    }
+
+    return integers;
 }
 
 /**
@@ -68,11 +111,11 @@ function parseIntegerSequence(str: string, radix: Radix, maxLength: number) {
  * - the given string contains a code point reserved for an surrogate.
  */
 function fromCodePointsRepr(str: string, radix: Radix, maxLength: number) {
-    const sequence = parseIntegerSequence(str, radix, maxLength);
-    for (const codePoint of sequence) {
+    const codePoints = parseIntegerSequenceWhitespace(str, radix, maxLength);
+    for (const codePoint of codePoints) {
         validateCodePoint(codePoint);
     }
-    return sequence;
+    return codePoints;
 }
 
 /**
@@ -83,7 +126,7 @@ function fromCodePointsRepr(str: string, radix: Radix, maxLength: number) {
  * - contains a code point outside the valid range, or
  * - contains a code point reserved for an surrogate.
  */
-export function fromCodePointsHex(str: string) {
+function fromCodePointsHex(str: string) {
     return fromCodePointsRepr(str, 16, 6);
 }
 
@@ -95,51 +138,8 @@ export function fromCodePointsHex(str: string) {
  * - contains a code point outside the valid range, or
  * - contains a code point reserved for an surrogate.
  */
-export function fromCodePointsDec(str: string) {
+function fromCodePointsDec(str: string) {
     return fromCodePointsRepr(str, 10, 7);
-}
-
-/**
- * Parses fixed-width digit sequences (code units, bytes, etc.) in the specified representation of an encoding form or scheme; ignores whitespaces.
- * @param radix The radix of the representation.
- * @param width The width of the digit sequences; must be a positive integer.
- * @throws {RangeError} Thrown when:
- * - the given width isn't a positive integer,
- * - the given string contains a character that is neither an allowed digit nor a whitespace, or
- * - the given string contains an invalid number of digits.
- */
-function parseUnits(str: string, radix: Radix, width: number) {
-    if (!Number.isInteger(width) || width < 0) {
-        throw new RangeError("Width must be a positive integer");
-    }
-
-    let sequence = [];
-    let digitIndex = 0; // The index of the current digit
-    let partialUnit = ""; // A partially-built code unit (in hex representation)
-
-    for (const char of str) {
-        if (/\s/.test(char)) continue;
-        if (radixDigitsRegex(radix).test(char)) {
-            partialUnit += char.toUpperCase();
-        } else {
-            throw new RangeError(`Encountered a character that is neither an allowed digit nor a whitespace (\"${char}\")`);
-        }
-
-        // Parse code unit
-        if (partialUnit.length === width) {
-            const unit = Number.parseInt(partialUnit, radix);
-            sequence.push(unit);
-            partialUnit = "";
-        }
-
-        digitIndex++;
-    }
-
-    if (partialUnit !== "") {
-        throw new RangeError(`Invalid number of digits (${digitIndex})`);
-    }
-
-    return sequence;
 }
 
 /**
@@ -149,11 +149,11 @@ function parseUnits(str: string, radix: Radix, width: number) {
  * - contains an invalid number of digits, or
  * - contains an ill-formed code unit sequence.
  */
-export function fromUTF8Hex(str: string) {
-    let sequence = [];
+function fromUTF8Hex(str: string) {
+    let codePoints = [];
     let partialCodeUnitSequence = []; // Code units of a partially built character
 
-    for (const codeUnit of parseUnits(str, 16, 2)) {
+    for (const codeUnit of parseIntegerSequence(str, 16, 2)) {
         // 1-code-unit character (0xxx_xxxx)
         if (codeUnit <= 0x7F) {
             // After an incomplete code unit sequence
@@ -161,7 +161,7 @@ export function fromUTF8Hex(str: string) {
                 throw new RangeError(`Incomplete code unit sequence (${sequenceDisplayHex(partialCodeUnitSequence, 2, true)})`);
             }
 
-            sequence.push(codeUnit);
+            codePoints.push(codeUnit);
         }
 
         // Trail code unit (10xx_xxxx)
@@ -181,7 +181,7 @@ export function fromUTF8Hex(str: string) {
                     if (codePoint <= 0x7F) {
                         throw new RangeError(`Non-shortest form code unit sequence (${sequenceDisplayHex(partialCodeUnitSequence, 2, true)})`);
                     }
-                    sequence.push(codePoint);
+                    codePoints.push(codePoint);
                     partialCodeUnitSequence = [];
                 }
             }
@@ -196,7 +196,7 @@ export function fromUTF8Hex(str: string) {
                         throw new RangeError(`Non-shortest form code unit sequence (${sequenceDisplayHex(partialCodeUnitSequence, 2, true)})`);
                     }
                     validateCodePoint(codePoint); // Check for code points assigned to surrogates
-                    sequence.push(codePoint);
+                    codePoints.push(codePoint);
                     partialCodeUnitSequence = [];
                 }
             }
@@ -212,7 +212,7 @@ export function fromUTF8Hex(str: string) {
                         throw new RangeError(`Non-shortest form code unit sequence (${sequenceDisplayHex(partialCodeUnitSequence, 2, true)})`);
                     }
                     validateCodePoint(codePoint); // Check for code points greater than 0x10FFFF
-                    sequence.push(codePoint);
+                    codePoints.push(codePoint);
                     partialCodeUnitSequence = [];
                 }
             }
@@ -238,7 +238,7 @@ export function fromUTF8Hex(str: string) {
         throw new RangeError(`Incomplete code unit sequence (${sequenceDisplayHex(partialCodeUnitSequence, 2, true)})`);
     }
 
-    return sequence;
+    return codePoints;
 }
 
 /**
@@ -248,11 +248,11 @@ export function fromUTF8Hex(str: string) {
  * - contains an invalid number of digits, or
  * - contains a lone surrogate.
  */
-export function fromUTF16Hex(str: string) {
-    let sequence = [];
+function fromUTF16Hex(str: string) {
+    let codePoints = [];
     let lowSurrogate = null; // Leading low surrogate, or `null` when not storing one
 
-    for (const codeUnit of parseUnits(str, 16, 4)) {
+    for (const codeUnit of parseIntegerSequence(str, 16, 4)) {
         // Low surrogate
         if (codeUnit >= 0xD800 && codeUnit <= 0xDBFF) {
             // After a low surrogate
@@ -272,7 +272,7 @@ export function fromUTF16Hex(str: string) {
 
             // Combine surrogate pair
             const codePoint = ((lowSurrogate - 0xD800 + 0x40) << 10) + (codeUnit - 0xDC00);
-            sequence.push(codePoint);
+            codePoints.push(codePoint);
             lowSurrogate = null;
         }
 
@@ -283,7 +283,7 @@ export function fromUTF16Hex(str: string) {
                 throw new RangeError(`Lone low surrogate (0x${lowSurrogate.toString(16).toUpperCase()})`);
             }
 
-            sequence.push(codeUnit);
+            codePoints.push(codeUnit);
         }
     }
 
@@ -291,7 +291,7 @@ export function fromUTF16Hex(str: string) {
         throw new RangeError(`Lone low surrogate (0x${lowSurrogate.toString(16).toUpperCase()})`);
     }
 
-    return sequence;
+    return codePoints;
 }
 
 /**
@@ -302,15 +302,15 @@ export function fromUTF16Hex(str: string) {
  * - contains a code point outside the valid range, or
  * - contains a code point reserved for an surrogate.
  */
-export function fromUTF32Hex(str: string) {
-    let sequence = [];
+function fromUTF32Hex(str: string) {
+    let codePoints = [];
 
-    for (const codeUnit of parseUnits(str, 16, 8)) {
+    for (const codeUnit of parseIntegerSequence(str, 16, 8)) {
         validateCodePoint(codeUnit);
-        sequence.push(codeUnit);
+        codePoints.push(codeUnit);
     }
 
-    return sequence;
+    return codePoints;
 }
 
 /**

@@ -7,7 +7,7 @@ import { Representation, sequenceDisplayHex, validateCodePoint } from "./util.mj
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-export function toText(sequence: number[]) {
+function toText(sequence: number[]) {
     for (const codePoint of sequence) {
         validateCodePoint(codePoint);
     }
@@ -21,7 +21,7 @@ export function toText(sequence: number[]) {
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-export function toCodePointsHex(sequence: number[]) {
+function toCodePointsHex(sequence: number[]) {
     let string = "";
     for (const [i, codePoint] of sequence.entries()) {
         validateCodePoint(codePoint);
@@ -38,7 +38,7 @@ export function toCodePointsHex(sequence: number[]) {
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-export function toCodePointsDec(sequence: number[]) {
+function toCodePointsDec(sequence: number[]) {
     let string = "";
     for (const [i, codePoint] of sequence.entries()) {
         validateCodePoint(codePoint);
@@ -55,7 +55,7 @@ export function toCodePointsDec(sequence: number[]) {
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-export function toUTF8Hex(sequence: number[]) {
+function toUTF8Hex(sequence: number[]) {
     let codeUnits = [];
     for (const codePoint of sequence) {
         validateCodePoint(codePoint);
@@ -96,7 +96,7 @@ export function toUTF8Hex(sequence: number[]) {
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-export function toUTF16Hex(sequence: number[]) {
+function toUTF16Hex(sequence: number[]) {
     let codeUnits = [];
     for (const codePoint of sequence) {
         validateCodePoint(codePoint);
@@ -122,7 +122,7 @@ export function toUTF16Hex(sequence: number[]) {
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-export function toUTF32Hex(sequence: number[]) {
+function toUTF32Hex(sequence: number[]) {
     for (const codePoint of sequence) {
         validateCodePoint(codePoint);
     }

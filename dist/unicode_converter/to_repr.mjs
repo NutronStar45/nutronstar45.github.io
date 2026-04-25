@@ -6,7 +6,7 @@ import { Representation, sequenceDisplayHex, validateCodePoint } from "./util.mj
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-export function toText(sequence) {
+function toText(sequence) {
     for (const codePoint of sequence) {
         validateCodePoint(codePoint);
     }
@@ -19,7 +19,7 @@ export function toText(sequence) {
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-export function toCodePointsHex(sequence) {
+function toCodePointsHex(sequence) {
     let string = "";
     for (const [i, codePoint] of sequence.entries()) {
         validateCodePoint(codePoint);
@@ -36,7 +36,7 @@ export function toCodePointsHex(sequence) {
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-export function toCodePointsDec(sequence) {
+function toCodePointsDec(sequence) {
     let string = "";
     for (const [i, codePoint] of sequence.entries()) {
         validateCodePoint(codePoint);
@@ -53,7 +53,7 @@ export function toCodePointsDec(sequence) {
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-export function toUTF8Hex(sequence) {
+function toUTF8Hex(sequence) {
     let codeUnits = [];
     for (const codePoint of sequence) {
         validateCodePoint(codePoint);
@@ -89,7 +89,7 @@ export function toUTF8Hex(sequence) {
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-export function toUTF16Hex(sequence) {
+function toUTF16Hex(sequence) {
     let codeUnits = [];
     for (const codePoint of sequence) {
         validateCodePoint(codePoint);
@@ -112,7 +112,7 @@ export function toUTF16Hex(sequence) {
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-export function toUTF32Hex(sequence) {
+function toUTF32Hex(sequence) {
     for (const codePoint of sequence) {
         validateCodePoint(codePoint);
     }
