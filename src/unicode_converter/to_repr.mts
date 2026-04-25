@@ -7,9 +7,9 @@ import { Representation, sequenceDisplayHex, validateCodePoints } from "./util.m
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-function toText(sequence: number[]) {
-    validateCodePoints(sequence);
-    return String.fromCodePoint(...sequence);
+function toText(codePoints: number[]) {
+    validateCodePoints(codePoints);
+    return String.fromCodePoint(...codePoints);
 }
 
 /**
@@ -19,11 +19,11 @@ function toText(sequence: number[]) {
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-function toCodePointsHex(sequence: number[]) {
-    validateCodePoints(sequence);
+function toCodePointsHex(codePoints: number[]) {
+    validateCodePoints(codePoints);
 
     let string = "";
-    for (const [i, codePoint] of sequence.entries()) {
+    for (const [i, codePoint] of codePoints.entries()) {
         if (i > 0) string += " ";
         string += codePoint.toString(16).toUpperCase().padStart(4, "0");
     }
@@ -37,11 +37,11 @@ function toCodePointsHex(sequence: number[]) {
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-function toCodePointsDec(sequence: number[]) {
-    validateCodePoints(sequence);
+function toCodePointsDec(codePoints: number[]) {
+    validateCodePoints(codePoints);
 
     let string = "";
-    for (const [i, codePoint] of sequence.entries()) {
+    for (const [i, codePoint] of codePoints.entries()) {
         if (i > 0) string += " ";
         string += codePoint.toString();
     }
@@ -55,11 +55,11 @@ function toCodePointsDec(sequence: number[]) {
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-function toUTF8Hex(sequence: number[]) {
-    validateCodePoints(sequence);
+function toUTF8Hex(codePoints: number[]) {
+    validateCodePoints(codePoints);
 
     let codeUnits = [];
-    for (const codePoint of sequence) {
+    for (const codePoint of codePoints) {
         // 1 code unit
         if (codePoint <= 0xFF) {
             codeUnits.push(codePoint);
@@ -96,11 +96,11 @@ function toUTF8Hex(sequence: number[]) {
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-function toUTF16Hex(sequence: number[]) {
-    validateCodePoints(sequence);
+function toUTF16Hex(codePoints: number[]) {
+    validateCodePoints(codePoints);
 
     let codeUnits = [];
-    for (const codePoint of sequence) {
+    for (const codePoint of codePoints) {
         // 1 code unit
         if (codePoint <= 0xFFFF) {
             codeUnits.push(codePoint);
@@ -122,9 +122,9 @@ function toUTF16Hex(sequence: number[]) {
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-function toUTF32Hex(sequence: number[]) {
-    validateCodePoints(sequence);
-    return sequenceDisplayHex(sequence, 8, false);
+function toUTF32Hex(codePoints: number[]) {
+    validateCodePoints(codePoints);
+    return sequenceDisplayHex(codePoints, 8, false);
 }
 
 /**

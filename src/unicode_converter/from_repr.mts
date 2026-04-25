@@ -24,7 +24,7 @@ function fromText(str: string) {
  * - the given string contains a character that is neither an allowed digit of the radix nor a whitespace, or
  * - the given string contains a digit sequence with length greater than the specified max length.
  */
-function parseIntegerSequenceWhitespace(str: string, radix: Radix, maxLength: number) {
+function parseIntegersWhitespace(str: string, radix: Radix, maxLength: number) {
     if (!Number.isInteger(maxLength) || maxLength < 0) {
         throw new RangeError("Max length must be a positive integer");
     }
@@ -66,7 +66,7 @@ function parseIntegerSequenceWhitespace(str: string, radix: Radix, maxLength: nu
  * - the given string contains a character that is neither an allowed digit nor a whitespace, or
  * - the given string contains an invalid number of digits.
  */
-function parseIntegerSequence(str: string, radix: Radix, width: number) {
+function parseIntegers(str: string, radix: Radix, width: number) {
     if (!Number.isInteger(width) || width < 0) {
         throw new RangeError("Width must be a positive integer");
     }
@@ -101,23 +101,6 @@ function parseIntegerSequence(str: string, radix: Radix, width: number) {
 }
 
 /**
- * Converts the specified representation of a code point sequence into the code point sequence. Code points should be separated by whitespaces.
- * @param radix The radix of the representation.
- * @param maxLength The maximum allowed number of digits of a digit sequence.
- * @throws {RangeError} Thrown when:
- * - the given max length isn't a positive integer,
- * - the given string contains a character that is neither an allowed digit of the radix nor a whitespace,
- * - the given string contains a digit sequence with length greater than the specified max length,
- * - the given string contains a code point outside the valid range, or
- * - the given string contains a code point reserved for an surrogate.
- */
-function fromCodePointsRepr(str: string, radix: Radix, maxLength: number) {
-    const codePoints = parseIntegerSequenceWhitespace(str, radix, maxLength);
-    validateCodePoints(codePoints);
-    return codePoints;
-}
-
-/**
  * Converts the hex representation of a code point sequence into the code point sequence.
  * @throws {RangeError} Thrown when the given string:
  * - contains a character that is neither a hex digit nor a whitespace,
@@ -126,7 +109,9 @@ function fromCodePointsRepr(str: string, radix: Radix, maxLength: number) {
  * - contains a code point reserved for an surrogate.
  */
 function fromCodePointsHex(str: string) {
-    return fromCodePointsRepr(str, 16, 6);
+    const codePoints = parseIntegersWhitespace(str, 16, 6);
+    validateCodePoints(codePoints);
+    return codePoints;
 }
 
 /**
@@ -138,7 +123,9 @@ function fromCodePointsHex(str: string) {
  * - contains a code point reserved for an surrogate.
  */
 function fromCodePointsDec(str: string) {
-    return fromCodePointsRepr(str, 10, 7);
+    const codePoints = parseIntegersWhitespace(str, 10, 7);
+    validateCodePoints(codePoints);
+    return codePoints;
 }
 
 /**
@@ -152,7 +139,7 @@ function fromUTF8Hex(str: string) {
     let codePoints = [];
     let partialCodeUnitSequence = []; // Code units of a partially built character
 
-    for (const codeUnit of parseIntegerSequence(str, 16, 2)) {
+    for (const codeUnit of parseIntegers(str, 16, 2)) {
         // 1-code-unit character (0xxx_xxxx)
         if (codeUnit <= 0x7F) {
             // After an incomplete code unit sequence
@@ -250,7 +237,7 @@ function fromUTF16Hex(str: string) {
     let codePoints = [];
     let lowSurrogate = null; // Leading low surrogate, or `null` when not storing one
 
-    for (const codeUnit of parseIntegerSequence(str, 16, 4)) {
+    for (const codeUnit of parseIntegers(str, 16, 4)) {
         // Low surrogate
         if (codeUnit >= 0xD800 && codeUnit <= 0xDBFF) {
             // After a low surrogate
@@ -301,7 +288,7 @@ function fromUTF16Hex(str: string) {
  * - contains a code point reserved for an surrogate.
  */
 function fromUTF32Hex(str: string) {
-    const codePoints = parseIntegerSequence(str, 16, 8);
+    const codePoints = parseIntegers(str, 16, 8);
     validateCodePoints(codePoints);
     return codePoints;
 }

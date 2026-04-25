@@ -6,9 +6,9 @@ import { Representation, sequenceDisplayHex, validateCodePoints } from "./util.m
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-function toText(sequence) {
-    validateCodePoints(sequence);
-    return String.fromCodePoint(...sequence);
+function toText(codePoints) {
+    validateCodePoints(codePoints);
+    return String.fromCodePoint(...codePoints);
 }
 /**
  * Converts a code point sequence into its hex representation.
@@ -17,10 +17,10 @@ function toText(sequence) {
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-function toCodePointsHex(sequence) {
-    validateCodePoints(sequence);
+function toCodePointsHex(codePoints) {
+    validateCodePoints(codePoints);
     let string = "";
-    for (const [i, codePoint] of sequence.entries()) {
+    for (const [i, codePoint] of codePoints.entries()) {
         if (i > 0)
             string += " ";
         string += codePoint.toString(16).toUpperCase().padStart(4, "0");
@@ -34,10 +34,10 @@ function toCodePointsHex(sequence) {
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-function toCodePointsDec(sequence) {
-    validateCodePoints(sequence);
+function toCodePointsDec(codePoints) {
+    validateCodePoints(codePoints);
     let string = "";
-    for (const [i, codePoint] of sequence.entries()) {
+    for (const [i, codePoint] of codePoints.entries()) {
         if (i > 0)
             string += " ";
         string += codePoint.toString();
@@ -51,10 +51,10 @@ function toCodePointsDec(sequence) {
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-function toUTF8Hex(sequence) {
-    validateCodePoints(sequence);
+function toUTF8Hex(codePoints) {
+    validateCodePoints(codePoints);
     let codeUnits = [];
-    for (const codePoint of sequence) {
+    for (const codePoint of codePoints) {
         // 1 code unit
         if (codePoint <= 0xFF) {
             codeUnits.push(codePoint);
@@ -87,10 +87,10 @@ function toUTF8Hex(sequence) {
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-function toUTF16Hex(sequence) {
-    validateCodePoints(sequence);
+function toUTF16Hex(codePoints) {
+    validateCodePoints(codePoints);
     let codeUnits = [];
-    for (const codePoint of sequence) {
+    for (const codePoint of codePoints) {
         // 1 code unit
         if (codePoint <= 0xFFFF) {
             codeUnits.push(codePoint);
@@ -110,9 +110,9 @@ function toUTF16Hex(sequence) {
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-function toUTF32Hex(sequence) {
-    validateCodePoints(sequence);
-    return sequenceDisplayHex(sequence, 8, false);
+function toUTF32Hex(codePoints) {
+    validateCodePoints(codePoints);
+    return sequenceDisplayHex(codePoints, 8, false);
 }
 /**
  * Converts a code point sequence into the specified representation.
