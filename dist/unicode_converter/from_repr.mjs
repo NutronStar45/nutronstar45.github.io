@@ -116,16 +116,16 @@ function fromCodePointsDec(str) {
     return codePoints;
 }
 /**
- * Converts the hex representation of a UTF-8 string into a code point sequence.
- * @throws {RangeError} Thrown when the given string:
- * - contains a character that is neither a hex digit nor a whitespace,
- * - contains an invalid number of digits, or
- * - contains an ill-formed code unit sequence.
+ * Converts a UTF-8 code unit sequence into a code point sequence.
+ * @throws {RangeError} Thrown when the given sequence is ill-formed.
  */
-function fromUTF8Hex(str) {
+function fromUTF8Units(codeUnits) {
     let codePoints = [];
     let partialCodeUnitSequence = []; // Code units of a partially built character
-    for (const codeUnit of parseIntegers(str, 16, 2)) {
+    for (const codeUnit of codeUnits) {
+        if (!Number.isInteger(codeUnit) || codeUnit < 0 || codeUnit > 0xFF) {
+            throw new RangeError("Invalid code unit");
+        }
         // 1-code-unit character (0xxx_xxxx)
         if (codeUnit <= 0x7F) {
             // After an incomplete code unit sequence
@@ -201,16 +201,16 @@ function fromUTF8Hex(str) {
     return codePoints;
 }
 /**
- * Converts the hex representation of a UTF-16 string into a code point sequence.
- * @throws {RangeError} Thrown when the given string:
- * - contains a character that is neither a hex digit nor a whitespace,
- * - contains an invalid number of digits, or
- * - contains a lone surrogate.
+ * Converts a UTF-16 code unit sequence into a code point sequence.
+ * @throws {RangeError} Thrown when the given sequence is ill-formed.
  */
-function fromUTF16Hex(str) {
+function fromUTF16Units(codeUnits) {
     let codePoints = [];
     let lowSurrogate = null; // Leading low surrogate, or `null` when not storing one
-    for (const codeUnit of parseIntegers(str, 16, 4)) {
+    for (const codeUnit of codeUnits) {
+        if (!Number.isInteger(codeUnit) || codeUnit < 0 || codeUnit > 0xFFFF) {
+            throw new RangeError("Invalid code unit");
+        }
         // Low surrogate
         if (codeUnit >= 0xD800 && codeUnit <= 0xDBFF) {
             // After a low surrogate
@@ -245,17 +245,12 @@ function fromUTF16Hex(str) {
     return codePoints;
 }
 /**
- * Converts the hex representation of a UTF-32 string into a code point sequence.
- * @throws {RangeError} Thrown when the given string:
- * - contains a character that is neither a hex digit nor a whitespace,
- * - contains an invalid number of digits,
- * - contains a code point outside the valid range, or
- * - contains a code point reserved for an surrogate.
+ * Converts a UTF-32 code unit sequence into a code point sequence.
+ * @throws {RangeError} Thrown when the given sequence is ill-formed.
  */
-function fromUTF32Hex(str) {
-    const codePoints = parseIntegers(str, 16, 8);
-    validateCodePoints(codePoints);
-    return codePoints;
+function fromUTF32Units(codeUnits) {
+    validateCodePoints(codeUnits);
+    return codeUnits;
 }
 /**
  * Converts the specified representation of a string into a code point sequence.
@@ -270,11 +265,11 @@ export function fromRepresentation(str, representation) {
         case Representation.CodePointsDec:
             return fromCodePointsDec(str);
         case Representation.UTF8Hex:
-            return fromUTF8Hex(str);
+            return fromUTF8Units(parseIntegers(str, 16, 2));
         case Representation.UTF16Hex:
-            return fromUTF16Hex(str);
+            return fromUTF16Units(parseIntegers(str, 16, 4));
         case Representation.UTF32Hex:
-            return fromUTF32Hex(str);
+            return fromUTF32Units(parseIntegers(str, 16, 8));
         default:
             throw new RangeError("Invalid representation");
     }
