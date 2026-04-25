@@ -15,6 +15,20 @@ export function radixDigitsRegex(radix: Radix) {
     }
 }
 
+/** Returns the prefix associated with the given radix. */
+export function radixPrefix(radix: Radix) {
+    switch (radix) {
+        case 2:
+            return "0b";
+        case 10:
+            return "";
+        case 16:
+            return "0x";
+        default:
+            throw new RangeError("Invalid radix");
+    }
+}
+
 /** A Unicode representation. */
 export enum Representation {
     Text = "text",
@@ -73,16 +87,17 @@ export function validateCodePoints(codePoints: number[], decimal=false) {
 }
 
 /**
- * Formats a non-negative integer sequence into fixed-width hex numbers separated by spaces. "0x" can be optionally prepended to every number.
- * @param width The width to display the numbers in; must be a positive integer. The sequence must not contain numbers whose width exceeds this parameter.
- * @param prefix If true, "0x" is prepended to every number.
+ * Formats a non-negative integer sequence into (optionally fixed-width) numbers in the specified radix separated by spaces. "0x" or "0b" (for hex and bin, respectively) can be optionally prepended to every number.
+ * @param radix The radix to display the integers in.
+ * @param width If 0, disables fixed-width; if positive, controls the width to display the numbers in. If positive, the sequence must not contain a number whose width exceeds this parameter.
+ * @param prefix If true, "0x" or "0b" (for hex and bin, respectively) is prepended to every number.
  * @throws {RangeError} Thrown if the input array contains a number:
  * - that is not a non-negative integer, or
- * - whose width exceeds {@linkcode width}.
+ * - whose width exceeds {@linkcode width} (if fixed-width is enabled).
  */
-export function sequenceDisplayHex(sequence: number[], width: number, prefix: boolean) {
-    if (!Number.isInteger(width) || width < 0) {
-        throw new RangeError("Width must be a positive integer");
+export function integersDisplay(sequence: number[], radix: Radix, width: number, prefix: boolean) {
+    if (!Number.isInteger(width) || width <= 0) {
+        throw new RangeError("Width must be a non-negative integer");
     }
 
     let string = "";
@@ -91,7 +106,7 @@ export function sequenceDisplayHex(sequence: number[], width: number, prefix: bo
         if (!Number.isInteger(number) || number < 0) {
             throw new RangeError("Encountered a number that is not a non-negative integer");
         }
-        if (number >= 16 ** width) {
+        if (width > 0 && number >= radix ** width) {
             throw new RangeError("Encountered a number whose width exceeds the specified limit");
         }
 
@@ -99,9 +114,9 @@ export function sequenceDisplayHex(sequence: number[], width: number, prefix: bo
             string += " ";
         }
         if (prefix) {
-            string += "0x";
+            string += radixPrefix(radix);
         }
-        string += number.toString(16).toUpperCase().padStart(width, "0");
+        string += number.toString(radix).toUpperCase().padStart(width, "0");
     }
 
     return string;

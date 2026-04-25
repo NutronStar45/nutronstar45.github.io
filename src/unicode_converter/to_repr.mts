@@ -1,4 +1,4 @@
-import { Representation, sequenceDisplayHex, validateCodePoints } from "./util.mjs";
+import { Representation, integersDisplay, validateCodePoints } from "./util.mjs";
 
 /**
  * Converts a code point sequence into text.
@@ -21,13 +21,7 @@ function toText(codePoints: number[]) {
  */
 function toCodePointsHex(codePoints: number[]) {
     validateCodePoints(codePoints);
-
-    let string = "";
-    for (const [i, codePoint] of codePoints.entries()) {
-        if (i > 0) string += " ";
-        string += codePoint.toString(16).toUpperCase().padStart(4, "0");
-    }
-    return string;
+    return integersDisplay(codePoints, 16, 4, false);
 }
 
 /**
@@ -39,13 +33,7 @@ function toCodePointsHex(codePoints: number[]) {
  */
 function toCodePointsDec(codePoints: number[]) {
     validateCodePoints(codePoints);
-
-    let string = "";
-    for (const [i, codePoint] of codePoints.entries()) {
-        if (i > 0) string += " ";
-        string += codePoint.toString();
-    }
-    return string;
+    return integersDisplay(codePoints, 10, 0, false);
 }
 
 /**
@@ -143,11 +131,11 @@ export function toRepresentation(codePoints: number[], representation: Represent
         case Representation.CodePointsDec:
             return toCodePointsDec(codePoints);
         case Representation.UTF8Hex:
-            return sequenceDisplayHex(toUTF8Units(codePoints), 2, false);
+            return integersDisplay(toUTF8Units(codePoints), 16, 2, false);
         case Representation.UTF16Hex:
-            return sequenceDisplayHex(toUTF16Units(codePoints), 4, false);
+            return integersDisplay(toUTF16Units(codePoints), 16, 4, false);
         case Representation.UTF32Hex:
-            return sequenceDisplayHex(toUTF32Units(codePoints), 8, false);
+            return integersDisplay(toUTF32Units(codePoints), 16, 8, false);
         default:
             throw new RangeError("Invalid representation");
     }
