@@ -25,7 +25,7 @@ function fromText(str: string) {
  * - the given string contains a digit sequence with length greater than the specified max length.
  */
 function parseIntegersWhitespace(str: string, radix: Radix, maxLength: number) {
-    if (!Number.isInteger(maxLength) || maxLength < 0) {
+    if (!Number.isInteger(maxLength) || maxLength <= 0) {
         throw new RangeError("Max length must be a positive integer");
     }
 
@@ -67,7 +67,7 @@ function parseIntegersWhitespace(str: string, radix: Radix, maxLength: number) {
  * - the given string contains an invalid number of digits.
  */
 function parseIntegers(str: string, radix: Radix, width: number) {
-    if (!Number.isInteger(width) || width < 0) {
+    if (!Number.isInteger(width) || width <= 0) {
         throw new RangeError("Width must be a positive integer");
     }
 

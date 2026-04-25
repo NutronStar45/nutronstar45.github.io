@@ -89,17 +89,15 @@ export function validateCodePoints(codePoints: number[], radix: Radix) {
 }
 
 /**
- * Formats a non-negative integer sequence into (optionally fixed-width) numbers in the specified radix separated by spaces. "0x" or "0b" (for hex and bin, respectively) can be optionally prepended to every number.
+ * Formats a non-negative integer sequence into the specified radix, separated by spaces. Numbers can optionally have a minimum width. "0x" or "0b" (for hex and bin, respectively) can be optionally prepended to every number.
  * @param radix The radix to display the integers in.
- * @param width If 0, disables fixed-width; if positive, controls the width to display the numbers in. If positive, the sequence must not contain a number whose width exceeds this parameter.
+ * @param minWidth The minimum width of the displayed numbers; must be a non-negative integer. Numbers whose widths exceed this parameter are displayed with their width.
  * @param prefix If true, "0x" or "0b" (for hex and bin, respectively) is prepended to every number.
- * @throws {RangeError} Thrown if the input array contains a number:
- * - that is not a non-negative integer, or
- * - whose width exceeds {@linkcode width} (if fixed-width is enabled).
+ * @throws {RangeError} Thrown if the given minimum width is not a non-negative integer, or if the given array contains a number that is not a non-negative integer.
  */
-export function integersDisplay(sequence: number[], radix: Radix, width: number, prefix: boolean) {
-    if (!Number.isInteger(width) || width <= 0) {
-        throw new RangeError("Width must be a non-negative integer");
+export function integersDisplay(sequence: number[], radix: Radix, minWidth: number, prefix: boolean) {
+    if (!Number.isInteger(minWidth) || minWidth < 0) {
+        throw new RangeError("Minimum width must be a non-negative integer");
     }
 
     let string = "";
@@ -108,9 +106,6 @@ export function integersDisplay(sequence: number[], radix: Radix, width: number,
         if (!Number.isInteger(number) || number < 0) {
             throw new RangeError("Encountered a number that is not a non-negative integer");
         }
-        if (width > 0 && number >= radix ** width) {
-            throw new RangeError("Encountered a number whose width exceeds the specified limit");
-        }
 
         if (i > 0) {
             string += " ";
@@ -118,7 +113,7 @@ export function integersDisplay(sequence: number[], radix: Radix, width: number,
         if (prefix) {
             string += radixPrefix(radix);
         }
-        string += number.toString(radix).toUpperCase().padStart(width, "0");
+        string += number.toString(radix).toUpperCase().padStart(minWidth, "0");
     }
 
     return string;
