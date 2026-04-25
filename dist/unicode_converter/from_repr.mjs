@@ -9,7 +9,7 @@ function fromText(str) {
         let codePoint = char.codePointAt(0);
         codePoints.push(codePoint);
     }
-    validateCodePoints(codePoints);
+    validateCodePoints(codePoints, 16);
     return codePoints;
 }
 /**
@@ -99,7 +99,7 @@ function parseIntegers(str, radix, width) {
  */
 function fromCodePointsHex(str) {
     const codePoints = parseIntegersWhitespace(str, 16, 6);
-    validateCodePoints(codePoints);
+    validateCodePoints(codePoints, 16);
     return codePoints;
 }
 /**
@@ -112,7 +112,7 @@ function fromCodePointsHex(str) {
  */
 function fromCodePointsDec(str) {
     const codePoints = parseIntegersWhitespace(str, 10, 7);
-    validateCodePoints(codePoints, true);
+    validateCodePoints(codePoints, 10);
     return codePoints;
 }
 /**
@@ -197,7 +197,7 @@ function fromUTF8Units(codeUnits) {
     if (partialCodeUnitSequence.length !== 0) {
         throw new RangeError(`Incomplete code unit sequence (${integersDisplay(partialCodeUnitSequence, 16, 2, true)})`);
     }
-    validateCodePoints(codePoints);
+    validateCodePoints(codePoints, 16);
     return codePoints;
 }
 /**
@@ -249,7 +249,7 @@ function fromUTF16Units(codeUnits) {
  * @throws {RangeError} Thrown when the given sequence is ill-formed.
  */
 function fromUTF32Units(codeUnits) {
-    validateCodePoints(codeUnits);
+    validateCodePoints(codeUnits, 16);
     return codeUnits;
 }
 /**

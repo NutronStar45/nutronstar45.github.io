@@ -36,28 +36,28 @@ export var Representation;
 })(Representation || (Representation = {}));
 /**
  * Throws an error if the given code point isn't valid.
- * @param decimal Whether to display the code point in decimal in an error message. Defaults to displaying in hex.
+ * @param radix The radix to display the code point in in an error message.
  * @throws {RangeError} Thrown when the given code point is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-function validateCodePoint(codePoint, decimal = false) {
+function validateCodePoint(codePoint, radix) {
     if (!Number.isInteger(codePoint)) {
         throw new RangeError(`Non-integer code point (${codePoint})`);
     }
-    let codePointDisplay;
-    if (decimal) {
-        codePointDisplay = codePoint.toString();
+    let codePointDisplay = Math.abs(codePoint).toString(radix).toUpperCase();
+    if (codePoint >= 0) {
+        if (radix === 2) {
+            codePointDisplay = codePointDisplay.padStart(16, "0");
+        }
+        if (radix === 16) {
+            codePointDisplay = codePointDisplay.padStart(4, "0");
+        }
     }
-    else {
-        codePointDisplay = Math.abs(codePoint).toString(16).toUpperCase();
-        if (codePoint >= 0) {
-            codePointDisplay = "0x" + codePointDisplay.padStart(4, "0");
-        }
-        else {
-            codePointDisplay = "-0x" + codePointDisplay;
-        }
+    codePointDisplay = radixPrefix(radix) + codePointDisplay;
+    if (codePoint < 0) {
+        codePointDisplay = "-" + codePointDisplay;
     }
     if (codePoint < 0 || codePoint > 0x10FFFF) {
         throw new RangeError(`Code point outside valid range (${codePointDisplay})`);
@@ -68,15 +68,15 @@ function validateCodePoint(codePoint, decimal = false) {
 }
 /**
  * Throws an error if the given code point sequence isn't valid.
- * @param decimal Whether to display the code point in decimal in an error message. Defaults to displaying in hex.
+ * @param radix The radix to display the code point in in an error message.
  * @throws {RangeError} Thrown when the given code point sequence contains a code point that is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-export function validateCodePoints(codePoints, decimal = false) {
+export function validateCodePoints(codePoints, radix) {
     for (const codePoint of codePoints) {
-        validateCodePoint(codePoint, decimal);
+        validateCodePoint(codePoint, radix);
     }
 }
 /**

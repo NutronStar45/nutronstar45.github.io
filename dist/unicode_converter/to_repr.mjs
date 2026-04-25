@@ -7,7 +7,7 @@ import { Representation, integersDisplay, validateCodePoints } from "./util.mjs"
  * - reserved for a surrogate.
  */
 function toText(codePoints) {
-    validateCodePoints(codePoints);
+    validateCodePoints(codePoints, 16);
     return String.fromCodePoint(...codePoints);
 }
 /**
@@ -18,7 +18,7 @@ function toText(codePoints) {
  * - reserved for a surrogate.
  */
 function toCodePointsHex(codePoints) {
-    validateCodePoints(codePoints);
+    validateCodePoints(codePoints, 16);
     return integersDisplay(codePoints, 16, 4, false);
 }
 /**
@@ -29,7 +29,7 @@ function toCodePointsHex(codePoints) {
  * - reserved for a surrogate.
  */
 function toCodePointsDec(codePoints) {
-    validateCodePoints(codePoints);
+    validateCodePoints(codePoints, 16);
     return integersDisplay(codePoints, 10, 0, false);
 }
 /**
@@ -40,7 +40,7 @@ function toCodePointsDec(codePoints) {
  * - reserved for a surrogate.
  */
 function toUTF8Units(codePoints) {
-    validateCodePoints(codePoints);
+    validateCodePoints(codePoints, 16);
     let codeUnits = [];
     for (const codePoint of codePoints) {
         // 1 code unit
@@ -76,7 +76,7 @@ function toUTF8Units(codePoints) {
  * - reserved for a surrogate.
  */
 function toUTF16Units(codePoints) {
-    validateCodePoints(codePoints);
+    validateCodePoints(codePoints, 16);
     let codeUnits = [];
     for (const codePoint of codePoints) {
         // 1 code unit
@@ -99,7 +99,7 @@ function toUTF16Units(codePoints) {
  * - reserved for a surrogate.
  */
 function toUTF32Units(codePoints) {
-    validateCodePoints(codePoints);
+    validateCodePoints(codePoints, 16);
     return codePoints;
 }
 /**

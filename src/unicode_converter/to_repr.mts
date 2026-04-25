@@ -8,7 +8,7 @@ import { Representation, integersDisplay, validateCodePoints } from "./util.mjs"
  * - reserved for a surrogate.
  */
 function toText(codePoints: number[]) {
-    validateCodePoints(codePoints);
+    validateCodePoints(codePoints, 16);
     return String.fromCodePoint(...codePoints);
 }
 
@@ -20,7 +20,7 @@ function toText(codePoints: number[]) {
  * - reserved for a surrogate.
  */
 function toCodePointsHex(codePoints: number[]) {
-    validateCodePoints(codePoints);
+    validateCodePoints(codePoints, 16);
     return integersDisplay(codePoints, 16, 4, false);
 }
 
@@ -32,7 +32,7 @@ function toCodePointsHex(codePoints: number[]) {
  * - reserved for a surrogate.
  */
 function toCodePointsDec(codePoints: number[]) {
-    validateCodePoints(codePoints);
+    validateCodePoints(codePoints, 16);
     return integersDisplay(codePoints, 10, 0, false);
 }
 
@@ -44,7 +44,7 @@ function toCodePointsDec(codePoints: number[]) {
  * - reserved for a surrogate.
  */
 function toUTF8Units(codePoints: number[]) {
-    validateCodePoints(codePoints);
+    validateCodePoints(codePoints, 16);
 
     let codeUnits = [];
     for (const codePoint of codePoints) {
@@ -85,7 +85,7 @@ function toUTF8Units(codePoints: number[]) {
  * - reserved for a surrogate.
  */
 function toUTF16Units(codePoints: number[]) {
-    validateCodePoints(codePoints);
+    validateCodePoints(codePoints, 16);
 
     let codeUnits = [];
     for (const codePoint of codePoints) {
@@ -111,7 +111,7 @@ function toUTF16Units(codePoints: number[]) {
  * - reserved for a surrogate.
  */
 function toUTF32Units(codePoints: number[]) {
-    validateCodePoints(codePoints);
+    validateCodePoints(codePoints, 16);
     return codePoints;
 }
 
