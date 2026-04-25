@@ -15,6 +15,48 @@ export function fromText(str: string) {
 }
 
 /**
+ * Parses the specified representation of a sequence of non-negative integers into the sequence.
+ * @param radix The radix of the representation.
+ * @param maxLength The maximum allowed number of digits of a digit sequence.
+ * @throws {RangeError} Thrown when:
+ * - the given max length isn't a positive integer,
+ * - the given string contains a character that is neither an allowed digit of the radix nor a whitespace, or
+ * - the given string contains a digit sequence with length greater than the specified max length.
+ */
+function parseIntegerSequence(str: string, radix: Radix, maxLength: number) {
+    if (!Number.isInteger(maxLength) || maxLength < 0) {
+        throw new RangeError("Max length must be a positive integer");
+    }
+
+    let sequence = [];
+    let partialInteger = ""; // The representation of a partially-built integer
+
+    for (const char of str) {
+        if (/\s/.test(char)) {
+            if (partialInteger !== "") {
+                const integer = Number.parseInt(partialInteger, radix);
+                sequence.push(integer);
+                partialInteger = "";
+            }
+        } else if (radixDigitsRegex(radix).test(char)) {
+            partialInteger += char.toUpperCase();
+            if (partialInteger.length > maxLength) {
+                throw new RangeError(`Digit sequence longer than ${maxLength} digits (${partialInteger})`);
+            }
+        } else {
+            throw new RangeError(`Encountered a character that is neither an allowed digit nor a whitespace (\"${char}\")`);
+        }
+    }
+
+    if (partialInteger !== "") {
+        const integer = Number.parseInt(partialInteger, radix);
+        sequence.push(integer);
+    }
+
+    return sequence;
+}
+
+/**
  * Converts the specified representation of a code point sequence into the code point sequence. Code points should be separated by whitespaces.
  * @param radix The radix of the representation.
  * @param maxLength The maximum allowed number of digits of a digit sequence.
@@ -26,37 +68,10 @@ export function fromText(str: string) {
  * - the given string contains a code point reserved for an surrogate.
  */
 function fromCodePointsRepr(str: string, radix: Radix, maxLength: number) {
-    if (!Number.isInteger(maxLength) || maxLength < 0) {
-        throw new RangeError("Max length must be a positive integer");
-    }
-
-    let sequence = [];
-    let partialCodePoint = ""; // The representation of a partially-built code point
-
-    for (const char of str) {
-        if (/\s/.test(char)) {
-            if (partialCodePoint !== "") {
-                const codePoint = Number.parseInt(partialCodePoint, radix);
-                validateCodePoint(codePoint);
-                sequence.push(codePoint);
-                partialCodePoint = "";
-            }
-        } else if (radixDigitsRegex(radix).test(char)) {
-            partialCodePoint += char.toUpperCase();
-            if (partialCodePoint.length > maxLength) {
-                throw new RangeError(`Digit sequence longer than ${maxLength} digits (${partialCodePoint})`);
-            }
-        } else {
-            throw new RangeError(`Encountered a character that is neither an allowed digit nor a whitespace (\"${char}\")`);
-        }
-    }
-
-    if (partialCodePoint !== "") {
-        const codePoint = Number.parseInt(partialCodePoint, radix);
+    const sequence = parseIntegerSequence(str, radix, maxLength);
+    for (const codePoint of sequence) {
         validateCodePoint(codePoint);
-        sequence.push(codePoint);
     }
-
     return sequence;
 }
 
