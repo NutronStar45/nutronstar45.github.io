@@ -45,13 +45,13 @@ function toCodePointsDec(codePoints) {
     return string;
 }
 /**
- * Converts a code point sequence into the hex representation of a UTF-8 string.
+ * Converts a code point sequence into a UTF-8 code unit sequence.
  * @throws {RangeError} Thrown when the given sequence contains a code point that is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-function toUTF8Hex(codePoints) {
+function toUTF8Units(codePoints) {
     validateCodePoints(codePoints);
     let codeUnits = [];
     for (const codePoint of codePoints) {
@@ -78,16 +78,16 @@ function toUTF8Hex(codePoints) {
             codeUnits.push(0x80 + (codePoint & 0x3F));
         }
     }
-    return sequenceDisplayHex(codeUnits, 2, false);
+    return codeUnits;
 }
 /**
- * Converts a code point sequence into the hex representation of a UTF-16 string.
+ * Converts a code point sequence into a UTF-16 code unit sequence.
  * @throws {RangeError} Thrown when the given sequence contains a code point that is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-function toUTF16Hex(codePoints) {
+function toUTF16Units(codePoints) {
     validateCodePoints(codePoints);
     let codeUnits = [];
     for (const codePoint of codePoints) {
@@ -101,18 +101,18 @@ function toUTF16Hex(codePoints) {
             codeUnits.push(0xDC00 + (codePoint & 0x3FF));
         }
     }
-    return sequenceDisplayHex(codeUnits, 4, false);
+    return codeUnits;
 }
 /**
- * Converts a code point sequence into the hex representation of a UTF-32 string.
+ * Converts a code point sequence into a UTF-32 code unit sequence.
  * @throws {RangeError} Thrown when the given sequence contains a code point that is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-function toUTF32Hex(codePoints) {
+function toUTF32Units(codePoints) {
     validateCodePoints(codePoints);
-    return sequenceDisplayHex(codePoints, 8, false);
+    return codePoints;
 }
 /**
  * Converts a code point sequence into the specified representation.
@@ -130,11 +130,11 @@ export function toRepresentation(codePoints, representation) {
         case Representation.CodePointsDec:
             return toCodePointsDec(codePoints);
         case Representation.UTF8Hex:
-            return toUTF8Hex(codePoints);
+            return sequenceDisplayHex(toUTF8Units(codePoints), 2, false);
         case Representation.UTF16Hex:
-            return toUTF16Hex(codePoints);
+            return sequenceDisplayHex(toUTF16Units(codePoints), 4, false);
         case Representation.UTF32Hex:
-            return toUTF32Hex(codePoints);
+            return sequenceDisplayHex(toUTF32Units(codePoints), 8, false);
         default:
             throw new RangeError("Invalid representation");
     }
