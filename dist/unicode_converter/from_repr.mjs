@@ -1,4 +1,4 @@
-import { radixDigitsRegex, Representation, validateCodePoint, sequenceDisplayHex } from "./util.mjs";
+import { radixDigitsRegex, Representation, validateCodePoints, sequenceDisplayHex } from "./util.mjs";
 /**
  * Converts a string into a code point sequence.
  * @throws {RangeError} Thrown when the given text contains an isolated surrogate.
@@ -7,9 +7,9 @@ function fromText(str) {
     let codePoints = [];
     for (const char of str) {
         let codePoint = char.codePointAt(0);
-        validateCodePoint(codePoint);
         codePoints.push(codePoint);
     }
+    validateCodePoints(codePoints);
     return codePoints;
 }
 /**
@@ -102,9 +102,7 @@ function parseIntegerSequence(str, radix, width) {
  */
 function fromCodePointsRepr(str, radix, maxLength) {
     const codePoints = parseIntegerSequenceWhitespace(str, radix, maxLength);
-    for (const codePoint of codePoints) {
-        validateCodePoint(codePoint);
-    }
+    validateCodePoints(codePoints);
     return codePoints;
 }
 /**
@@ -176,7 +174,6 @@ function fromUTF8Hex(str) {
                     if (codePoint <= 0x7FF) {
                         throw new RangeError(`Non-shortest form code unit sequence (${sequenceDisplayHex(partialCodeUnitSequence, 2, true)})`);
                     }
-                    validateCodePoint(codePoint); // Check for code points assigned to surrogates
                     codePoints.push(codePoint);
                     partialCodeUnitSequence = [];
                 }
@@ -191,7 +188,6 @@ function fromUTF8Hex(str) {
                     if (codePoint <= 0xFFFF) {
                         throw new RangeError(`Non-shortest form code unit sequence (${sequenceDisplayHex(partialCodeUnitSequence, 2, true)})`);
                     }
-                    validateCodePoint(codePoint); // Check for code points greater than 0x10FFFF
                     codePoints.push(codePoint);
                     partialCodeUnitSequence = [];
                 }
@@ -213,6 +209,7 @@ function fromUTF8Hex(str) {
     if (partialCodeUnitSequence.length !== 0) {
         throw new RangeError(`Incomplete code unit sequence (${sequenceDisplayHex(partialCodeUnitSequence, 2, true)})`);
     }
+    validateCodePoints(codePoints);
     return codePoints;
 }
 /**
@@ -268,11 +265,8 @@ function fromUTF16Hex(str) {
  * - contains a code point reserved for an surrogate.
  */
 function fromUTF32Hex(str) {
-    let codePoints = [];
-    for (const codeUnit of parseIntegerSequence(str, 16, 8)) {
-        validateCodePoint(codeUnit);
-        codePoints.push(codeUnit);
-    }
+    const codePoints = parseIntegerSequence(str, 16, 8);
+    validateCodePoints(codePoints);
     return codePoints;
 }
 /**

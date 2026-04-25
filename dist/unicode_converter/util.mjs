@@ -29,7 +29,7 @@ export var Representation;
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-export function validateCodePoint(codePoint, decimal = false) {
+function validateCodePoint(codePoint, decimal = false) {
     if (!Number.isInteger(codePoint)) {
         throw new RangeError(`Non-integer code point (${codePoint})`);
     }
@@ -51,6 +51,19 @@ export function validateCodePoint(codePoint, decimal = false) {
     }
     if (codePoint >= 0xD800 && codePoint <= 0xDFFF) {
         throw new RangeError(`Code point reserved for a surrogate (${codePointDisplay})`);
+    }
+}
+/**
+ * Throws an error if the given code point sequence isn't valid.
+ * @param decimal Whether to display the code point in decimal in an error message. Defaults to displaying in hex.
+ * @throws {RangeError} Thrown when the given code point sequence contains a code point that is:
+ * - not an integer,
+ * - outside the valid range, or
+ * - reserved for a surrogate.
+ */
+export function validateCodePoints(codePoints, decimal = false) {
+    for (const codePoint of codePoints) {
+        validateCodePoint(codePoint, decimal);
     }
 }
 /**

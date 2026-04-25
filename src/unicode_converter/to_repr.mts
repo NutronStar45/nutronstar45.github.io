@@ -1,4 +1,4 @@
-import { Representation, sequenceDisplayHex, validateCodePoint } from "./util.mjs";
+import { Representation, sequenceDisplayHex, validateCodePoints } from "./util.mjs";
 
 /**
  * Converts a code point sequence into text.
@@ -8,9 +8,7 @@ import { Representation, sequenceDisplayHex, validateCodePoint } from "./util.mj
  * - reserved for a surrogate.
  */
 function toText(sequence: number[]) {
-    for (const codePoint of sequence) {
-        validateCodePoint(codePoint);
-    }
+    validateCodePoints(sequence);
     return String.fromCodePoint(...sequence);
 }
 
@@ -22,9 +20,10 @@ function toText(sequence: number[]) {
  * - reserved for a surrogate.
  */
 function toCodePointsHex(sequence: number[]) {
+    validateCodePoints(sequence);
+
     let string = "";
     for (const [i, codePoint] of sequence.entries()) {
-        validateCodePoint(codePoint);
         if (i > 0) string += " ";
         string += codePoint.toString(16).toUpperCase().padStart(4, "0");
     }
@@ -39,9 +38,10 @@ function toCodePointsHex(sequence: number[]) {
  * - reserved for a surrogate.
  */
 function toCodePointsDec(sequence: number[]) {
+    validateCodePoints(sequence);
+
     let string = "";
     for (const [i, codePoint] of sequence.entries()) {
-        validateCodePoint(codePoint);
         if (i > 0) string += " ";
         string += codePoint.toString();
     }
@@ -56,10 +56,10 @@ function toCodePointsDec(sequence: number[]) {
  * - reserved for a surrogate.
  */
 function toUTF8Hex(sequence: number[]) {
+    validateCodePoints(sequence);
+
     let codeUnits = [];
     for (const codePoint of sequence) {
-        validateCodePoint(codePoint);
-
         // 1 code unit
         if (codePoint <= 0xFF) {
             codeUnits.push(codePoint);
@@ -97,10 +97,10 @@ function toUTF8Hex(sequence: number[]) {
  * - reserved for a surrogate.
  */
 function toUTF16Hex(sequence: number[]) {
+    validateCodePoints(sequence);
+
     let codeUnits = [];
     for (const codePoint of sequence) {
-        validateCodePoint(codePoint);
-
         // 1 code unit
         if (codePoint <= 0xFFFF) {
             codeUnits.push(codePoint);
@@ -123,9 +123,7 @@ function toUTF16Hex(sequence: number[]) {
  * - reserved for a surrogate.
  */
 function toUTF32Hex(sequence: number[]) {
-    for (const codePoint of sequence) {
-        validateCodePoint(codePoint);
-    }
+    validateCodePoints(sequence);
     return sequenceDisplayHex(sequence, 8, false);
 }
 
