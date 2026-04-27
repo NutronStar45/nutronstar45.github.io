@@ -97,6 +97,10 @@ main > section {
  * Miscellaneous *
  *****************/
 
+.indent {
+    margin-left: 1.5em;
+}
+
 sup, sub {
     font-size: smaller;
 }
