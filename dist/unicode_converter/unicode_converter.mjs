@@ -32,9 +32,14 @@ $(() => {
         });
         // Convert if enter is pressed and "Convert on enter" is enabled
         $(`textarea#${repr}`).on("keydown", e => {
+            // Pressed enter
+            // "Convert on enter" is enabled
             if (e.key === "Enter" && $("input#convert-on-enter").prop("checked")) {
-                convertFromRepr(repr);
-                e.preventDefault();
+                // Check for "Exclude text"
+                if (!(repr === Representation.Text && $("input#convert-on-enter-exclude-text").prop("checked"))) {
+                    convertFromRepr(repr);
+                    e.preventDefault();
+                }
             }
         });
     }
