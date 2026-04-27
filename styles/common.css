@@ -165,3 +165,7 @@ summary {
         content: "\25be";
     }
 }
+
+::backdrop {
+    backdrop-filter: brightness(70%);
+}

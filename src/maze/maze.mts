@@ -342,7 +342,7 @@ $(() => {
                         $("span#draw-solution-time").text(`${((Date.now() - startTime) / 1000).toFixed(FINAL_TIME_PRECISION)}s`);
 
                         // Toggle solution visibility
-                        solutionVisible = !$("input#hide-solution-after-solve").is(":checked");
+                        solutionVisible = !$("input#hide-solution-after-solve").prop("checked");
                         $("input#show-solution").prop("checked", solutionVisible);
                         $("g#maze-solution").toggle(solutionVisible);
 
