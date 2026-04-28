@@ -11,7 +11,7 @@ function fromText(str: string) {
         codePoints.push(codePoint);
     }
 
-    validateCodePoints(codePoints, 16);
+    validateCodePoints(codePoints);
     return codePoints;
 }
 
@@ -110,7 +110,7 @@ function parseIntegers(str: string, radix: Radix, width: number) {
  */
 function fromCodePointsHex(str: string) {
     const codePoints = parseIntegersWhitespace(str, 16, 6);
-    validateCodePoints(codePoints, 16);
+    validateCodePoints(codePoints);
     return codePoints;
 }
 
@@ -223,7 +223,7 @@ function fromUTF8Units(codeUnits: number[]) {
         throw new RangeError(`Incomplete code unit sequence (${integersDisplay(partialCodeUnitSequence, 16, 2, true)})`);
     }
 
-    validateCodePoints(codePoints, 16);
+    validateCodePoints(codePoints);
     return codePoints;
 }
 
@@ -286,7 +286,7 @@ function fromUTF16Units(codeUnits: number[]) {
  * @throws {RangeError} Thrown when the given sequence is ill-formed.
  */
 function fromUTF32Units(codeUnits: number[]) {
-    validateCodePoints(codeUnits, 16);
+    validateCodePoints(codeUnits);
     return codeUnits;
 }
 
@@ -298,16 +298,27 @@ export function fromRepresentation(str: string, representation: Representation) 
     switch (representation) {
         case Representation.Text:
             return fromText(str);
+
         case Representation.CodePointsHex:
             return fromCodePointsHex(str);
         case Representation.CodePointsDec:
             return fromCodePointsDec(str);
+
         case Representation.UTF8Hex:
             return fromUTF8Units(parseIntegers(str, 16, 2));
+        case Representation.UTF8Dec:
+            return fromUTF8Units(parseIntegersWhitespace(str, 10, 3));
+
         case Representation.UTF16Hex:
             return fromUTF16Units(parseIntegers(str, 16, 4));
+        case Representation.UTF16Dec:
+            return fromUTF16Units(parseIntegersWhitespace(str, 10, 5));
+
         case Representation.UTF32Hex:
             return fromUTF32Units(parseIntegers(str, 16, 8));
+        case Representation.UTF32Dec:
+            return fromUTF32Units(parseIntegersWhitespace(str, 10, 10));
+
         default:
             throw new RangeError("Invalid representation");
     }

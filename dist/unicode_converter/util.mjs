@@ -31,18 +31,21 @@ export var Representation;
     Representation["CodePointsHex"] = "code-points-hex";
     Representation["CodePointsDec"] = "code-points-dec";
     Representation["UTF8Hex"] = "utf8-hex";
+    Representation["UTF8Dec"] = "utf8-dec";
     Representation["UTF16Hex"] = "utf16-hex";
+    Representation["UTF16Dec"] = "utf16-dec";
     Representation["UTF32Hex"] = "utf32-hex";
+    Representation["UTF32Dec"] = "utf32-dec";
 })(Representation || (Representation = {}));
 /**
  * Throws an error if the given code point isn't valid.
- * @param radix The radix to display the code point in in an error message.
+ * @param radix The radix to display the code point in in an error message; defaults to hexadecimal.
  * @throws {RangeError} Thrown when the given code point is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-function validateCodePoint(codePoint, radix) {
+function validateCodePoint(codePoint, radix = 16) {
     if (!Number.isInteger(codePoint)) {
         throw new RangeError(`Non-integer code point (${codePoint})`);
     }
@@ -68,13 +71,13 @@ function validateCodePoint(codePoint, radix) {
 }
 /**
  * Throws an error if the given code point sequence isn't valid.
- * @param radix The radix to display the code point in in an error message.
+ * @param radix The radix to display the code point in in an error message. Defaults to hexadecimal.
  * @throws {RangeError} Thrown when the given code point sequence contains a code point that is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-export function validateCodePoints(codePoints, radix) {
+export function validateCodePoints(codePoints, radix = 16) {
     for (const codePoint of codePoints) {
         validateCodePoint(codePoint, radix);
     }

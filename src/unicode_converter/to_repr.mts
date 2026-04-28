@@ -8,7 +8,7 @@ import { Representation, integersDisplay, validateCodePoints } from "./util.mjs"
  * - reserved for a surrogate.
  */
 function toText(codePoints: number[]) {
-    validateCodePoints(codePoints, 16);
+    validateCodePoints(codePoints);
     return String.fromCodePoint(...codePoints);
 }
 
@@ -20,7 +20,7 @@ function toText(codePoints: number[]) {
  * - reserved for a surrogate.
  */
 function toCodePointsHex(codePoints: number[]) {
-    validateCodePoints(codePoints, 16);
+    validateCodePoints(codePoints);
     return integersDisplay(codePoints, 16, 4, false);
 }
 
@@ -32,7 +32,7 @@ function toCodePointsHex(codePoints: number[]) {
  * - reserved for a surrogate.
  */
 function toCodePointsDec(codePoints: number[]) {
-    validateCodePoints(codePoints, 16);
+    validateCodePoints(codePoints);
     return integersDisplay(codePoints, 10, 0, false);
 }
 
@@ -44,7 +44,7 @@ function toCodePointsDec(codePoints: number[]) {
  * - reserved for a surrogate.
  */
 function toUTF8Units(codePoints: number[]) {
-    validateCodePoints(codePoints, 16);
+    validateCodePoints(codePoints);
 
     let codeUnits = [];
     for (const codePoint of codePoints) {
@@ -85,7 +85,7 @@ function toUTF8Units(codePoints: number[]) {
  * - reserved for a surrogate.
  */
 function toUTF16Units(codePoints: number[]) {
-    validateCodePoints(codePoints, 16);
+    validateCodePoints(codePoints);
 
     let codeUnits = [];
     for (const codePoint of codePoints) {
@@ -111,7 +111,7 @@ function toUTF16Units(codePoints: number[]) {
  * - reserved for a surrogate.
  */
 function toUTF32Units(codePoints: number[]) {
-    validateCodePoints(codePoints, 16);
+    validateCodePoints(codePoints);
     return codePoints;
 }
 
@@ -126,16 +126,27 @@ export function toRepresentation(codePoints: number[], representation: Represent
     switch (representation) {
         case Representation.Text:
             return toText(codePoints);
+
         case Representation.CodePointsHex:
             return toCodePointsHex(codePoints);
         case Representation.CodePointsDec:
             return toCodePointsDec(codePoints);
+
         case Representation.UTF8Hex:
             return integersDisplay(toUTF8Units(codePoints), 16, 2, false);
+        case Representation.UTF8Dec:
+            return integersDisplay(toUTF8Units(codePoints), 10, 0, false);
+
         case Representation.UTF16Hex:
             return integersDisplay(toUTF16Units(codePoints), 16, 4, false);
+        case Representation.UTF16Dec:
+            return integersDisplay(toUTF16Units(codePoints), 10, 0, false);
+
         case Representation.UTF32Hex:
             return integersDisplay(toUTF32Units(codePoints), 16, 8, false);
+        case Representation.UTF32Dec:
+            return integersDisplay(toUTF32Units(codePoints), 10, 0, false);
+
         default:
             throw new RangeError("Invalid representation");
     }

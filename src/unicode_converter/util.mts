@@ -35,19 +35,22 @@ export enum Representation {
     CodePointsHex = "code-points-hex",
     CodePointsDec = "code-points-dec",
     UTF8Hex = "utf8-hex",
+    UTF8Dec = "utf8-dec",
     UTF16Hex = "utf16-hex",
-    UTF32Hex = "utf32-hex"
+    UTF16Dec = "utf16-dec",
+    UTF32Hex = "utf32-hex",
+    UTF32Dec = "utf32-dec"
 }
 
 /**
  * Throws an error if the given code point isn't valid.
- * @param radix The radix to display the code point in in an error message.
+ * @param radix The radix to display the code point in in an error message; defaults to hexadecimal.
  * @throws {RangeError} Thrown when the given code point is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-function validateCodePoint(codePoint: number, radix: Radix) {
+function validateCodePoint(codePoint: number, radix: Radix = 16) {
     if (!Number.isInteger(codePoint)) {
         throw new RangeError(`Non-integer code point (${codePoint})`);
     }
@@ -76,13 +79,13 @@ function validateCodePoint(codePoint: number, radix: Radix) {
 
 /**
  * Throws an error if the given code point sequence isn't valid.
- * @param radix The radix to display the code point in in an error message.
+ * @param radix The radix to display the code point in in an error message. Defaults to hexadecimal.
  * @throws {RangeError} Thrown when the given code point sequence contains a code point that is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-export function validateCodePoints(codePoints: number[], radix: Radix) {
+export function validateCodePoints(codePoints: number[], radix: Radix = 16) {
     for (const codePoint of codePoints) {
         validateCodePoint(codePoint, radix);
     }
