@@ -1,4 +1,4 @@
-import { Representation, integersDisplay, validateCodePoints } from "./util.mjs";
+import { Representation, formatIntegers, validateCodePoints } from "./util.mjs";
 /**
  * Converts a code point sequence into text.
  * @throws {RangeError} Thrown when the given sequence contains a code point that is:
@@ -11,26 +11,17 @@ function toText(codePoints) {
     return String.fromCodePoint(...codePoints);
 }
 /**
- * Converts a code point sequence into its hex representation.
- * @throws {RangeError} Thrown when the given sequence contains a code point that is:
+ * Converts a code point sequence into its representation in the specified radix. Code points can optionally have a minimum width.
+ * @param radix The radix to convert the code points into.
+ * @param minWidth The minimum width of the code points; must be a non-negative integer. Code points whose widths exceed this parameter keep their width.
+ * @throws {RangeError} Thrown if the given minimum width is not a non-negative integer, or the given sequence contains a code point that is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-function toCodePointsHex(codePoints) {
+function toCodePointsRepr(codePoints, radix, minWidth) {
     validateCodePoints(codePoints);
-    return integersDisplay(codePoints, 16, 4, false);
-}
-/**
- * Converts a code point sequence into its decimal representation.
- * @throws {RangeError} Thrown when the given sequence contains a code point that is:
- * - not an integer,
- * - outside the valid range, or
- * - reserved for a surrogate.
- */
-function toCodePointsDec(codePoints) {
-    validateCodePoints(codePoints);
-    return integersDisplay(codePoints, 10, 0, false);
+    return formatIntegers(codePoints, radix, minWidth, false);
 }
 /**
  * Converts a code point sequence into a UTF-8 code unit sequence.
@@ -114,21 +105,29 @@ export function toRepresentation(codePoints, representation) {
         case Representation.Text:
             return toText(codePoints);
         case Representation.CodePointsHex:
-            return toCodePointsHex(codePoints);
+            return toCodePointsRepr(codePoints, 16, 4);
         case Representation.CodePointsDec:
-            return toCodePointsDec(codePoints);
+            return toCodePointsRepr(codePoints, 10, 0);
+        case Representation.CodePointsBin:
+            return toCodePointsRepr(codePoints, 2, 0);
         case Representation.UTF8Hex:
-            return integersDisplay(toUTF8Units(codePoints), 16, 2, false);
+            return formatIntegers(toUTF8Units(codePoints), 16, 2, false);
         case Representation.UTF8Dec:
-            return integersDisplay(toUTF8Units(codePoints), 10, 0, false);
+            return formatIntegers(toUTF8Units(codePoints), 10, 0, false);
+        case Representation.UTF8Bin:
+            return formatIntegers(toUTF8Units(codePoints), 2, 8, false);
         case Representation.UTF16Hex:
-            return integersDisplay(toUTF16Units(codePoints), 16, 4, false);
+            return formatIntegers(toUTF16Units(codePoints), 16, 4, false);
         case Representation.UTF16Dec:
-            return integersDisplay(toUTF16Units(codePoints), 10, 0, false);
+            return formatIntegers(toUTF16Units(codePoints), 10, 0, false);
+        case Representation.UTF16Bin:
+            return formatIntegers(toUTF16Units(codePoints), 2, 16, false);
         case Representation.UTF32Hex:
-            return integersDisplay(toUTF32Units(codePoints), 16, 8, false);
+            return formatIntegers(toUTF32Units(codePoints), 16, 8, false);
         case Representation.UTF32Dec:
-            return integersDisplay(toUTF32Units(codePoints), 10, 0, false);
+            return formatIntegers(toUTF32Units(codePoints), 10, 0, false);
+        case Representation.UTF32Bin:
+            return formatIntegers(toUTF32Units(codePoints), 2, 32, false);
         default:
             throw new RangeError("Invalid representation");
     }

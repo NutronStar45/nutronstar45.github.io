@@ -1,4 +1,3 @@
-textarea#code-points-hex, textarea#code-points-dec,
-textarea#utf8-hex, textarea#utf16-hex, textarea#utf32-hex {
+textarea:not(#text) {
     font-family: monospace;
 }

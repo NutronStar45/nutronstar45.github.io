@@ -30,12 +30,16 @@ export var Representation;
     Representation["Text"] = "text";
     Representation["CodePointsHex"] = "code-points-hex";
     Representation["CodePointsDec"] = "code-points-dec";
+    Representation["CodePointsBin"] = "code-points-bin";
     Representation["UTF8Hex"] = "utf8-hex";
     Representation["UTF8Dec"] = "utf8-dec";
+    Representation["UTF8Bin"] = "utf8-bin";
     Representation["UTF16Hex"] = "utf16-hex";
     Representation["UTF16Dec"] = "utf16-dec";
+    Representation["UTF16Bin"] = "utf16-bin";
     Representation["UTF32Hex"] = "utf32-hex";
     Representation["UTF32Dec"] = "utf32-dec";
+    Representation["UTF32Bin"] = "utf32-bin";
 })(Representation || (Representation = {}));
 /**
  * Throws an error if the given code point isn't valid.
@@ -84,12 +88,12 @@ export function validateCodePoints(codePoints, radix = 16) {
 }
 /**
  * Formats a non-negative integer sequence into the specified radix, separated by spaces. Numbers can optionally have a minimum width. "0x" or "0b" (for hex and bin, respectively) can be optionally prepended to every number.
- * @param radix The radix to display the integers in.
- * @param minWidth The minimum width of the displayed numbers; must be a non-negative integer. Numbers whose widths exceed this parameter are displayed with their width.
+ * @param radix The radix to convert the integers into.
+ * @param minWidth The minimum width of the numbers; must be a non-negative integer. Numbers whose widths exceed this parameter keep their width.
  * @param prefix If true, "0x" or "0b" (for hex and bin, respectively) is prepended to every number.
  * @throws {RangeError} Thrown if the given minimum width is not a non-negative integer, or if the given array contains a number that is not a non-negative integer.
  */
-export function integersDisplay(sequence, radix, minWidth, prefix) {
+export function formatIntegers(sequence, radix, minWidth, prefix) {
     if (!Number.isInteger(minWidth) || minWidth < 0) {
         throw new RangeError("Minimum width must be a non-negative integer");
     }

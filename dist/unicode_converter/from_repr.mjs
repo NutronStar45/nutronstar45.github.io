@@ -1,4 +1,4 @@
-import { radixDigitsRegex, Representation, validateCodePoints, integersDisplay } from "./util.mjs";
+import { radixDigitsRegex, Representation, validateCodePoints, formatIntegers } from "./util.mjs";
 /**
  * Converts a string into a code point sequence.
  * @throws {RangeError} Thrown when the given text contains an isolated surrogate.
@@ -90,29 +90,18 @@ function parseIntegers(str, radix, width) {
     return integers;
 }
 /**
- * Converts the hex representation of a code point sequence into the code point sequence.
- * @throws {RangeError} Thrown when the given string:
- * - contains a character that is neither a hex digit nor a whitespace,
- * - contains a hex digit sequence with length greater than 6 digits,
+ * Converts the representation of a code point sequence into the code point sequence.
+ * @param radix The radix of the representation.
+ * @param maxLength The maximum allowed number of digits of a digit sequence.
+ * @throws {RangeError} Thrown when the given max length isn't a positive integer, or the given string:
+ * - contains a character that is neither an allowed digit of the radix nor a whitespace,
+ * - contains a digit sequence with length greater than the given max length,
  * - contains a code point outside the valid range, or
  * - contains a code point reserved for an surrogate.
  */
-function fromCodePointsHex(str) {
-    const codePoints = parseIntegersWhitespace(str, 16, 6);
+function fromCodePointsRepr(str, radix, maxLength) {
+    const codePoints = parseIntegersWhitespace(str, radix, maxLength);
     validateCodePoints(codePoints);
-    return codePoints;
-}
-/**
- * Converts the decimal representation of a code point sequence into the code point sequence.
- * @throws {RangeError} Thrown when the given string:
- * - contains a character that is neither a decimal digit nor a whitespace,
- * - contains a decimal digit sequence with length greater than 7 digits,
- * - contains a code point outside the valid range, or
- * - contains a code point reserved for an surrogate.
- */
-function fromCodePointsDec(str) {
-    const codePoints = parseIntegersWhitespace(str, 10, 7);
-    validateCodePoints(codePoints, 10);
     return codePoints;
 }
 /**
@@ -130,7 +119,7 @@ function fromUTF8Units(codeUnits) {
         if (codeUnit <= 0x7F) {
             // After an incomplete code unit sequence
             if (partialCodeUnitSequence.length !== 0) {
-                throw new RangeError(`Incomplete code unit sequence (${integersDisplay(partialCodeUnitSequence, 16, 2, true)})`);
+                throw new RangeError(`Incomplete code unit sequence (${formatIntegers(partialCodeUnitSequence, 16, 2, true)})`);
             }
             codePoints.push(codeUnit);
         }
@@ -147,7 +136,7 @@ function fromUTF8Units(codeUnits) {
                     const codePoint = ((partialCodeUnitSequence[0] - 0xC0) << 6)
                         + (partialCodeUnitSequence[1] - 0x80);
                     if (codePoint <= 0x7F) {
-                        throw new RangeError(`Non-shortest form code unit sequence (${integersDisplay(partialCodeUnitSequence, 16, 2, true)})`);
+                        throw new RangeError(`Non-shortest form code unit sequence (${formatIntegers(partialCodeUnitSequence, 16, 2, true)})`);
                     }
                     codePoints.push(codePoint);
                     partialCodeUnitSequence = [];
@@ -160,7 +149,7 @@ function fromUTF8Units(codeUnits) {
                         + ((partialCodeUnitSequence[1] - 0x80) << 6)
                         + (partialCodeUnitSequence[2] - 0x80);
                     if (codePoint <= 0x7FF) {
-                        throw new RangeError(`Non-shortest form code unit sequence (${integersDisplay(partialCodeUnitSequence, 16, 2, true)})`);
+                        throw new RangeError(`Non-shortest form code unit sequence (${formatIntegers(partialCodeUnitSequence, 16, 2, true)})`);
                     }
                     codePoints.push(codePoint);
                     partialCodeUnitSequence = [];
@@ -174,7 +163,7 @@ function fromUTF8Units(codeUnits) {
                         + ((partialCodeUnitSequence[2] - 0x80) << 6)
                         + (partialCodeUnitSequence[3] - 0x80);
                     if (codePoint <= 0xFFFF) {
-                        throw new RangeError(`Non-shortest form code unit sequence (${integersDisplay(partialCodeUnitSequence, 16, 2, true)})`);
+                        throw new RangeError(`Non-shortest form code unit sequence (${formatIntegers(partialCodeUnitSequence, 16, 2, true)})`);
                     }
                     codePoints.push(codePoint);
                     partialCodeUnitSequence = [];
@@ -185,7 +174,7 @@ function fromUTF8Units(codeUnits) {
         else if (codeUnit <= 0xF7) {
             // After an incomplete code unit sequence
             if (partialCodeUnitSequence.length !== 0) {
-                throw new RangeError(`Incomplete code unit sequence (${integersDisplay(partialCodeUnitSequence, 16, 2, true)})`);
+                throw new RangeError(`Incomplete code unit sequence (${formatIntegers(partialCodeUnitSequence, 16, 2, true)})`);
             }
             partialCodeUnitSequence.push(codeUnit);
         }
@@ -195,7 +184,7 @@ function fromUTF8Units(codeUnits) {
         }
     }
     if (partialCodeUnitSequence.length !== 0) {
-        throw new RangeError(`Incomplete code unit sequence (${integersDisplay(partialCodeUnitSequence, 16, 2, true)})`);
+        throw new RangeError(`Incomplete code unit sequence (${formatIntegers(partialCodeUnitSequence, 16, 2, true)})`);
     }
     validateCodePoints(codePoints);
     return codePoints;
@@ -261,21 +250,29 @@ export function fromRepresentation(str, representation) {
         case Representation.Text:
             return fromText(str);
         case Representation.CodePointsHex:
-            return fromCodePointsHex(str);
+            return fromCodePointsRepr(str, 16, 6);
         case Representation.CodePointsDec:
-            return fromCodePointsDec(str);
+            return fromCodePointsRepr(str, 10, 7);
+        case Representation.CodePointsBin:
+            return fromCodePointsRepr(str, 2, 21);
         case Representation.UTF8Hex:
             return fromUTF8Units(parseIntegers(str, 16, 2));
         case Representation.UTF8Dec:
             return fromUTF8Units(parseIntegersWhitespace(str, 10, 3));
+        case Representation.UTF8Bin:
+            return fromUTF8Units(parseIntegers(str, 2, 8));
         case Representation.UTF16Hex:
             return fromUTF16Units(parseIntegers(str, 16, 4));
         case Representation.UTF16Dec:
             return fromUTF16Units(parseIntegersWhitespace(str, 10, 5));
+        case Representation.UTF16Bin:
+            return fromUTF16Units(parseIntegers(str, 2, 16));
         case Representation.UTF32Hex:
             return fromUTF32Units(parseIntegers(str, 16, 8));
         case Representation.UTF32Dec:
             return fromUTF32Units(parseIntegersWhitespace(str, 10, 10));
+        case Representation.UTF32Bin:
+            return fromUTF32Units(parseIntegers(str, 2, 32));
         default:
             throw new RangeError("Invalid representation");
     }

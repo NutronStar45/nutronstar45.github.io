@@ -32,14 +32,22 @@ export function radixPrefix(radix: Radix) {
 /** A Unicode representation. */
 export enum Representation {
     Text = "text",
+
     CodePointsHex = "code-points-hex",
     CodePointsDec = "code-points-dec",
+    CodePointsBin = "code-points-bin",
+
     UTF8Hex = "utf8-hex",
     UTF8Dec = "utf8-dec",
+    UTF8Bin = "utf8-bin",
+
     UTF16Hex = "utf16-hex",
     UTF16Dec = "utf16-dec",
+    UTF16Bin = "utf16-bin",
+
     UTF32Hex = "utf32-hex",
-    UTF32Dec = "utf32-dec"
+    UTF32Dec = "utf32-dec",
+    UTF32Bin = "utf32-bin"
 }
 
 /**
@@ -93,12 +101,12 @@ export function validateCodePoints(codePoints: number[], radix: Radix = 16) {
 
 /**
  * Formats a non-negative integer sequence into the specified radix, separated by spaces. Numbers can optionally have a minimum width. "0x" or "0b" (for hex and bin, respectively) can be optionally prepended to every number.
- * @param radix The radix to display the integers in.
- * @param minWidth The minimum width of the displayed numbers; must be a non-negative integer. Numbers whose widths exceed this parameter are displayed with their width.
+ * @param radix The radix to convert the integers into.
+ * @param minWidth The minimum width of the numbers; must be a non-negative integer. Numbers whose widths exceed this parameter keep their width.
  * @param prefix If true, "0x" or "0b" (for hex and bin, respectively) is prepended to every number.
  * @throws {RangeError} Thrown if the given minimum width is not a non-negative integer, or if the given array contains a number that is not a non-negative integer.
  */
-export function integersDisplay(sequence: number[], radix: Radix, minWidth: number, prefix: boolean) {
+export function formatIntegers(sequence: number[], radix: Radix, minWidth: number, prefix: boolean) {
     if (!Number.isInteger(minWidth) || minWidth < 0) {
         throw new RangeError("Minimum width must be a non-negative integer");
     }
