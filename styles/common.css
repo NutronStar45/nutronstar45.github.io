@@ -1,5 +1,7 @@
 * {
-    font: 20px/160% Helvetica, sans-serif;
+    font-size: 20px;
+    line-height: 160%;
+    font-family: Helvetica, sans-serif;
     background-color: var(--bg-color);
     color: var(--fg-color);
 }
@@ -84,6 +86,7 @@ main > section {
     > h3 {
         margin: 0;
         font-size: 0.7em;
+        font-weight: normal;
     }
 
     /* Content */
@@ -106,9 +109,12 @@ sup, sub {
 }
 
 a {
-    color: var(--anchor-fg-color);
     cursor: pointer;
     text-decoration: none;
+
+    &, * {
+        color: var(--anchor-fg-color)
+    }
 
     &:hover {
         text-decoration: underline;
