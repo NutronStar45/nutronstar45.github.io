@@ -43,4 +43,8 @@ $(() => {
             }
         });
     }
+    $("input#convert-on-enter-exclude-text").prop("disabled", true);
+    $("input#convert-on-enter").on("change", function () {
+        $("input#convert-on-enter-exclude-text").prop("disabled", !this.checked);
+    });
 });
