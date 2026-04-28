@@ -348,18 +348,15 @@ $(() => {
     }).get();
 
     // Corner box
-    let cornerBoxHTML = `<button id="hide-corner-box">Hide</button><br><a href="#">To top</a>`;
+    let cornerBoxHTML = '<button id="hide-corner-box">Hide</button><br><a href="#">To top</a>';
 
     // Section links
     if (sections.length > 0) {
-        cornerBoxHTML += '<br><details><summary>Sections</summary>';
-        sections.forEach((section, i) => {
-            if (i > 0) {
-                cornerBoxHTML += `<br>`
-            }
-            cornerBoxHTML += `<a href="#${section.id}">${section.title}</a>`;
-        });
-        cornerBoxHTML += "</details>";
+        cornerBoxHTML += "<br><details><summary>Sections</summary><ul>";
+        for (const section of sections) {
+            cornerBoxHTML += `<li><a href="#${section.id}">${section.title}</a></li>`;
+        }
+        cornerBoxHTML += "</ul></details>";
     }
 
     // Place corner box into DOM
