@@ -24,6 +24,12 @@ export function radixPrefix(radix) {
             throw new RangeError("Invalid radix");
     }
 }
+/** An endianness. */
+export var Endianness;
+(function (Endianness) {
+    Endianness[Endianness["Big"] = 0] = "Big";
+    Endianness[Endianness["Little"] = 1] = "Little";
+})(Endianness || (Endianness = {}));
 /** A Unicode representation. */
 export var Representation;
 (function (Representation) {

@@ -1,4 +1,4 @@
-import { radixDigitsRegex, Representation, validateCodePoints, formatIntegers } from "./util.mjs";
+import { radixDigitsRegex, Endianness, Representation, validateCodePoints, formatIntegers } from "./util.mjs";
 /**
  * Converts a string into a code point sequence.
  * @throws {RangeError} Thrown when the given text contains an isolated surrogate.
@@ -103,6 +103,42 @@ function fromCodePointsRepr(str, radix, maxLength) {
     const codePoints = parseIntegersWhitespace(str, radix, maxLength);
     validateCodePoints(codePoints);
     return codePoints;
+}
+/**
+ * Converts a byte sequence into a code unit sequence.
+ * @param size The number of bytes of each code unit.
+ * @param endianness The endianness to parse the byte sequence with.
+ * @throws {RangeError} Thrown when:
+ * - the given size isn't a positive integer,
+ * - the length of the given array isn't a multiple of the given size, or
+ * - the given array contains a non-byte.
+ */
+function codeUnitsFromBytes(bytes, size, endianness) {
+    if (!Number.isInteger(size) || size <= 0) {
+        throw RangeError("Size must be a positive integer");
+    }
+    if (bytes.length % size !== 0) {
+        throw RangeError("Length of array must be a multiple of the size");
+    }
+    let codeUnits = [];
+    for (let codeUnitPos = 0; codeUnitPos < bytes.length; codeUnitPos += size) {
+        // Big-endian
+        let codeUnitBytes = bytes.slice(codeUnitPos, codeUnitPos + size);
+        // Correct for endianness
+        if (endianness === Endianness.Little) {
+            codeUnitBytes.reverse();
+        }
+        // Compose code unit
+        let codeUnit = 0;
+        for (const byte of codeUnitBytes) {
+            if (!Number.isInteger(byte) || size < 0 || size > 255) {
+                throw RangeError("Encountered a number that is not a byte");
+            }
+            codeUnit = codeUnit * 256 + byte;
+        }
+        codeUnits.push(codeUnit);
+    }
+    return codeUnits;
 }
 /**
  * Converts a UTF-8 code unit sequence into a code point sequence.

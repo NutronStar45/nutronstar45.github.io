@@ -1,4 +1,4 @@
-/** An allowed radix. */
+/** A supported radix. */
 export type Radix = 2 | 10 | 16;
 
 /** Returns a RegExp matching an allowed digit of the specified radix. */
@@ -27,6 +27,12 @@ export function radixPrefix(radix: Radix) {
         default:
             throw new RangeError("Invalid radix");
     }
+}
+
+/** An endianness. */
+export enum Endianness {
+    Big,
+    Little
 }
 
 /** A Unicode representation. */

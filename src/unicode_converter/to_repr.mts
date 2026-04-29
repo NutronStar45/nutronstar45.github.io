@@ -1,4 +1,4 @@
-import { type Radix, Representation, formatIntegers, validateCodePoints } from "./util.mjs";
+import { type Radix, Endianness, Representation, formatIntegers, validateCodePoints } from "./util.mjs";
 
 /**
  * Converts a code point sequence into text.
@@ -103,6 +103,48 @@ function toUTF16Units(codePoints: number[]) {
 function toUTF32Units(codePoints: number[]) {
     validateCodePoints(codePoints);
     return codePoints;
+}
+
+/**
+ * Converts a code unit sequence into a byte sequence.
+ * @param size The number of bytes of each code unit.
+ * @param endianness The endianness to parse the byte sequence with.
+ * @throws {RangeError} Thrown when:
+ * - the given size isn't a positive integer,
+ * - the given array contains a code unit that is not a non-negative integer or whose size is greater than the given size.
+ */
+function codeUnitsToBytes(codeUnits: number[], size: number, endianness: Endianness) {
+    if (!Number.isInteger(size) || size <= 0) {
+        throw RangeError("Size must be a positive integer");
+    }
+
+    let bytes: number[] = [];
+    for (let codeUnit of codeUnits) {
+        if (!Number.isInteger(codeUnit) || codeUnit < 0) {
+            throw RangeError("Code unit must be a non-negative integer");
+        }
+
+        // Little-endian
+        let codeUnitBytes = [];
+        for (let i = 0; i < size; i++) {
+            const byte = codeUnit % 256;
+            codeUnitBytes.push(byte);
+            codeUnit = (codeUnit - byte) / 256;
+        }
+
+        if (codeUnit !== 0) {
+            throw RangeError("Code unit has size greater than the given size");
+        }
+
+        // Correct for endianness
+        if (endianness === Endianness.Big) {
+            codeUnitBytes.reverse();
+        }
+
+        bytes = bytes.concat(codeUnitBytes);
+    }
+
+    return bytes;
 }
 
 /**
