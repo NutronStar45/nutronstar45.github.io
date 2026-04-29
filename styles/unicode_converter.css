@@ -1,3 +1,8 @@
 textarea:not(#text) {
     font-family: monospace;
 }
+
+div.repr-row {
+    display: flex;
+    gap: 20px;
+}
