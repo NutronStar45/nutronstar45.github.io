@@ -52,6 +52,9 @@ export var Representation;
     Representation["UTF32Hex"] = "utf32-hex";
     Representation["UTF32Dec"] = "utf32-dec";
     Representation["UTF32Bin"] = "utf32-bin";
+    Representation["UTF32BEHex"] = "utf32be-hex";
+    Representation["UTF32BEDec"] = "utf32be-dec";
+    Representation["UTF32BEBin"] = "utf32be-bin";
 })(Representation || (Representation = {}));
 /**
  * Throws an error if the given code point isn't valid.

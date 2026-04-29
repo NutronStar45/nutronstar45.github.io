@@ -175,6 +175,12 @@ export function toRepresentation(codePoints, representation) {
             return formatIntegers(toUTF32Units(codePoints), 10, 0, false);
         case Representation.UTF32Bin:
             return formatIntegers(toUTF32Units(codePoints), 2, 32, false);
+        case Representation.UTF32BEHex:
+            return formatIntegers(codeUnitsToBytes(toUTF32Units(codePoints), 4, Endianness.Big), 16, 2, false);
+        case Representation.UTF32BEDec:
+            return formatIntegers(codeUnitsToBytes(toUTF32Units(codePoints), 4, Endianness.Big), 10, 0, false);
+        case Representation.UTF32BEBin:
+            return formatIntegers(codeUnitsToBytes(toUTF32Units(codePoints), 4, Endianness.Big), 2, 8, false);
         default:
             throw new RangeError("Invalid representation");
     }

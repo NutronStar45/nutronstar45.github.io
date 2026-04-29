@@ -321,6 +321,12 @@ export function fromRepresentation(str, representation) {
             return fromUTF32Units(parseIntegersWhitespace(str, 10, 10));
         case Representation.UTF32Bin:
             return fromUTF32Units(parseIntegers(str, 2, 32));
+        case Representation.UTF32BEHex:
+            return fromUTF32Units(codeUnitsFromBytes(parseIntegers(str, 16, 2), 4, Endianness.Big));
+        case Representation.UTF32BEDec:
+            return fromUTF32Units(codeUnitsFromBytes(parseIntegersWhitespace(str, 10, 3), 4, Endianness.Big));
+        case Representation.UTF32BEBin:
+            return fromUTF32Units(codeUnitsFromBytes(parseIntegers(str, 2, 8), 4, Endianness.Big));
         default:
             throw new RangeError("Invalid representation");
     }
