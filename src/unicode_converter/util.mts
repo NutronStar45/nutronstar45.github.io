@@ -39,33 +39,45 @@ export enum Endianness {
 export enum Representation {
     Text = "text",
 
+    // Code points
     CodePointsHex = "code-points-hex",
     CodePointsDec = "code-points-dec",
     CodePointsBin = "code-points-bin",
 
+    // UTF-8
     UTF8Hex = "utf8-hex",
     UTF8Dec = "utf8-dec",
     UTF8Bin = "utf8-bin",
 
+    // UTF-16
     UTF16Hex = "utf16-hex",
     UTF16Dec = "utf16-dec",
     UTF16Bin = "utf16-bin",
 
+    // UTF-16BE
     UTF16BEHex = "utf16be-hex",
     UTF16BEDec = "utf16be-dec",
     UTF16BEBin = "utf16be-bin",
 
+    // UTF-16LE
     UTF16LEHex = "utf16le-hex",
     UTF16LEDec = "utf16le-dec",
     UTF16LEBin = "utf16le-bin",
 
+    // UTF-32
     UTF32Hex = "utf32-hex",
     UTF32Dec = "utf32-dec",
     UTF32Bin = "utf32-bin",
 
+    // UTF-32BE
     UTF32BEHex = "utf32be-hex",
     UTF32BEDec = "utf32be-dec",
-    UTF32BEBin = "utf32be-bin"
+    UTF32BEBin = "utf32be-bin",
+
+    // UTF-32LE
+    UTF32LEHex = "utf32le-hex",
+    UTF32LEDec = "utf32le-dec",
+    UTF32LEBin = "utf32le-bin"
 }
 
 /**

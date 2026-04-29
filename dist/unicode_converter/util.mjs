@@ -34,27 +34,38 @@ export var Endianness;
 export var Representation;
 (function (Representation) {
     Representation["Text"] = "text";
+    // Code points
     Representation["CodePointsHex"] = "code-points-hex";
     Representation["CodePointsDec"] = "code-points-dec";
     Representation["CodePointsBin"] = "code-points-bin";
+    // UTF-8
     Representation["UTF8Hex"] = "utf8-hex";
     Representation["UTF8Dec"] = "utf8-dec";
     Representation["UTF8Bin"] = "utf8-bin";
+    // UTF-16
     Representation["UTF16Hex"] = "utf16-hex";
     Representation["UTF16Dec"] = "utf16-dec";
     Representation["UTF16Bin"] = "utf16-bin";
+    // UTF-16BE
     Representation["UTF16BEHex"] = "utf16be-hex";
     Representation["UTF16BEDec"] = "utf16be-dec";
     Representation["UTF16BEBin"] = "utf16be-bin";
+    // UTF-16LE
     Representation["UTF16LEHex"] = "utf16le-hex";
     Representation["UTF16LEDec"] = "utf16le-dec";
     Representation["UTF16LEBin"] = "utf16le-bin";
+    // UTF-32
     Representation["UTF32Hex"] = "utf32-hex";
     Representation["UTF32Dec"] = "utf32-dec";
     Representation["UTF32Bin"] = "utf32-bin";
+    // UTF-32BE
     Representation["UTF32BEHex"] = "utf32be-hex";
     Representation["UTF32BEDec"] = "utf32be-dec";
     Representation["UTF32BEBin"] = "utf32be-bin";
+    // UTF-32LE
+    Representation["UTF32LEHex"] = "utf32le-hex";
+    Representation["UTF32LEDec"] = "utf32le-dec";
+    Representation["UTF32LEBin"] = "utf32le-bin";
 })(Representation || (Representation = {}));
 /**
  * Throws an error if the given code point isn't valid.

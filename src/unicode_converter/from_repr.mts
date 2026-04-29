@@ -326,9 +326,11 @@ function fromUTF32Units(codeUnits: number[]) {
  */
 export function fromRepresentation(str: string, representation: Representation) {
     switch (representation) {
+        // Text
         case Representation.Text:
             return fromText(str);
 
+        // Code points
         case Representation.CodePointsHex:
             return fromCodePointsRepr(str, 16, 6);
         case Representation.CodePointsDec:
@@ -336,6 +338,7 @@ export function fromRepresentation(str: string, representation: Representation) 
         case Representation.CodePointsBin:
             return fromCodePointsRepr(str, 2, 21);
 
+        // UTF-8
         case Representation.UTF8Hex:
             return fromUTF8Units(parseIntegers(str, 16, 2));
         case Representation.UTF8Dec:
@@ -343,6 +346,7 @@ export function fromRepresentation(str: string, representation: Representation) 
         case Representation.UTF8Bin:
             return fromUTF8Units(parseIntegers(str, 2, 8));
 
+        // UTF-16
         case Representation.UTF16Hex:
             return fromUTF16Units(parseIntegers(str, 16, 4));
         case Representation.UTF16Dec:
@@ -350,6 +354,7 @@ export function fromRepresentation(str: string, representation: Representation) 
         case Representation.UTF16Bin:
             return fromUTF16Units(parseIntegers(str, 2, 16));
 
+        // UTF-16BE
         case Representation.UTF16BEHex:
             return fromUTF16Units(codeUnitsFromBytes(parseIntegers(str, 16, 2), 2, Endianness.Big));
         case Representation.UTF16BEDec:
@@ -357,6 +362,7 @@ export function fromRepresentation(str: string, representation: Representation) 
         case Representation.UTF16BEBin:
             return fromUTF16Units(codeUnitsFromBytes(parseIntegers(str, 2, 8), 2, Endianness.Big));
 
+        // UTF-16LE
         case Representation.UTF16LEHex:
             return fromUTF16Units(codeUnitsFromBytes(parseIntegers(str, 16, 2), 2, Endianness.Little));
         case Representation.UTF16LEDec:
@@ -364,6 +370,7 @@ export function fromRepresentation(str: string, representation: Representation) 
         case Representation.UTF16LEBin:
             return fromUTF16Units(codeUnitsFromBytes(parseIntegers(str, 2, 8), 2, Endianness.Little));
 
+        // UTF-32
         case Representation.UTF32Hex:
             return fromUTF32Units(parseIntegers(str, 16, 8));
         case Representation.UTF32Dec:
@@ -371,12 +378,21 @@ export function fromRepresentation(str: string, representation: Representation) 
         case Representation.UTF32Bin:
             return fromUTF32Units(parseIntegers(str, 2, 32));
 
+        // UTF-32BE
         case Representation.UTF32BEHex:
             return fromUTF32Units(codeUnitsFromBytes(parseIntegers(str, 16, 2), 4, Endianness.Big));
         case Representation.UTF32BEDec:
             return fromUTF32Units(codeUnitsFromBytes(parseIntegersWhitespace(str, 10, 3), 4, Endianness.Big));
         case Representation.UTF32BEBin:
             return fromUTF32Units(codeUnitsFromBytes(parseIntegers(str, 2, 8), 4, Endianness.Big));
+
+        // UTF-32LE
+        case Representation.UTF32LEHex:
+            return fromUTF32Units(codeUnitsFromBytes(parseIntegers(str, 16, 2), 4, Endianness.Little));
+        case Representation.UTF32LEDec:
+            return fromUTF32Units(codeUnitsFromBytes(parseIntegersWhitespace(str, 10, 3), 4, Endianness.Little));
+        case Representation.UTF32LEBin:
+            return fromUTF32Units(codeUnitsFromBytes(parseIntegers(str, 2, 8), 4, Endianness.Little));
 
         default:
             throw new RangeError("Invalid representation");
