@@ -300,12 +300,12 @@ export function fromRepresentation(str, representation) {
             return fromUTF8Units(parseIntegersWhitespace(str, 10, 3));
         case Representation.UTF8Bin:
             return fromUTF8Units(parseIntegers(str, 2, 8));
-        // UTF-16
-        case Representation.UTF16Hex:
+        // UTF-16 encoding form
+        case Representation.UTF16CEFHex:
             return fromUTF16Units(parseIntegers(str, 16, 4));
-        case Representation.UTF16Dec:
+        case Representation.UTF16CEFDec:
             return fromUTF16Units(parseIntegersWhitespace(str, 10, 5));
-        case Representation.UTF16Bin:
+        case Representation.UTF16CEFBin:
             return fromUTF16Units(parseIntegers(str, 2, 16));
         // UTF-16BE
         case Representation.UTF16BEHex:
@@ -321,12 +321,12 @@ export function fromRepresentation(str, representation) {
             return fromUTF16Units(codeUnitsFromBytes(parseIntegersWhitespace(str, 10, 3), 2, Endianness.Little));
         case Representation.UTF16LEBin:
             return fromUTF16Units(codeUnitsFromBytes(parseIntegers(str, 2, 8), 2, Endianness.Little));
-        // UTF-32
-        case Representation.UTF32Hex:
+        // UTF-32 encoding form
+        case Representation.UTF32CEFHex:
             return fromUTF32Units(parseIntegers(str, 16, 8));
-        case Representation.UTF32Dec:
+        case Representation.UTF32CEFDec:
             return fromUTF32Units(parseIntegersWhitespace(str, 10, 10));
-        case Representation.UTF32Bin:
+        case Representation.UTF32CEFBin:
             return fromUTF32Units(parseIntegers(str, 2, 32));
         // UTF-32BE
         case Representation.UTF32BEHex:

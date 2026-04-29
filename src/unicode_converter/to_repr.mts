@@ -176,12 +176,12 @@ export function toRepresentation(codePoints: number[], representation: Represent
         case Representation.UTF8Bin:
             return formatIntegers(toUTF8Units(codePoints), 2, 8, false);
 
-        // UTF-16
-        case Representation.UTF16Hex:
+        // UTF-16 encoding form
+        case Representation.UTF16CEFHex:
             return formatIntegers(toUTF16Units(codePoints), 16, 4, false);
-        case Representation.UTF16Dec:
+        case Representation.UTF16CEFDec:
             return formatIntegers(toUTF16Units(codePoints), 10, 0, false);
-        case Representation.UTF16Bin:
+        case Representation.UTF16CEFBin:
             return formatIntegers(toUTF16Units(codePoints), 2, 16, false);
 
         // UTF-16BE
@@ -200,12 +200,12 @@ export function toRepresentation(codePoints: number[], representation: Represent
         case Representation.UTF16LEBin:
             return formatIntegers(codeUnitsToBytes(toUTF16Units(codePoints), 2, Endianness.Little), 2, 8, false);
 
-        // UTF-32
-        case Representation.UTF32Hex:
+        // UTF-32 encoding form
+        case Representation.UTF32CEFHex:
             return formatIntegers(toUTF32Units(codePoints), 16, 8, false);
-        case Representation.UTF32Dec:
+        case Representation.UTF32CEFDec:
             return formatIntegers(toUTF32Units(codePoints), 10, 0, false);
-        case Representation.UTF32Bin:
+        case Representation.UTF32CEFBin:
             return formatIntegers(toUTF32Units(codePoints), 2, 32, false);
 
         // UTF-32BE

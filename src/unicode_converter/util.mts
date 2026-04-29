@@ -49,10 +49,10 @@ export enum Representation {
     UTF8Dec = "utf8-dec",
     UTF8Bin = "utf8-bin",
 
-    // UTF-16
-    UTF16Hex = "utf16-hex",
-    UTF16Dec = "utf16-dec",
-    UTF16Bin = "utf16-bin",
+    // UTF-16 encoding form
+    UTF16CEFHex = "utf16cef-hex",
+    UTF16CEFDec = "utf16cef-dec",
+    UTF16CEFBin = "utf16cef-bin",
 
     // UTF-16BE
     UTF16BEHex = "utf16be-hex",
@@ -64,10 +64,10 @@ export enum Representation {
     UTF16LEDec = "utf16le-dec",
     UTF16LEBin = "utf16le-bin",
 
-    // UTF-32
-    UTF32Hex = "utf32-hex",
-    UTF32Dec = "utf32-dec",
-    UTF32Bin = "utf32-bin",
+    // UTF-32 encoding form
+    UTF32CEFHex = "utf32cef-hex",
+    UTF32CEFDec = "utf32cef-dec",
+    UTF32CEFBin = "utf32cef-bin",
 
     // UTF-32BE
     UTF32BEHex = "utf32be-hex",

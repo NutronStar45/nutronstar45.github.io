@@ -42,10 +42,10 @@ export var Representation;
     Representation["UTF8Hex"] = "utf8-hex";
     Representation["UTF8Dec"] = "utf8-dec";
     Representation["UTF8Bin"] = "utf8-bin";
-    // UTF-16
-    Representation["UTF16Hex"] = "utf16-hex";
-    Representation["UTF16Dec"] = "utf16-dec";
-    Representation["UTF16Bin"] = "utf16-bin";
+    // UTF-16 encoding form
+    Representation["UTF16CEFHex"] = "utf16cef-hex";
+    Representation["UTF16CEFDec"] = "utf16cef-dec";
+    Representation["UTF16CEFBin"] = "utf16cef-bin";
     // UTF-16BE
     Representation["UTF16BEHex"] = "utf16be-hex";
     Representation["UTF16BEDec"] = "utf16be-dec";
@@ -54,10 +54,10 @@ export var Representation;
     Representation["UTF16LEHex"] = "utf16le-hex";
     Representation["UTF16LEDec"] = "utf16le-dec";
     Representation["UTF16LEBin"] = "utf16le-bin";
-    // UTF-32
-    Representation["UTF32Hex"] = "utf32-hex";
-    Representation["UTF32Dec"] = "utf32-dec";
-    Representation["UTF32Bin"] = "utf32-bin";
+    // UTF-32 encoding form
+    Representation["UTF32CEFHex"] = "utf32cef-hex";
+    Representation["UTF32CEFDec"] = "utf32cef-dec";
+    Representation["UTF32CEFBin"] = "utf32cef-bin";
     // UTF-32BE
     Representation["UTF32BEHex"] = "utf32be-hex";
     Representation["UTF32BEDec"] = "utf32be-dec";
