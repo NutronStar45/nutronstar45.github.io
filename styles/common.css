@@ -148,7 +148,7 @@ button + button {
 code {
     background-color: var(--code-bg-color);
     color: var(--code-fg-color);
-    font-family: "Courier New";
+    font-family: Consolas, monospace;
     padding: 0 0.2em;
 }
 
