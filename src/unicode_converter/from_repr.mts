@@ -350,6 +350,13 @@ export function fromRepresentation(str: string, representation: Representation) 
         case Representation.UTF16Bin:
             return fromUTF16Units(parseIntegers(str, 2, 16));
 
+        case Representation.UTF16BEHex:
+            return fromUTF16Units(codeUnitsFromBytes(parseIntegers(str, 16, 2), 2, Endianness.Big));
+        case Representation.UTF16BEDec:
+            return fromUTF16Units(codeUnitsFromBytes(parseIntegersWhitespace(str, 10, 3), 2, Endianness.Big));
+        case Representation.UTF16BEBin:
+            return fromUTF16Units(codeUnitsFromBytes(parseIntegers(str, 2, 8), 2, Endianness.Big));
+
         case Representation.UTF32Hex:
             return fromUTF32Units(parseIntegers(str, 16, 8));
         case Representation.UTF32Dec:

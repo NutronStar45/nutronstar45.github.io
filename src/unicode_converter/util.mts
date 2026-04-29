@@ -51,6 +51,10 @@ export enum Representation {
     UTF16Dec = "utf16-dec",
     UTF16Bin = "utf16-bin",
 
+    UTF16BEHex = "utf16be-hex",
+    UTF16BEDec = "utf16be-dec",
+    UTF16BEBin = "utf16be-bin",
+
     UTF32Hex = "utf32-hex",
     UTF32Dec = "utf32-dec",
     UTF32Bin = "utf32-bin"

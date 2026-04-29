@@ -72,13 +72,13 @@ h2 {
 }
 
 /* Sections */
-main > section {
+main section {
     border: 1px dashed var(--section-border-color);
     padding: 10px;
     overflow: auto;
 
     /* Sections after sections */
-    + section {
+    section + &, h3 + & {
         margin-top: 10px;
     }
 
