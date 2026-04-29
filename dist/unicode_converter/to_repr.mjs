@@ -103,12 +103,12 @@ function toUTF32Units(codePoints) {
  */
 function codeUnitsToBytes(codeUnits, size, endianness) {
     if (!Number.isInteger(size) || size <= 0) {
-        throw RangeError("Size must be a positive integer");
+        throw new RangeError("Size must be a positive integer");
     }
     let bytes = [];
     for (let codeUnit of codeUnits) {
         if (!Number.isInteger(codeUnit) || codeUnit < 0) {
-            throw RangeError("Code unit must be a non-negative integer");
+            throw new RangeError("Code unit must be a non-negative integer");
         }
         // Little-endian
         let codeUnitBytes = [];
@@ -118,7 +118,7 @@ function codeUnitsToBytes(codeUnits, size, endianness) {
             codeUnit = (codeUnit - byte) / 256;
         }
         if (codeUnit !== 0) {
-            throw RangeError("Code unit has size greater than the given size");
+            throw new RangeError("Code unit has size greater than the given size");
         }
         // Correct for endianness
         if (endianness === Endianness.Big) {

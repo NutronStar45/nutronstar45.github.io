@@ -85,7 +85,7 @@ function parseIntegers(str, radix, width) {
         digitIndex++;
     }
     if (partialInteger !== "") {
-        throw new RangeError(`Invalid number of digits (${digitIndex})`);
+        throw new RangeError(`Number of digits (${digitIndex}) must be a multiple of the width of each integer (${width})`);
     }
     return integers;
 }
@@ -115,10 +115,10 @@ function fromCodePointsRepr(str, radix, maxLength) {
  */
 function codeUnitsFromBytes(bytes, size, endianness) {
     if (!Number.isInteger(size) || size <= 0) {
-        throw RangeError("Size must be a positive integer");
+        throw new RangeError("Size must be a positive integer");
     }
     if (bytes.length % size !== 0) {
-        throw RangeError("Length of array must be a multiple of the size");
+        throw new RangeError(`Total number of bytes (${bytes.length}) must be a multiple of the number of bytes of a code unit (${size})`);
     }
     let codeUnits = [];
     for (let codeUnitPos = 0; codeUnitPos < bytes.length; codeUnitPos += size) {
@@ -132,7 +132,7 @@ function codeUnitsFromBytes(bytes, size, endianness) {
         let codeUnit = 0;
         for (const byte of codeUnitBytes) {
             if (!Number.isInteger(byte) || size < 0 || size > 255) {
-                throw RangeError("Encountered a number that is not a byte");
+                throw new RangeError("Encountered a number that is not a byte");
             }
             codeUnit = codeUnit * 256 + byte;
         }
