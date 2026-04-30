@@ -75,9 +75,18 @@ h2 {
 main section {
     border: 1px dashed var(--section-border-color);
     padding: 10px;
-    overflow: auto;
 
-    /* Sections after sections */
+    /* Top-level sections */
+    main > & {
+        overflow: auto;
+    }
+
+    /* Not top-level */
+    &:not(main > section) {
+        width: fit-content;
+    }
+
+    /* Sections after sections and section titles */
     section + &, h3 + & {
         margin-top: 10px;
     }
