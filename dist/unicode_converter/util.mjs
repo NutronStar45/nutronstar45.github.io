@@ -77,7 +77,7 @@ export var Representation;
  */
 function validateCodePoint(codePoint, radix = 16) {
     if (!Number.isInteger(codePoint)) {
-        throw new RangeError(`Non-integer code point (${codePoint})`);
+        throw new RangeError(`Code point outside the codespace (${codePoint})`);
     }
     let codePointDisplay = Math.abs(codePoint).toString(radix).toUpperCase();
     if (codePoint >= 0) {
@@ -93,10 +93,10 @@ function validateCodePoint(codePoint, radix = 16) {
         codePointDisplay = "-" + codePointDisplay;
     }
     if (codePoint < 0 || codePoint > 0x10FFFF) {
-        throw new RangeError(`Code point outside valid range (${codePointDisplay})`);
+        throw new RangeError(`Code point outside the codespace (${codePointDisplay})`);
     }
     if (codePoint >= 0xD800 && codePoint <= 0xDFFF) {
-        throw new RangeError(`Code point reserved for a surrogate (${codePointDisplay})`);
+        throw new RangeError(`Surrogate code point (${codePointDisplay})`);
     }
 }
 /**

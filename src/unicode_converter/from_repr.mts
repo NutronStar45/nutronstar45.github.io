@@ -168,7 +168,7 @@ function fromUTF8Units(codeUnits: number[]) {
 
     for (const codeUnit of codeUnits) {
         if (!Number.isInteger(codeUnit) || codeUnit < 0 || codeUnit > 0xFF) {
-            throw new RangeError("Invalid code unit");
+            throw new RangeError("Code unit must be a byte");
         }
 
         // 1-code-unit character (0xxx_xxxx)
@@ -245,7 +245,7 @@ function fromUTF8Units(codeUnits: number[]) {
 
         // Invalid code unit
         else {
-            throw new RangeError(`Invalid code unit (0x${codeUnit.toString(16).toUpperCase()})`);
+            throw new RangeError(`Encountered a code unit greater than 0xF7 (0x${codeUnit.toString(16).toUpperCase()})`);
         }
     }
 
@@ -267,7 +267,7 @@ function fromUTF16Units(codeUnits: number[]) {
 
     for (const codeUnit of codeUnits) {
         if (!Number.isInteger(codeUnit) || codeUnit < 0 || codeUnit > 0xFFFF) {
-            throw new RangeError("Invalid code unit");
+            throw new RangeError("Code unit must be a two-byte integer");
         }
 
         // Low surrogate

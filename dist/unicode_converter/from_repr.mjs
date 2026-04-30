@@ -149,7 +149,7 @@ function fromUTF8Units(codeUnits) {
     let partialCodeUnitSequence = []; // Code units of a partially built character
     for (const codeUnit of codeUnits) {
         if (!Number.isInteger(codeUnit) || codeUnit < 0 || codeUnit > 0xFF) {
-            throw new RangeError("Invalid code unit");
+            throw new RangeError("Code unit must be a byte");
         }
         // 1-code-unit character (0xxx_xxxx)
         if (codeUnit <= 0x7F) {
@@ -216,7 +216,7 @@ function fromUTF8Units(codeUnits) {
         }
         // Invalid code unit
         else {
-            throw new RangeError(`Invalid code unit (0x${codeUnit.toString(16).toUpperCase()})`);
+            throw new RangeError(`Encountered a code unit greater than 0xF7 (0x${codeUnit.toString(16).toUpperCase()})`);
         }
     }
     if (partialCodeUnitSequence.length !== 0) {
@@ -234,7 +234,7 @@ function fromUTF16Units(codeUnits) {
     let lowSurrogate = null; // Leading low surrogate, or `null` when not storing one
     for (const codeUnit of codeUnits) {
         if (!Number.isInteger(codeUnit) || codeUnit < 0 || codeUnit > 0xFFFF) {
-            throw new RangeError("Invalid code unit");
+            throw new RangeError("Code unit must be a two-byte integer");
         }
         // Low surrogate
         if (codeUnit >= 0xD800 && codeUnit <= 0xDBFF) {
