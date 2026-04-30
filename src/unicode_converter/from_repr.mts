@@ -245,7 +245,7 @@ function fromUTF8Units(codeUnits: number[]) {
 
         // Invalid code unit
         else {
-            throw new RangeError(`Encountered a code unit greater than 0xF7 (0x${codeUnit.toString(16).toUpperCase()})`);
+            throw new RangeError(`Code unit greater than 0xF7 (0x${codeUnit.toString(16).toUpperCase()})`);
         }
     }
 
