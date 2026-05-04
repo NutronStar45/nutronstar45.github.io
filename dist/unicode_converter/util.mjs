@@ -113,13 +113,14 @@ export function validateCodePoints(codePoints, radix = 16) {
     }
 }
 /**
- * Formats a non-negative integer sequence into the specified radix, separated by spaces. Numbers can optionally have a minimum width. "0x" or "0b" (for hex and bin, respectively) can be optionally prepended to every number.
+ * Formats a non-negative integer sequence into a string containing the integers separated by spaces. Numbers can optionally have a minimum width. "0x" or "0b" (for hex and bin, respectively) can be optionally prepended to every number.
  * @param radix The radix to convert the integers into.
  * @param minWidth The minimum width of the numbers; must be a non-negative integer. Numbers whose widths exceed this parameter keep their width.
  * @param prefix If true, "0x" or "0b" (for hex and bin, respectively) is prepended to every number.
+ * @param uppercase Whether to output uppercase or not. Only effective for hexadecimal.
  * @throws {RangeError} Thrown if the given minimum width is not a non-negative integer, or if the given array contains a number that is not a non-negative integer.
  */
-export function formatIntegers(sequence, radix, minWidth, prefix) {
+export function formatIntegers(sequence, radix, minWidth, prefix, uppercase) {
     if (!Number.isInteger(minWidth) || minWidth < 0) {
         throw new RangeError("Minimum width must be a non-negative integer");
     }
@@ -134,7 +135,10 @@ export function formatIntegers(sequence, radix, minWidth, prefix) {
         if (prefix) {
             string += radixPrefix(radix);
         }
-        string += number.toString(radix).toUpperCase().padStart(minWidth, "0");
+        string += number.toString(radix).padStart(minWidth, "0");
+        if (uppercase) {
+            string = string.toUpperCase();
+        }
     }
     return string;
 }

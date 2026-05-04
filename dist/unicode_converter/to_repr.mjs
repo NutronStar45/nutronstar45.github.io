@@ -14,14 +14,15 @@ function toText(codePoints) {
  * Converts a code point sequence into its representation in the specified radix. Code points can optionally have a minimum width.
  * @param radix The radix to convert the code points into.
  * @param minWidth The minimum width of the code points; must be a non-negative integer. Code points whose widths exceed this parameter keep their width.
+ * @param uppercase Whether to output uppercase or not. Only effective for hexadecimal.
  * @throws {RangeError} Thrown if the given minimum width is not a non-negative integer, or the given sequence contains a code point that is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-function toCodePointsRepr(codePoints, radix, minWidth) {
+function toCodePointsRepr(codePoints, radix, minWidth, uppercase) {
     validateCodePoints(codePoints);
-    return formatIntegers(codePoints, radix, minWidth, false);
+    return formatIntegers(codePoints, radix, minWidth, false, uppercase);
 }
 /**
  * Converts a code point sequence into a UTF-8 code unit sequence.
@@ -130,72 +131,73 @@ function codeUnitsToBytes(codeUnits, size, endianness) {
 }
 /**
  * Converts a code point sequence into the specified representation.
+ * @param uppercase Whether to output uppercase or not. Only effective for hexadecimal.
  * @throws {RangeError} Thrown when the given sequence contains a code point that is:
  * - not an integer,
  * - outside the valid range, or
  * - reserved for a surrogate.
  */
-export function toRepresentation(codePoints, representation) {
+export function toRepresentation(codePoints, representation, uppercase) {
     switch (representation) {
         // Text
         case Representation.Text:
             return toText(codePoints);
         // Code points
         case Representation.CodePointsHex:
-            return toCodePointsRepr(codePoints, 16, 4);
+            return toCodePointsRepr(codePoints, 16, 4, uppercase);
         case Representation.CodePointsDec:
-            return toCodePointsRepr(codePoints, 10, 0);
+            return toCodePointsRepr(codePoints, 10, 0, uppercase);
         case Representation.CodePointsBin:
-            return toCodePointsRepr(codePoints, 2, 0);
+            return toCodePointsRepr(codePoints, 2, 0, uppercase);
         // UTF-8
         case Representation.UTF8Hex:
-            return formatIntegers(toUTF8Units(codePoints), 16, 2, false);
+            return formatIntegers(toUTF8Units(codePoints), 16, 2, false, uppercase);
         case Representation.UTF8Dec:
-            return formatIntegers(toUTF8Units(codePoints), 10, 0, false);
+            return formatIntegers(toUTF8Units(codePoints), 10, 0, false, uppercase);
         case Representation.UTF8Bin:
-            return formatIntegers(toUTF8Units(codePoints), 2, 8, false);
+            return formatIntegers(toUTF8Units(codePoints), 2, 8, false, uppercase);
         // UTF-16 encoding form
         case Representation.UTF16CEFHex:
-            return formatIntegers(toUTF16Units(codePoints), 16, 4, false);
+            return formatIntegers(toUTF16Units(codePoints), 16, 4, false, uppercase);
         case Representation.UTF16CEFDec:
-            return formatIntegers(toUTF16Units(codePoints), 10, 0, false);
+            return formatIntegers(toUTF16Units(codePoints), 10, 0, false, uppercase);
         case Representation.UTF16CEFBin:
-            return formatIntegers(toUTF16Units(codePoints), 2, 16, false);
+            return formatIntegers(toUTF16Units(codePoints), 2, 16, false, uppercase);
         // UTF-16BE
         case Representation.UTF16BEHex:
-            return formatIntegers(codeUnitsToBytes(toUTF16Units(codePoints), 2, Endianness.Big), 16, 2, false);
+            return formatIntegers(codeUnitsToBytes(toUTF16Units(codePoints), 2, Endianness.Big), 16, 2, false, uppercase);
         case Representation.UTF16BEDec:
-            return formatIntegers(codeUnitsToBytes(toUTF16Units(codePoints), 2, Endianness.Big), 10, 0, false);
+            return formatIntegers(codeUnitsToBytes(toUTF16Units(codePoints), 2, Endianness.Big), 10, 0, false, uppercase);
         case Representation.UTF16BEBin:
-            return formatIntegers(codeUnitsToBytes(toUTF16Units(codePoints), 2, Endianness.Big), 2, 8, false);
+            return formatIntegers(codeUnitsToBytes(toUTF16Units(codePoints), 2, Endianness.Big), 2, 8, false, uppercase);
         // UTF-16LE
         case Representation.UTF16LEHex:
-            return formatIntegers(codeUnitsToBytes(toUTF16Units(codePoints), 2, Endianness.Little), 16, 2, false);
+            return formatIntegers(codeUnitsToBytes(toUTF16Units(codePoints), 2, Endianness.Little), 16, 2, false, uppercase);
         case Representation.UTF16LEDec:
-            return formatIntegers(codeUnitsToBytes(toUTF16Units(codePoints), 2, Endianness.Little), 10, 0, false);
+            return formatIntegers(codeUnitsToBytes(toUTF16Units(codePoints), 2, Endianness.Little), 10, 0, false, uppercase);
         case Representation.UTF16LEBin:
-            return formatIntegers(codeUnitsToBytes(toUTF16Units(codePoints), 2, Endianness.Little), 2, 8, false);
+            return formatIntegers(codeUnitsToBytes(toUTF16Units(codePoints), 2, Endianness.Little), 2, 8, false, uppercase);
         // UTF-32 encoding form
         case Representation.UTF32CEFHex:
-            return formatIntegers(toUTF32Units(codePoints), 16, 8, false);
+            return formatIntegers(toUTF32Units(codePoints), 16, 8, false, uppercase);
         case Representation.UTF32CEFDec:
-            return formatIntegers(toUTF32Units(codePoints), 10, 0, false);
+            return formatIntegers(toUTF32Units(codePoints), 10, 0, false, uppercase);
         case Representation.UTF32CEFBin:
-            return formatIntegers(toUTF32Units(codePoints), 2, 32, false);
+            return formatIntegers(toUTF32Units(codePoints), 2, 32, false, uppercase);
         // UTF-32BE
         case Representation.UTF32BEHex:
-            return formatIntegers(codeUnitsToBytes(toUTF32Units(codePoints), 4, Endianness.Big), 16, 2, false);
+            return formatIntegers(codeUnitsToBytes(toUTF32Units(codePoints), 4, Endianness.Big), 16, 2, false, uppercase);
         case Representation.UTF32BEDec:
-            return formatIntegers(codeUnitsToBytes(toUTF32Units(codePoints), 4, Endianness.Big), 10, 0, false);
+            return formatIntegers(codeUnitsToBytes(toUTF32Units(codePoints), 4, Endianness.Big), 10, 0, false, uppercase);
         case Representation.UTF32BEBin:
-            return formatIntegers(codeUnitsToBytes(toUTF32Units(codePoints), 4, Endianness.Big), 2, 8, false);
+            return formatIntegers(codeUnitsToBytes(toUTF32Units(codePoints), 4, Endianness.Big), 2, 8, false, uppercase);
         // UTF-32LE
         case Representation.UTF32LEHex:
-            return formatIntegers(codeUnitsToBytes(toUTF32Units(codePoints), 4, Endianness.Little), 16, 2, false);
+            return formatIntegers(codeUnitsToBytes(toUTF32Units(codePoints), 4, Endianness.Little), 16, 2, false, uppercase);
         case Representation.UTF32LEDec:
-            return formatIntegers(codeUnitsToBytes(toUTF32Units(codePoints), 4, Endianness.Little), 10, 0, false);
+            return formatIntegers(codeUnitsToBytes(toUTF32Units(codePoints), 4, Endianness.Little), 10, 0, false, uppercase);
         case Representation.UTF32LEBin:
-            return formatIntegers(codeUnitsToBytes(toUTF32Units(codePoints), 4, Endianness.Little), 2, 8, false);
+            return formatIntegers(codeUnitsToBytes(toUTF32Units(codePoints), 4, Endianness.Little), 2, 8, false, uppercase);
         default:
             throw new RangeError("Invalid representation");
     }

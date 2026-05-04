@@ -10,7 +10,8 @@ function convertFromRepr(repr) {
         // Convert code points into every representation
         for (const target_key in Representation) {
             const target_repr = Representation[target_key];
-            $(`textarea#${target_repr}`).val(toRepresentation(codePoints, target_repr));
+            const uppercase = $("input#uppercase").prop("checked");
+            $(`textarea#${target_repr}`).val(toRepresentation(codePoints, target_repr, uppercase));
             $(`div#${target_repr}-message`).empty();
         }
     }
@@ -47,4 +48,5 @@ $(() => {
     $("input#convert-on-enter").on("change", function () {
         $("input#convert-on-enter-exclude-text").prop("disabled", !this.checked);
     });
+    $("input#uppercase").prop("checked", true);
 });

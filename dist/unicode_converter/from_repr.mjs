@@ -155,7 +155,7 @@ function fromUTF8Units(codeUnits) {
         if (codeUnit <= 0x7F) {
             // After an incomplete code unit sequence
             if (partialCodeUnitSequence.length !== 0) {
-                throw new RangeError(`Incomplete code unit sequence (${formatIntegers(partialCodeUnitSequence, 16, 2, true)})`);
+                throw new RangeError(`Incomplete code unit sequence (${formatIntegers(partialCodeUnitSequence, 16, 2, true, true)})`);
             }
             codePoints.push(codeUnit);
         }
@@ -172,7 +172,7 @@ function fromUTF8Units(codeUnits) {
                     const codePoint = ((partialCodeUnitSequence[0] - 0xC0) << 6)
                         + (partialCodeUnitSequence[1] - 0x80);
                     if (codePoint <= 0x7F) {
-                        throw new RangeError(`Non-shortest form code unit sequence (${formatIntegers(partialCodeUnitSequence, 16, 2, true)})`);
+                        throw new RangeError(`Non-shortest form code unit sequence (${formatIntegers(partialCodeUnitSequence, 16, 2, true, true)})`);
                     }
                     codePoints.push(codePoint);
                     partialCodeUnitSequence = [];
@@ -185,7 +185,7 @@ function fromUTF8Units(codeUnits) {
                         + ((partialCodeUnitSequence[1] - 0x80) << 6)
                         + (partialCodeUnitSequence[2] - 0x80);
                     if (codePoint <= 0x7FF) {
-                        throw new RangeError(`Non-shortest form code unit sequence (${formatIntegers(partialCodeUnitSequence, 16, 2, true)})`);
+                        throw new RangeError(`Non-shortest form code unit sequence (${formatIntegers(partialCodeUnitSequence, 16, 2, true, true)})`);
                     }
                     codePoints.push(codePoint);
                     partialCodeUnitSequence = [];
@@ -199,7 +199,7 @@ function fromUTF8Units(codeUnits) {
                         + ((partialCodeUnitSequence[2] - 0x80) << 6)
                         + (partialCodeUnitSequence[3] - 0x80);
                     if (codePoint <= 0xFFFF) {
-                        throw new RangeError(`Non-shortest form code unit sequence (${formatIntegers(partialCodeUnitSequence, 16, 2, true)})`);
+                        throw new RangeError(`Non-shortest form code unit sequence (${formatIntegers(partialCodeUnitSequence, 16, 2, true, true)})`);
                     }
                     codePoints.push(codePoint);
                     partialCodeUnitSequence = [];
@@ -210,7 +210,7 @@ function fromUTF8Units(codeUnits) {
         else if (codeUnit <= 0xF7) {
             // After an incomplete code unit sequence
             if (partialCodeUnitSequence.length !== 0) {
-                throw new RangeError(`Incomplete code unit sequence (${formatIntegers(partialCodeUnitSequence, 16, 2, true)})`);
+                throw new RangeError(`Incomplete code unit sequence (${formatIntegers(partialCodeUnitSequence, 16, 2, true, true)})`);
             }
             partialCodeUnitSequence.push(codeUnit);
         }
@@ -220,7 +220,7 @@ function fromUTF8Units(codeUnits) {
         }
     }
     if (partialCodeUnitSequence.length !== 0) {
-        throw new RangeError(`Incomplete code unit sequence (${formatIntegers(partialCodeUnitSequence, 16, 2, true)})`);
+        throw new RangeError(`Incomplete code unit sequence (${formatIntegers(partialCodeUnitSequence, 16, 2, true, true)})`);
     }
     validateCodePoints(codePoints);
     return codePoints;
