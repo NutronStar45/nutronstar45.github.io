@@ -39,7 +39,8 @@
                     <input id="convert-on-enter" type="checkbox"> Convert on enter
                 </label> <button commandfor="help-convert-on-enter" command="show-modal">?</button>
                 <dialog id="help-convert-on-enter" closedby="any">
-                    Convert on enter: pressing enter in a representation input box converts from that representation.
+                    Convert on enter: pressing enter in a representation input box converts from that representation. <br>
+                    <button commandfor="help-convert-on-enter" command="close">Close</button>
                 </dialog>
 
                 <div class="indent">
@@ -47,7 +48,8 @@
                         <input id="convert-on-enter-exclude-text" type="checkbox"> Exclude text
                     </label> <button commandfor="help-convert-on-enter-exclude-text" command="show-modal">?</button>
                     <dialog id="help-convert-on-enter-exclude-text" closedby="any">
-                        Exclude text: if "Convert on enter" is enabled, pressing enter in the "Text" input box doesn't trigger conversion.
+                        Exclude text: if "Convert on enter" is enabled, pressing enter in the "Text" input box doesn't trigger conversion. <br>
+                        <button commandfor="help-convert-on-enter-exclude-text" command="close">Close</button>
                     </dialog>
                 </div>
 
@@ -55,7 +57,8 @@
                     <input id="uppercase" type="checkbox"> Uppercase
                 </label> <button commandfor="help-uppercase" command="show-modal">?</button>
                 <dialog id="help-uppercase" closedby="any">
-                    Uppercase: whether to output uppercase for hexadecimal representations.
+                    Uppercase: whether to output uppercase for hexadecimal representations. <br>
+                    <button commandfor="help-uppercase" command="close">Close</button>
                 </dialog>
             </div>
         </section>

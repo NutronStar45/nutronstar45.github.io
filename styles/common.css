@@ -181,6 +181,10 @@ summary {
     }
 }
 
+dialog {
+    text-align: center;
+}
+
 ::backdrop {
     backdrop-filter: brightness(70%);
 }
