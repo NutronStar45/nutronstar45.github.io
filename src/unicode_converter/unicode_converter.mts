@@ -49,10 +49,14 @@ $(() => {
         });
     }
 
-    $("input#convert-on-enter-exclude-text").prop("disabled", true);
+    // Convert on enter
+    $("input#convert-on-enter").prop("checked", true);
+
+    // Convert on enter > Exclude text
     $("input#convert-on-enter").on("change", function () {
         $("input#convert-on-enter-exclude-text").prop("disabled", !(this as HTMLInputElement).checked);
     });
 
+    // Uppercase
     $("input#uppercase").prop("checked", true);
 });
