@@ -297,7 +297,7 @@ $(() => {
     // `slice(1)` to trim the beginning slash
     $("code#404-location").html(location.pathname.slice(1));
     // Header
-    const headerHTML = '<nav><a href="/">Home</a><a href="/projects">Projects</a><a href="/math">Math</a></nav>'
+    const headerHTML = '<nav><a href="/">Home</a><a href="/projects.html">Projects</a><a href="/math.html">Math</a></nav>'
         + '<button id="show-corner-box">Show corner box</button>';
     $("header").html(headerHTML);
     $("button#show-corner-box").hide();
