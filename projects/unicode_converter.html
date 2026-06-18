@@ -16,260 +16,263 @@
 
 <body>
     <header></header>
-    <section id="corner-box"></section>
+    <div id="content-wrapper">
+        <nav id="page-nav"></nav>
+        <div id="main-wrapper">
+            <h2>Unicode Converter</h2>
 
-    <h2>Unicode Converter</h2>
-
-    <main>
-        <section id="sec-info">
-            <h3>Information &amp; settings</h3>
-            <div>
-                <details>
-                    <summary>Instructions</summary>
-                    <div class="indent">
-                        Clicking the "Convert" button next to a representation converts from that representation. <br>
-                        Code points and decimal inputs must be separated by whitespaces. <br>
-                        Whitespaces are not needed for encoding forms and schemes in hexadecimal and binary.
-                    </div>
-                </details>
-            </div>
-
-            <div>
-                <label>
-                    <input id="convert-on-enter" type="checkbox"> Convert on enter
-                </label> <button commandfor="help-convert-on-enter" command="show-modal">?</button>
-                <dialog id="help-convert-on-enter" closedby="any">
-                    Convert on enter: pressing enter in a representation input box converts from that representation. <br>
-                    <button commandfor="help-convert-on-enter" command="close">Close</button>
-                </dialog>
-
-                <div class="indent">
-                    <label>
-                        <input id="convert-on-enter-exclude-text" type="checkbox"> Exclude text
-                    </label> <button commandfor="help-convert-on-enter-exclude-text" command="show-modal">?</button>
-                    <dialog id="help-convert-on-enter-exclude-text" closedby="any">
-                        Exclude text: if "Convert on enter" is enabled, pressing enter in the "Text" input box doesn't trigger conversion. <br>
-                        <button commandfor="help-convert-on-enter-exclude-text" command="close">Close</button>
-                    </dialog>
-                </div>
-
-                <label>
-                    <input id="uppercase" type="checkbox"> Uppercase
-                </label> <button commandfor="help-uppercase" command="show-modal">?</button>
-                <dialog id="help-uppercase" closedby="any">
-                    Uppercase: whether to output uppercase for hexadecimal representations. <br>
-                    <button commandfor="help-uppercase" command="close">Close</button>
-                </dialog>
-            </div>
-        </section>
-
-        <section id="sec-text">
-            <h3>Text</h3>
-            <div>
-                Text <button id="convert-from-text">Convert</button> <br>
-                <textarea id="text"></textarea>
-                <div id="text-message"></div>
-            </div>
-        </section>
-
-        <section id="sec-code-points">
-            <h3>Code points</h3>
-            <div class="repr-row">
-                <div>
-                    Code points (hex) <button id="convert-from-code-points-hex">Convert</button> <br>
-                    <textarea id="code-points-hex"></textarea>
-                    <div id="code-points-hex-message"></div>
-                </div>
-
-                <div>
-                    Code points (dec) <button id="convert-from-code-points-dec">Convert</button> <br>
-                    <textarea id="code-points-dec"></textarea>
-                    <div id="code-points-dec-message"></div>
-                </div>
-
-                <div>
-                    Code points (bin) <button id="convert-from-code-points-bin">Convert</button> <br>
-                    <textarea id="code-points-bin"></textarea>
-                    <div id="code-points-bin-message"></div>
-                </div>
-            </div>
-        </section>
-
-        <section id="sec-utf8">
-            <h3>UTF-8</h3>
-            <div class="repr-row">
-                <div>
-                    UTF-8 (hex) <button id="convert-from-utf8-hex">Convert</button> <br>
-                    <textarea id="utf8-hex"></textarea>
-                    <div id="utf8-hex-message"></div>
-                </div>
-
-                <div>
-                    UTF-8 (dec) <button id="convert-from-utf8-dec">Convert</button> <br>
-                    <textarea id="utf8-dec"></textarea>
-                    <div id="utf8-dec-message"></div>
-                </div>
-
-                <div>
-                    UTF-8 (bin) <button id="convert-from-utf8-bin">Convert</button> <br>
-                    <textarea id="utf8-bin"></textarea>
-                    <div id="utf8-bin-message"></div>
-                </div>
-            </div>
-        </section>
-
-        <section id="sec-utf16">
-            <h3>UTF-16</h3>
-            <section>
-                <h3>Encoding form</h3>
-                <div class="repr-row">
+            <main>
+                <section id="sec-info">
+                    <h3>Information &amp; settings</h3>
                     <div>
-                        UTF-16 (hex) <button id="convert-from-utf16cef-hex">Convert</button> <br>
-                        <textarea id="utf16cef-hex"></textarea>
-                        <div id="utf16cef-hex-message"></div>
+                        <details>
+                            <summary>Instructions</summary>
+                            <div class="indent">
+                                Clicking the "Convert" button next to a representation converts from that representation. <br>
+                                Code points and decimal inputs must be separated by whitespaces. <br>
+                                Whitespaces are not needed for encoding forms and schemes in hexadecimal and binary.
+                            </div>
+                        </details>
                     </div>
 
                     <div>
-                        UTF-16 (dec) <button id="convert-from-utf16cef-dec">Convert</button> <br>
-                        <textarea id="utf16cef-dec"></textarea>
-                        <div id="utf16cef-dec-message"></div>
-                    </div>
+                        <label>
+                            <input id="convert-on-enter" type="checkbox"> Convert on enter
+                        </label> <button commandfor="help-convert-on-enter" command="show-modal">?</button>
+                        <dialog id="help-convert-on-enter" closedby="any">
+                            Convert on enter: pressing enter in a representation input box converts from that representation. <br>
+                            <button commandfor="help-convert-on-enter" command="close">Close</button>
+                        </dialog>
 
+                        <div class="indent">
+                            <label>
+                                <input id="convert-on-enter-exclude-text" type="checkbox"> Exclude text
+                            </label> <button commandfor="help-convert-on-enter-exclude-text" command="show-modal">?</button>
+                            <dialog id="help-convert-on-enter-exclude-text" closedby="any">
+                                Exclude text: if "Convert on enter" is enabled, pressing enter in the "Text" input box doesn't trigger conversion. <br>
+                                <button commandfor="help-convert-on-enter-exclude-text" command="close">Close</button>
+                            </dialog>
+                        </div>
+
+                        <label>
+                            <input id="uppercase" type="checkbox"> Uppercase
+                        </label> <button commandfor="help-uppercase" command="show-modal">?</button>
+                        <dialog id="help-uppercase" closedby="any">
+                            Uppercase: whether to output uppercase for hexadecimal representations. <br>
+                            <button commandfor="help-uppercase" command="close">Close</button>
+                        </dialog>
+                    </div>
+                </section>
+
+                <section id="sec-text">
+                    <h3>Text</h3>
                     <div>
-                        UTF-16 (bin) <button id="convert-from-utf16cef-bin">Convert</button> <br>
-                        <textarea id="utf16cef-bin"></textarea>
-                        <div id="utf16cef-bin-message"></div>
+                        Text <button id="convert-from-text">Convert</button> <br>
+                        <textarea id="text"></textarea>
+                        <div id="text-message"></div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <section>
-                <h3>Encoding schemes</h3>
-                <div class="repr-row">
-                    <div>
-                        UTF-16BE (hex) <button id="convert-from-utf16be-hex">Convert</button> <br>
-                        <textarea id="utf16be-hex"></textarea>
-                        <div id="utf16be-hex-message"></div>
+                <section id="sec-code-points">
+                    <h3>Code points</h3>
+                    <div class="repr-row">
+                        <div>
+                            Code points (hex) <button id="convert-from-code-points-hex">Convert</button> <br>
+                            <textarea id="code-points-hex"></textarea>
+                            <div id="code-points-hex-message"></div>
+                        </div>
+
+                        <div>
+                            Code points (dec) <button id="convert-from-code-points-dec">Convert</button> <br>
+                            <textarea id="code-points-dec"></textarea>
+                            <div id="code-points-dec-message"></div>
+                        </div>
+
+                        <div>
+                            Code points (bin) <button id="convert-from-code-points-bin">Convert</button> <br>
+                            <textarea id="code-points-bin"></textarea>
+                            <div id="code-points-bin-message"></div>
+                        </div>
                     </div>
+                </section>
 
-                    <div>
-                        UTF-16BE (dec) <button id="convert-from-utf16be-dec">Convert</button> <br>
-                        <textarea id="utf16be-dec"></textarea>
-                        <div id="utf16be-dec-message"></div>
+                <section id="sec-utf8">
+                    <h3>UTF-8</h3>
+                    <div class="repr-row">
+                        <div>
+                            UTF-8 (hex) <button id="convert-from-utf8-hex">Convert</button> <br>
+                            <textarea id="utf8-hex"></textarea>
+                            <div id="utf8-hex-message"></div>
+                        </div>
+
+                        <div>
+                            UTF-8 (dec) <button id="convert-from-utf8-dec">Convert</button> <br>
+                            <textarea id="utf8-dec"></textarea>
+                            <div id="utf8-dec-message"></div>
+                        </div>
+
+                        <div>
+                            UTF-8 (bin) <button id="convert-from-utf8-bin">Convert</button> <br>
+                            <textarea id="utf8-bin"></textarea>
+                            <div id="utf8-bin-message"></div>
+                        </div>
                     </div>
+                </section>
 
-                    <div>
-                        UTF-16BE (bin) <button id="convert-from-utf16be-bin">Convert</button> <br>
-                        <textarea id="utf16be-bin"></textarea>
-                        <div id="utf16be-bin-message"></div>
-                    </div>
-                </div>
+                <section id="sec-utf16">
+                    <h3>UTF-16</h3>
+                    <section>
+                        <h3>Encoding form</h3>
+                        <div class="repr-row">
+                            <div>
+                                UTF-16 (hex) <button id="convert-from-utf16cef-hex">Convert</button> <br>
+                                <textarea id="utf16cef-hex"></textarea>
+                                <div id="utf16cef-hex-message"></div>
+                            </div>
 
-                <div class="repr-row">
-                    <div>
-                        UTF-16LE (hex) <button id="convert-from-utf16le-hex">Convert</button> <br>
-                        <textarea id="utf16le-hex"></textarea>
-                        <div id="utf16le-hex-message"></div>
-                    </div>
+                            <div>
+                                UTF-16 (dec) <button id="convert-from-utf16cef-dec">Convert</button> <br>
+                                <textarea id="utf16cef-dec"></textarea>
+                                <div id="utf16cef-dec-message"></div>
+                            </div>
 
-                    <div>
-                        UTF-16LE (dec) <button id="convert-from-utf16le-dec">Convert</button> <br>
-                        <textarea id="utf16le-dec"></textarea>
-                        <div id="utf16le-dec-message"></div>
-                    </div>
+                            <div>
+                                UTF-16 (bin) <button id="convert-from-utf16cef-bin">Convert</button> <br>
+                                <textarea id="utf16cef-bin"></textarea>
+                                <div id="utf16cef-bin-message"></div>
+                            </div>
+                        </div>
+                    </section>
 
-                    <div>
-                        UTF-16LE (bin) <button id="convert-from-utf16le-bin">Convert</button> <br>
-                        <textarea id="utf16le-bin"></textarea>
-                        <div id="utf16le-bin-message"></div>
-                    </div>
-                </div>
-            </section>
-        </section>
+                    <section>
+                        <h3>Encoding schemes</h3>
+                        <div class="repr-row">
+                            <div>
+                                UTF-16BE (hex) <button id="convert-from-utf16be-hex">Convert</button> <br>
+                                <textarea id="utf16be-hex"></textarea>
+                                <div id="utf16be-hex-message"></div>
+                            </div>
 
-        <section id="sec-utf32">
-            <h3>UTF-32</h3>
-            <section>
-                <h3>Encoding form</h3>
-                <div class="repr-row">
-                    <div>
-                        UTF-32 (hex) <button id="convert-from-utf32cef-hex">Convert</button> <br>
-                        <textarea id="utf32cef-hex"></textarea>
-                        <div id="utf32cef-hex-message"></div>
-                    </div>
+                            <div>
+                                UTF-16BE (dec) <button id="convert-from-utf16be-dec">Convert</button> <br>
+                                <textarea id="utf16be-dec"></textarea>
+                                <div id="utf16be-dec-message"></div>
+                            </div>
 
-                    <div>
-                        UTF-32 (dec) <button id="convert-from-utf32cef-dec">Convert</button> <br>
-                        <textarea id="utf32cef-dec"></textarea>
-                        <div id="utf32cef-dec-message"></div>
-                    </div>
+                            <div>
+                                UTF-16BE (bin) <button id="convert-from-utf16be-bin">Convert</button> <br>
+                                <textarea id="utf16be-bin"></textarea>
+                                <div id="utf16be-bin-message"></div>
+                            </div>
+                        </div>
 
-                    <div>
-                        UTF-32 (bin) <button id="convert-from-utf32cef-bin">Convert</button> <br>
-                        <textarea id="utf32cef-bin"></textarea>
-                        <div id="utf32cef-bin-message"></div>
-                    </div>
-                </div>
-            </section>
+                        <div class="repr-row">
+                            <div>
+                                UTF-16LE (hex) <button id="convert-from-utf16le-hex">Convert</button> <br>
+                                <textarea id="utf16le-hex"></textarea>
+                                <div id="utf16le-hex-message"></div>
+                            </div>
 
-            <section>
-                <h3>Encoding schemes</h3>
-                <div class="repr-row">
-                    <div>
-                        UTF-32BE (hex) <button id="convert-from-utf32be-hex">Convert</button> <br>
-                        <textarea id="utf32be-hex"></textarea>
-                        <div id="utf32be-hex-message"></div>
-                    </div>
+                            <div>
+                                UTF-16LE (dec) <button id="convert-from-utf16le-dec">Convert</button> <br>
+                                <textarea id="utf16le-dec"></textarea>
+                                <div id="utf16le-dec-message"></div>
+                            </div>
 
-                    <div>
-                        UTF-32BE (dec) <button id="convert-from-utf32be-dec">Convert</button> <br>
-                        <textarea id="utf32be-dec"></textarea>
-                        <div id="utf32be-dec-message"></div>
-                    </div>
+                            <div>
+                                UTF-16LE (bin) <button id="convert-from-utf16le-bin">Convert</button> <br>
+                                <textarea id="utf16le-bin"></textarea>
+                                <div id="utf16le-bin-message"></div>
+                            </div>
+                        </div>
+                    </section>
+                </section>
 
-                    <div>
-                        UTF-32BE (bin) <button id="convert-from-utf32be-bin">Convert</button> <br>
-                        <textarea id="utf32be-bin"></textarea>
-                        <div id="utf32be-bin-message"></div>
-                    </div>
-                </div>
+                <section id="sec-utf32">
+                    <h3>UTF-32</h3>
+                    <section>
+                        <h3>Encoding form</h3>
+                        <div class="repr-row">
+                            <div>
+                                UTF-32 (hex) <button id="convert-from-utf32cef-hex">Convert</button> <br>
+                                <textarea id="utf32cef-hex"></textarea>
+                                <div id="utf32cef-hex-message"></div>
+                            </div>
 
-                <div class="repr-row">
-                    <div>
-                        UTF-32LE (hex) <button id="convert-from-utf32le-hex">Convert</button> <br>
-                        <textarea id="utf32le-hex"></textarea>
-                        <div id="utf32le-hex-message"></div>
-                    </div>
+                            <div>
+                                UTF-32 (dec) <button id="convert-from-utf32cef-dec">Convert</button> <br>
+                                <textarea id="utf32cef-dec"></textarea>
+                                <div id="utf32cef-dec-message"></div>
+                            </div>
 
-                    <div>
-                        UTF-32LE (dec) <button id="convert-from-utf32le-dec">Convert</button> <br>
-                        <textarea id="utf32le-dec"></textarea>
-                        <div id="utf32le-dec-message"></div>
-                    </div>
+                            <div>
+                                UTF-32 (bin) <button id="convert-from-utf32cef-bin">Convert</button> <br>
+                                <textarea id="utf32cef-bin"></textarea>
+                                <div id="utf32cef-bin-message"></div>
+                            </div>
+                        </div>
+                    </section>
 
-                    <div>
-                        UTF-32LE (bin) <button id="convert-from-utf32le-bin">Convert</button> <br>
-                        <textarea id="utf32le-bin"></textarea>
-                        <div id="utf32le-bin-message"></div>
-                    </div>
-                </div>
-            </section>
-        </section>
+                    <section>
+                        <h3>Encoding schemes</h3>
+                        <div class="repr-row">
+                            <div>
+                                UTF-32BE (hex) <button id="convert-from-utf32be-hex">Convert</button> <br>
+                                <textarea id="utf32be-hex"></textarea>
+                                <div id="utf32be-hex-message"></div>
+                            </div>
 
-        <section id="sec-ref">
-            <h3>References</h3>
-            <ul>
-                <li>
-                    The Unicode Consortium. The Unicode Standard, Version 17.0.0, defined by: <i>The Unicode Standard, Version 17.0</i> (South San Francisco: The Unicode Consortium, 2025. ISBN 978-1-936213-35-1)
+                            <div>
+                                UTF-32BE (dec) <button id="convert-from-utf32be-dec">Convert</button> <br>
+                                <textarea id="utf32be-dec"></textarea>
+                                <div id="utf32be-dec-message"></div>
+                            </div>
+
+                            <div>
+                                UTF-32BE (bin) <button id="convert-from-utf32be-bin">Convert</button> <br>
+                                <textarea id="utf32be-bin"></textarea>
+                                <div id="utf32be-bin-message"></div>
+                            </div>
+                        </div>
+
+                        <div class="repr-row">
+                            <div>
+                                UTF-32LE (hex) <button id="convert-from-utf32le-hex">Convert</button> <br>
+                                <textarea id="utf32le-hex"></textarea>
+                                <div id="utf32le-hex-message"></div>
+                            </div>
+
+                            <div>
+                                UTF-32LE (dec) <button id="convert-from-utf32le-dec">Convert</button> <br>
+                                <textarea id="utf32le-dec"></textarea>
+                                <div id="utf32le-dec-message"></div>
+                            </div>
+
+                            <div>
+                                UTF-32LE (bin) <button id="convert-from-utf32le-bin">Convert</button> <br>
+                                <textarea id="utf32le-bin"></textarea>
+                                <div id="utf32le-bin-message"></div>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+
+                <section id="sec-ref">
+                    <h3>References</h3>
                     <ul>
                         <li>
-                            Specifically, <a class="external" href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/" target="_blank"><cite>Chapter 3, Conformance</cite></a> of the <cite>Core Specification</cite>
+                            The Unicode Consortium. The Unicode Standard, Version 17.0.0, defined by: <i>The Unicode Standard, Version 17.0</i> (South San Francisco: The Unicode Consortium, 2025. ISBN 978-1-936213-35-1)
+                            <ul>
+                                <li>
+                                    Specifically, <a class="external" href="https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-3/" target="_blank"><cite>Chapter 3, Conformance</cite></a> of the <cite>Core Specification</cite>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
-                </li>
-            </ul>
-        </section>
-    </main>
+                </section>
+            </main>
+        </div>
+    </div>
 
     <script type="importmap">
         {

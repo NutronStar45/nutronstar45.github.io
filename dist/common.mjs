@@ -282,26 +282,14 @@ export function downloadFile(content, filename) {
     $("<a></a>").attr("download", filename).attr("href", url)[0].click();
     URL.revokeObjectURL(url);
 }
-/**
- * Shows/hides the corner box and the "show corner box" button, and stores to {@linkcode localStorage}.
- * @param visible Whether the corner box is visible or not.
- */
-function updateCornerBoxVisibility(visible) {
-    $("section#corner-box").toggle(visible);
-    $("button#show-corner-box").toggle(!visible);
-    localStorage.setItem("cornerBoxVisible", String(visible));
-}
 $(() => {
-    let cornerBoxVisible = localStorage.getItem("cornerBoxVisible") !== "false";
     // Location on 404 page
     // `slice(1)` to trim the beginning slash
     $("code#404-location").html(location.pathname.slice(1));
     // Header
-    const headerHTML = '<nav><a href="/">Home</a><a href="/projects.html">Projects</a><a href="/math.html">Math</a></nav>'
-        + '<button id="show-corner-box">Show corner box</button>';
+    const headerHTML = '<nav><a href="/">Home</a><a href="/projects.html">Projects</a><a href="/math.html">Math</a></nav>';
     $("header").html(headerHTML);
-    $("button#show-corner-box").hide();
-    // Sections information
+    // Fetch sections
     const sections = $("main > section").map(function () {
         const title = $(this).children("h3").text();
         const id = $(this).attr("id");
@@ -310,29 +298,17 @@ $(() => {
         }
         return { title, id: id ?? "" };
     }).get();
-    // Corner box
-    let cornerBoxHTML = '<button id="hide-corner-box">Hide</button><br><a href="#">To top</a>';
-    // Section links
+    // Page navigation
+    let pageNavHTML = '<a href="#">Top</a>';
+    // Generate section links
     if (sections.length > 0) {
-        cornerBoxHTML += "<br><details><summary>Sections</summary><ul>";
+        pageNavHTML += "<hr><ul>";
         for (const section of sections) {
-            cornerBoxHTML += `<li><a href="#${section.id}">${section.title}</a></li>`;
+            pageNavHTML += `<li><a href="#${section.id}">${section.title}</a></li>`;
         }
-        cornerBoxHTML += "</ul></details>";
+        pageNavHTML += "</ul>";
     }
-    // Place corner box into DOM
-    $("section#corner-box").html(cornerBoxHTML);
-    updateCornerBoxVisibility(cornerBoxVisible);
-    // Show corner box
-    $("button#show-corner-box").on("click", function () {
-        cornerBoxVisible = true;
-        updateCornerBoxVisibility(cornerBoxVisible);
-    });
-    // Hide corner box
-    $("button#hide-corner-box").on("click", function () {
-        cornerBoxVisible = false;
-        updateCornerBoxVisibility(cornerBoxVisible);
-    });
+    $("nav#page-nav").html(pageNavHTML);
     // Required indicator
     $("input[required]")
         .before('<span class="required-ind">* </span>')

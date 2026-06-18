@@ -1,16 +1,19 @@
 :root {
+    --input-width: 5em;
+    --max-maze-img-height: 80vh;
+    --wall-thickness: 2;
+
     --solution-color: green;
     --endpoint-color: red;
-    --wall-thickness: 2;
 }
 
 /* To prevent these inputs from becoming too narrow */
 input#width, input#height, input#start-x, input#start-y, input#end-x, input#end-y {
-    width: 5em;
+    width: var(--input-width);
 }
 
 div#maze-img-container {
-    max-height: 80vh;
+    max-height: var(--max-maze-img-height);
     overflow: auto;
 }
 

@@ -15,82 +15,85 @@
 
 <body>
     <header></header>
-    <section id="corner-box"></section>
+    <div id="content-wrapper">
+        <nav id="page-nav"></nav>
+        <div id="main-wrapper">
+            <h2>Projects</h2>
 
-    <h2>Projects</h2>
-
-    <main>
-        <section id="sec-website">
-            <h3>This website</h3>
-            <div>
-                <ul>
-                    <li>
-                        NutronStar45's Work (<a class="external" href="https://github.com/NutronStar45/nutronstar45.github.io"
-                                target="_blank">source</a>)
+            <main>
+                <section id="sec-website">
+                    <h3>This website</h3>
+                    <div>
                         <ul>
                             <li>
-                                Hosted via <a class="external" href="https://github.io" target="_blank">GitHub Pages</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="projects/maze.html">Maze Generator &amp; Solver</a>
-                        <ul>
-                            <li>Generates and solves grid mazes</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="projects/unicode_converter.html">Unicode converter</a> <sup>WIP</sup>
-                        <ul>
-                            <li>Converts text to and from the following representations:
+                                NutronStar45's Work (<a class="external" href="https://github.com/NutronStar45/nutronstar45.github.io"
+                                        target="_blank">source</a>)
                                 <ul>
-                                    <li>Unicode code points</li>
-                                    <li>encoding forms: UTF-8, UTF-16 and UTF-32</li>
-                                    <li>encoding schemes: UTF-16BE, UTF-16LE, UTF-32BE and UTF-32LE</li>
+                                    <li>
+                                        Hosted via <a class="external" href="https://github.io" target="_blank">GitHub Pages</a>
+                                    </li>
                                 </ul>
                             </li>
-                            <li>Supports hexadecimal, decimal and binary</li>
-                            <li>Will support:
+                            <li>
+                                <a href="projects/maze.html">Maze Generator &amp; Solver</a>
                                 <ul>
-                                    <li>UTF-16 and UTF-32 with BOM</li>
-                                    <li>syntax highlighting</li>
+                                    <li>Generates and solves grid mazes</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="projects/unicode_converter.html">Unicode converter</a> <sup>WIP</sup>
+                                <ul>
+                                    <li>Converts text to and from the following representations:
+                                        <ul>
+                                            <li>Unicode code points</li>
+                                            <li>encoding forms: UTF-8, UTF-16 and UTF-32</li>
+                                            <li>encoding schemes: UTF-16BE, UTF-16LE, UTF-32BE and UTF-32LE</li>
+                                        </ul>
+                                    </li>
+                                    <li>Supports hexadecimal, decimal and binary</li>
+                                    <li>Will support:
+                                        <ul>
+                                            <li>UTF-16 and UTF-32 with BOM</li>
+                                            <li>syntax highlighting</li>
+                                        </ul>
+                                    </li>
                                 </ul>
                             </li>
                         </ul>
-                    </li>
-                </ul>
-            </div>
-        </section>
+                    </div>
+                </section>
 
-        <section id="sec-other">
-            <h3>Other</h3>
-            <div>
-                <ul>
-                    <li>
-                        <a class="external" href="https://gist.github.com/NutronStar45/7696cf79b7027e7e0dd2d29abc903cd1" target="_blank">Tic Tac Toe Program</a>
+                <section id="sec-other">
+                    <h3>Other</h3>
+                    <div>
                         <ul>
-                            <li>Written in Python</li>
                             <li>
-                                Uses game data to improve itself
+                                <a class="external" href="https://gist.github.com/NutronStar45/7696cf79b7027e7e0dd2d29abc903cd1" target="_blank">Tic Tac Toe Program</a>
+                                <ul>
+                                    <li>Written in Python</li>
+                                    <li>
+                                        Uses game data to improve itself
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="external" href="https://gist.github.com/NutronStar45/202b189525da4418f17e898abf96466e" target="_blank">Maze Generator &amp; Solver</a>
+                                <ul>
+                                    <li>Written in Python</li>
+                                    <li>
+                                        Uses Prim's algorithm to generate a non-interactive grid maze and exports the maze to an SVG file
+                                    </li>
+                                    <li>
+                                        Uses deadend filling to solve the maze and exports the maze overlayed with the path to an SVG file
+                                    </li>
+                                </ul>
                             </li>
                         </ul>
-                    </li>
-                    <li>
-                        <a class="external" href="https://gist.github.com/NutronStar45/202b189525da4418f17e898abf96466e" target="_blank">Maze Generator &amp; Solver</a>
-                        <ul>
-                            <li>Written in Python</li>
-                            <li>
-                                Uses Prim's algorithm to generate a non-interactive grid maze and exports the maze to an SVG file
-                            </li>
-                            <li>
-                                Uses deadend filling to solve the maze and exports the maze overlayed with the path to an SVG file
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </section>
-    </main>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
 
     <script type="importmap">
         {

@@ -1,8 +1,12 @@
+:root {
+    --textarea-gap: 1em;
+}
+
 textarea:not(#text) {
     font-family: monospace;
 }
 
 div.repr-row {
     display: flex;
-    gap: 1em;
+    gap: var(--textarea-gap);
 }
