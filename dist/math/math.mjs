@@ -11,8 +11,25 @@ try {
     // Parse metadata
     const metadata = await response.json();
     const { articles: allArticles, topics: allTopics } = metadata;
+    // Articles
+    if (pageType === "article") {
+        // Get topics
+        let topics = [];
+        for (const topic of allTopics) {
+            if (topic.articles.includes(filename)) {
+                topics.push([topic.filename, topic.title]);
+            }
+        }
+        // Generate HTML
+        let topicsHTMl = "<div><ul>";
+        for (const ownTopic of topics) {
+            topicsHTMl += `<li><a href="../topic/${ownTopic[0]}.html">${ownTopic[1]}</a></li>`;
+        }
+        topicsHTMl += "</ul></div>";
+        $("section#sec-topics").append(topicsHTMl);
+    }
     // Topics
-    if (pageType === "topic") {
+    else if (pageType === "topic") {
         // Get articles
         let articles;
         for (const topic of allTopics) {
@@ -24,6 +41,7 @@ try {
         if (articles === undefined) {
             throw new TypeError("Metadata has incorrect format");
         }
+        // Generate HTML
         let articlesHTML = "<div><ul>";
         for (const ownArticleFilename of articles) {
             for (const article of allArticles) {
