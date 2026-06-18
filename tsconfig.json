@@ -5,6 +5,7 @@
 
         "lib": ["esnext", "dom"],
         "target": "esnext",
+        "module": "esnext",
 
         "noUncheckedIndexedAccess": true,
         "exactOptionalPropertyTypes": true,

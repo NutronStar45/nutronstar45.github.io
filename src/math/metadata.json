@@ -1,3 +1,37 @@
 {
-    "key": "value"
+    "articles": [
+        {
+            "filename": "natural_numbers",
+            "title": "Natural Numbers"
+        },
+        {
+            "filename": "natural_number_addition",
+            "title": "Addition of Natural Numbers"
+        },
+        {
+            "filename": "natural_number_multiplication",
+            "title": "Multiplication of Natural Numbers"
+        },
+        {
+            "filename": "natural_number_comparison",
+            "title": "Comparison of Natural Numbers"
+        },
+        {
+            "filename": "natural_number_decimal_representation",
+            "title": "Decimal Representation of Natural Numbers"
+        }
+    ],
+    "topics": [
+        {
+            "filename": "natural_numbers",
+            "title": "Natural Numbers",
+            "articles": [
+                "natural_numbers",
+                "natural_number_addition",
+                "natural_number_multiplication",
+                "natural_number_comparison",
+                "natural_number_decimal_representation"
+            ]
+        }
+    ]
 }
