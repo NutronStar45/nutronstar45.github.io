@@ -5,20 +5,32 @@
             "title": "Natural Numbers"
         },
         {
+            "filename": "natural_number_comparison",
+            "title": "Comparison of Natural Numbers"
+        },
+        {
             "filename": "natural_number_addition",
             "title": "Addition of Natural Numbers"
+        },
+        {
+            "filename": "natural_number_subtraction",
+            "title": "Subtraction of Natural Numbers"
         },
         {
             "filename": "natural_number_multiplication",
             "title": "Multiplication of Natural Numbers"
         },
         {
-            "filename": "natural_number_comparison",
-            "title": "Comparison of Natural Numbers"
+            "filename": "natural_number_division",
+            "title": "Division of Natural Numbers"
         },
         {
             "filename": "natural_number_decimal_representation",
             "title": "Decimal Representation of Natural Numbers"
+        },
+        {
+            "filename": "sets",
+            "title": "Sets"
         }
     ],
     "topics": [
@@ -27,10 +39,19 @@
             "title": "Natural Numbers",
             "articles": [
                 "natural_numbers",
-                "natural_number_addition",
-                "natural_number_multiplication",
                 "natural_number_comparison",
+                "natural_number_addition",
+                "natural_number_subtraction",
+                "natural_number_multiplication",
+                "natural_number_division",
                 "natural_number_decimal_representation"
+            ]
+        },
+        {
+            "filename": "set_theory",
+            "title": "Set Theory",
+            "articles": [
+                "sets"
             ]
         }
     ]
