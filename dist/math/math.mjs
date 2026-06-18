@@ -21,12 +21,12 @@ try {
             }
         }
         // Generate HTML
-        let topicsHTMl = "<div><ul>";
+        let topicsHTMl = "<ul>";
         for (const ownTopic of topics) {
             topicsHTMl += `<li><a href="../topic/${ownTopic[0]}.html">${ownTopic[1]}</a></li>`;
         }
-        topicsHTMl += "</ul></div>";
-        $("section#sec-topics").append(topicsHTMl);
+        topicsHTMl += "</ul>";
+        $("section#sec-topics > div").html(topicsHTMl);
     }
     // Topics
     else if (pageType === "topic") {
@@ -42,7 +42,7 @@ try {
             throw new TypeError("Metadata has incorrect format");
         }
         // Generate HTML
-        let articlesHTML = "<div><ul>";
+        let articlesHTML = "<ul>";
         for (const ownArticleFilename of articles) {
             for (const article of allArticles) {
                 if (article.filename === ownArticleFilename) {
@@ -50,8 +50,8 @@ try {
                 }
             }
         }
-        articlesHTML += "</ul></div>";
-        $("section#sec-articles").append(articlesHTML);
+        articlesHTML += "</ul>";
+        $("section#sec-articles > div").html(articlesHTML);
     }
 }
 catch (e) {
