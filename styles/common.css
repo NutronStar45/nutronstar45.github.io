@@ -156,9 +156,10 @@ span.alert {
 
 p {
     margin: 0;
-}
-p + p {
-    margin-top: var(--paragraph-spacing);
+
+    p + & {
+        margin-top: var(--paragraph-spacing);
+    }
 }
 
 .indent {
