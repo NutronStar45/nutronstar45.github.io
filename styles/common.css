@@ -21,6 +21,7 @@
     --button-border-width: 3px;
     --button-spacing: 7px;
 
+    --paragraph-spacing: 1em;
     --code-padding: 0.2em;
     --alert-spacing: 0.3em;
     --indent: 1.5em;
@@ -152,6 +153,13 @@ span.alert {
 /*****************
  * Miscellaneous *
  *****************/
+
+p {
+    margin: 0;
+}
+p + p {
+    margin-top: var(--paragraph-spacing);
+}
 
 .indent {
     margin-left: var(--indent);
