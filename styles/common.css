@@ -28,6 +28,22 @@
     --backdrop-brightness: 70%;
 }
 
+:root {
+    --bg-color: #141414;
+    --fg-color: #ffffff;
+    --status-fg-color: #7f7f7f;
+    --anchor-fg-color: #3fadf7;
+    --required-ind-fg-color: #ffffff;
+    --alert-fg-color: #f34545;
+    --section-border-color: #a5a5a5;
+    --button-border-color: #7f7f7f;
+    --button-disabled-bg-color: #333333;
+    --code-fg-color: #ffffff;
+    --code-bg-color: #3f3f3f;
+    --hr-color: #a5a5a5;
+}
+
+
 body, header, section, button, input, select, textarea {
     font-size: var(--font-size);
     line-height: var(--line-height);

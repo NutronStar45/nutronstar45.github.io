@@ -2,7 +2,9 @@
     --input-width: 5em;
     --max-maze-img-height: 80vh;
     --wall-thickness: 2;
+}
 
+:root {
     --solution-color: green;
     --endpoint-color: red;
 }
