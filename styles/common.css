@@ -1,25 +1,27 @@
 :root {
     --font-size: 20px;
     --line-height: 160%;
-    --spacing: 10px;
-    --border-width: 1px;
-    --padding: 10px;
+    --spacing: 0.5em;
+    --border-width: 0.05em;
+    --padding: 0.5em;
 
     --header-height: 2em;
-    --header-padding: 5px;
+    --header-padding: 0.3em;
     --header-font-size: 1.1em;
 
     --nav-width: 10em;
-    --nav-spacing: 20px;
+    --nav-spacing: 1em;
     --nav-line-height: 130%;
+    --nav-title-font-size: 0.7em;
     --nav-item-spacing: 0.5em;
+    --nav-hr-margin-bottom: 0.2em;
     --nav-max-height: calc(100vh - var(--padding) * 2);
 
     --title-font-size: 1.5em;
     --sec-title-font-size: 0.7em;
 
-    --button-border-width: 3px;
-    --button-spacing: 7px;
+    --button-border-width: 0.15em;
+    --button-spacing: 0.3em;
 
     --paragraph-spacing: 1em;
     --code-padding: 0.2em;
@@ -63,7 +65,7 @@
 }
 
 
-body, header, section, button, input, select, textarea {
+body, header, button, dialog, input, select, textarea {
     font-size: var(--font-size);
     line-height: var(--line-height);
     font-family: Helvetica, sans-serif;
@@ -85,7 +87,7 @@ header {
     margin-bottom: var(--spacing);
     padding: var(--header-padding);
     height: var(--header-height);
-    background: var(--bg-color);
+    width: max-content;
 }
 
 /* Content wrapper */
@@ -105,6 +107,13 @@ nav {
     overflow: auto;
     line-height: var(--nav-line-height);
 
+    h3 {
+        margin: 0;
+        font-size: var(--nav-title-font-size);
+        font-weight: normal;
+        text-align: center;
+    }
+
     ul {
         padding: 0;
         list-style: none;
@@ -112,6 +121,10 @@ nav {
         li + li {
             margin-top: var(--nav-item-spacing);
         }
+    }
+
+    hr {
+        margin-bottom: var(--nav-hr-margin-bottom);
     }
 }
 
