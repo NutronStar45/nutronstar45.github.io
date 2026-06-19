@@ -33,6 +33,26 @@
             "title": "Integers"
         },
         {
+            "filename": "integer_absolute_value",
+            "title": "Absolute Value of Integers"
+        },
+        {
+            "filename": "integer_addition",
+            "title": "Addition of Integers"
+        },
+        {
+            "filename": "integer_subtraction",
+            "title": "Subtraction of Integers"
+        },
+        {
+            "filename": "integer_multiplication",
+            "title": "Multiplication of Integers"
+        },
+        {
+            "filename": "integer_division",
+            "title": "Division of Integers"
+        },
+        {
             "filename": "sets",
             "title": "Sets"
         }
@@ -47,10 +67,6 @@
             "articles": [
                 "natural_numbers",
                 "natural_number_comparison",
-                "natural_number_addition",
-                "natural_number_subtraction",
-                "natural_number_multiplication",
-                "natural_number_division",
                 "natural_number_decimal_representation"
             ]
         },
@@ -67,8 +83,22 @@
         {
             "filename": "integers",
             "title": "Integers",
+            "subtopics": [
+                "integer_arithmetic"
+            ],
             "articles": [
-                "integers"
+                "integers",
+                "integer_absolute_value"
+            ]
+        },
+        {
+            "filename": "integer_arithmetic",
+            "title": "Arithmetic of Integers",
+            "articles": [
+                "integer_addition",
+                "integer_subtraction",
+                "integer_multiplication",
+                "integer_division"
             ]
         },
         {

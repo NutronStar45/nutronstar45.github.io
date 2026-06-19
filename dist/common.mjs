@@ -296,20 +296,20 @@ function generateLayout() {
         }
         return { title, id: id ?? "" };
     }).get();
-    // Page navigation
-    let pageNavHTML = '<a href="#">Top</a><hr>'
+    // Navigation
+    let navHTML = '<a href="#">Top</a><hr>'
         + '<ul><li><a href="/">Home</a></li>'
         + '<li><a href="/projects.html">Projects</a></li>'
         + '<li><a href="/math.html">Math</a></li></ul>';
     // Generate section links
     if (sections.length > 0) {
-        pageNavHTML += "<hr><ul>";
+        navHTML += "<hr><ul>";
         for (const section of sections) {
-            pageNavHTML += `<li><a href="#${section.id}">${section.title}</a></li>`;
+            navHTML += `<li><a href="#${section.id}">${section.title}</a></li>`;
         }
-        pageNavHTML += "</ul>";
+        navHTML += "</ul>";
     }
-    $("nav#page-nav").html(pageNavHTML);
+    $("nav").html(navHTML);
 }
 $(() => {
     // Location on 404 page

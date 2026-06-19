@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="NutronStar45">
-    <title>Comparison of Natural Numbers - Math Reference</title>
+    <title>Multiplication of Integers - Math Reference</title>
 
     <link rel="stylesheet" href="/styles/common.css">
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
@@ -17,7 +17,7 @@
     <div id="content-wrapper">
         <nav></nav>
         <div id="main-wrapper">
-            <h2>Comparison of Natural Numbers</h2>
+            <h2>Multiplication of Integers</h2>
 
             <main>
                 <section id="sec-informal">
@@ -27,15 +27,22 @@
                         <h3>Prerequisites</h3>
                         <div>
                             <ul>
-                                <li><a href="./natural_numbers.html">Natural Numbers</a></li>
+                                <li><a href="./integers.html">Integers</a></li>
+                                <li><a href="./natural_number_multiplication.html">Multiplication of Natural Numbers</a></li>
+                                <li><a href="./integer_absolute_value.html">Absolute Value of Integers</a></li>
                             </ul>
                         </div>
                     </section>
 
                     <div>
-                        <p>Since sizes can be compared, natural numbers can also be compared. If a group of size \(a\) is larger than a group of size \(b\), then \(a\) is greater than \(b\), denoted \(a > b\). Similarly, \(a\) being less than \(b\) is denoted as \(a &lt; b\).</p>
+                        <p>To extend multiplication to integers, we consider a reservoir whose amount of water is represented as a natural number (or zero). Suppose the amount of water increases by \(a\) every day, where \(a\) is an integer. We consider the difference of the amount \(b\) days later and that of today. The difference should be \(a \times b\) if \(a\) and \(b\) are nonnegative. Thus, we define integer multiplication as follows:</p>
+                        <ul>
+                            <li>\(a \times b = -(|a| \times b)\) if \(a&lt;0\) and \(b \ge 0\)</li>
+                            <li>\(a \times b = -(a \times |b|)\) if \(a \ge 0\) and \(b&lt;0\)</li>
+                            <li>\(a \times b = |a| \times |b|\) if \(a&lt;0\) and \(b&lt;0\)</li>
+                        </ul>
 
-                        <p>Besides <em>greater than</em> and <em>less than</em>, there are also symbols for <em>greater than or equal to</em> and <em>less than or equal to</em>, denoted \(\ge\) and \(\le\), respectively.</p>
+                        <p>We can verify that the product of multiple integers does not depend on the the order of evaluation, so the product can be written without parentheses; for example, \((a \times b) \times c\) can be written as \(a \times b \times c\).</p>
                     </div>
                 </section>
 
