@@ -3,7 +3,7 @@ const path = location.pathname.split("/");
 const pageType = path[2];
 const filename = path[3].split(".")[0];
 /** Populate the article's topics section. */
-function fillArticle(metadata) {
+function fillArticleSections(metadata) {
     const allTopics = metadata.topics;
     // Get topics
     let ownTopics = [];
@@ -27,7 +27,7 @@ function fillArticle(metadata) {
     $("section#sec-topics > div").html(topicsHTML);
 }
 /** Populate the topic's subtopics, articles and topics sections. */
-function fillTopic(metadata) {
+function fillTopicSections(metadata) {
     const { articles: allArticles, topics: allTopics } = metadata;
     // Get subtopics and articles
     let subtopics;
@@ -104,11 +104,11 @@ try {
     const metadata = await response.json();
     // Articles
     if (pageType === "article") {
-        fillArticle(metadata);
+        fillArticleSections(metadata);
     }
     // Topics
     else if (pageType === "topic") {
-        fillTopic(metadata);
+        fillTopicSections(metadata);
     }
 }
 catch (e) {

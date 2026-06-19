@@ -282,12 +282,10 @@ export function downloadFile(content, filename) {
     $("<a></a>").attr("download", filename).attr("href", url)[0].click();
     URL.revokeObjectURL(url);
 }
-$(() => {
-    // Location on 404 page
-    // `slice(1)` to trim the beginning slash
-    $("code#404-location").html(location.pathname.slice(1));
+/** Generate the layout of the page. */
+function generateLayout() {
     // Header
-    const headerHTML = '<nav><a href="/">Home</a><a href="/projects.html">Projects</a><a href="/math.html">Math</a></nav>';
+    const headerHTML = '<a href="/">NutronStar45\'s Work</a>';
     $("header").html(headerHTML);
     // Fetch sections
     const sections = $("main > section").map(function () {
@@ -299,7 +297,10 @@ $(() => {
         return { title, id: id ?? "" };
     }).get();
     // Page navigation
-    let pageNavHTML = '<a href="#">Top</a>';
+    let pageNavHTML = '<a href="#">Top</a><hr>'
+        + '<ul><li><a href="/">Home</a></li>'
+        + '<li><a href="/projects.html">Projects</a></li>'
+        + '<li><a href="/math.html">Math</a></li></ul>';
     // Generate section links
     if (sections.length > 0) {
         pageNavHTML += "<hr><ul>";
@@ -309,9 +310,15 @@ $(() => {
         pageNavHTML += "</ul>";
     }
     $("nav#page-nav").html(pageNavHTML);
-    // Required indicator
+}
+$(() => {
+    // Location on 404 page
+    // `slice(1)` to trim the beginning slash
+    $("code#404-location").html(location.pathname.slice(1));
+    // Required indicators
     $("input[required]")
         .before('<span class="required-ind">* </span>')
         .parent("label")
         .attr("title", "Required");
+    generateLayout();
 });

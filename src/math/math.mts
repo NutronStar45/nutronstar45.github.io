@@ -11,7 +11,7 @@ const pageType = path[2]!;
 const filename = path[3]!.split(".")[0]!;
 
 /** Populate the article's topics section. */
-function fillArticle(metadata: Metadata) {
+function fillArticleSections(metadata: Metadata) {
     const allTopics = metadata.topics;
 
     // Get topics
@@ -37,7 +37,7 @@ function fillArticle(metadata: Metadata) {
 }
 
 /** Populate the topic's subtopics, articles and topics sections. */
-function fillTopic(metadata: Metadata) {
+function fillTopicSections(metadata: Metadata) {
     const { articles: allArticles, topics: allTopics } = metadata;
 
     // Get subtopics and articles
@@ -119,11 +119,11 @@ try {
 
     // Articles
     if (pageType === "article") {
-        fillArticle(metadata);
+        fillArticleSections(metadata);
     }
     // Topics
     else if (pageType === "topic") {
-        fillTopic(metadata);
+        fillTopicSections(metadata);
     }
 } catch (e) {
     console.error(e);

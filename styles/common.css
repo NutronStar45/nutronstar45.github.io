@@ -12,8 +12,9 @@
 
     --page-nav-width: 10em;
     --page-nav-spacing: 20px;
-    --page-nav-top: calc(var(--header-height) + var(--header-padding) * 2 + var(--spacing));
-    --page-nav-height: calc(100vh - var(--page-nav-top) - var(--padding) * 2);
+    --page-nav-line-height: 130%;
+    --page-nav-item-spacing: 0.5em;
+    --page-nav-max-height: calc(100vh - var(--padding) * 2);
 
     --title-font-size: 1.5em;
     --sec-title-font-size: 0.7em;
@@ -78,8 +79,6 @@ body, header, section, button, input, select, textarea {
 
 /* Header */
 header {
-    position: sticky;
-    top: 0;
     z-index: 1;
     display: flex;
     align-items: center;
@@ -89,15 +88,7 @@ header {
     background: var(--bg-color);
 
     /* Header navigation */
-    nav {
-        a {
-            font-size: var(--header-nav-font-size);
-        }
-
-        a + a {
-            margin-left: var(--header-nav-spacing);
-        }
-    }
+    font-size: var(--header-nav-font-size);
 }
 
 /* Content wrapper */
@@ -109,15 +100,21 @@ div#content-wrapper {
 /* Page navigation */
 nav#page-nav {
     position: sticky;
-    top: var(--page-nav-top);
+    top: 0;
     flex: 0 0 var(--page-nav-width);
     margin-right: var(--page-nav-spacing);
     padding: var(--padding);
-    height: var(--page-nav-height);
+    max-height: var(--page-nav-max-height);
+    overflow: auto;
+    line-height: var(--page-nav-line-height);
 
     ul {
         padding: 0;
         list-style: none;
+
+        li + li {
+            margin-top: var(--page-nav-item-spacing);
+        }
     }
 }
 
