@@ -154,16 +154,20 @@ span.alert {
  * Miscellaneous *
  *****************/
 
+.indent {
+    margin-left: var(--indent);
+}
+
+.status {
+    color: var(--status-fg-color);
+}
+
 p {
     margin: 0;
 
     p + & {
         margin-top: var(--paragraph-spacing);
     }
-}
-
-.indent {
-    margin-left: var(--indent);
 }
 
 sup, sub {

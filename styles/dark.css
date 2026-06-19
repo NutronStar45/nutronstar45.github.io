@@ -1,6 +1,7 @@
 :root {
     --bg-color: #141414;
     --fg-color: #ffffff;
+    --status-fg-color: #7f7f7f;
     --anchor-fg-color: #3fadf7;
     --required-ind-fg-color: #ffffff;
     --alert-fg-color: #f34545;
