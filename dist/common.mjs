@@ -342,6 +342,11 @@ function handleNavVisibility() {
         $("div#main-overlay").toggleClass("active", false);
         $("div#main-wrapper").prop("inert", false);
     });
+    $("div#main-overlay").on("click", function () {
+        $("nav").toggleClass("force-shown", false);
+        $(this).toggleClass("active");
+        $("div#main-wrapper").prop("inert", false);
+    });
 }
 $(() => {
     navForcedHidden = localStorage.getItem("navForcedHidden") === "true";
