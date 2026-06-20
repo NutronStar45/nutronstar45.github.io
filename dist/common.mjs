@@ -1,6 +1,8 @@
 import $ from "jquery";
 import {} from "./alerts.mjs";
 import * as alerts from "./alerts.mjs";
+// The page width at which the navigation is hidden by default
+const NAV_HIDDEN_PAGE_WIDTH = "700px";
 /**
  * Creates an element with the SVG namespace.
  * This function is necessary because all SVG elements must be namespaced.
@@ -282,11 +284,14 @@ export function downloadFile(content, filename) {
     $("<a></a>").attr("download", filename).attr("href", url)[0].click();
     URL.revokeObjectURL(url);
 }
-/** Generate the layout of the page. */
-function generateLayout() {
+/** Populate the header. */
+function fillHeader() {
     // Header
-    const headerHTML = '<a href="/">NutronStar45\'s Work</a>';
+    const headerHTML = '<button id="nav-toggle" class="img-button" title="Toggle navigation"><div></div></button><a href="/">NutronStar45\'s Work</a>';
     $("header").html(headerHTML);
+}
+/** Populate the navigation. */
+function fillNav() {
     // Fetch sections
     const sections = $("main > section").map(function () {
         const title = $(this).children("h3").text();
@@ -312,6 +317,26 @@ function generateLayout() {
     }
     $("nav").html(navHTML);
 }
+/**
+ * Handles navigation visibility.
+ */
+function handleNavVisibility() {
+    // Handle navigation toggle
+    const smallWidth = matchMedia(`(max-width: ${NAV_HIDDEN_PAGE_WIDTH})`);
+    $("button#nav-toggle").on("click", () => {
+        if (smallWidth.matches) {
+            $("nav").toggleClass("force-shown");
+            $("nav").toggleClass("force-hidden", false);
+        }
+        else {
+            $("nav").toggleClass("force-hidden");
+        }
+    });
+    // Handle width change
+    smallWidth.addEventListener("change", () => {
+        $("nav").toggleClass("force-shown", false);
+    });
+}
 $(() => {
     // Location on 404 page
     // `slice(1)` to trim the beginning slash
@@ -321,5 +346,7 @@ $(() => {
         .before('<span class="required-ind">* </span>')
         .parent("label")
         .attr("title", "Required");
-    generateLayout();
+    fillHeader();
+    fillNav();
+    handleNavVisibility();
 });

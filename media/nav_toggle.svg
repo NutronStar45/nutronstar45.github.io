@@ -1,0 +1,35 @@
+<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        :root {
+            --width: 80px;
+            --height: 8px;
+            --spacing: 25px;
+            --radius: calc(var(--height) / 2);
+        }
+
+        rect {
+            x: calc((100px - var(--width)) / 2);
+            r: 10px;
+            width: var(--width);
+            height: var(--height);
+            rx: var(--radius);
+            ry: var(--radius);
+            fill: white;
+        }
+
+        rect#top {
+            y: calc(50px - var(--height)/2 - var(--spacing));
+        }
+
+        rect#center {
+            y: calc(50px - var(--height)/2);
+        }
+
+        rect#bottom {
+            y: calc(50px - var(--height)/2 + var(--spacing));
+        }
+    </style>
+    <rect id="top"/>
+    <rect id="center"/>
+    <rect id="bottom"/>
+</svg>

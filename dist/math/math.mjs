@@ -9,7 +9,7 @@ function fillArticleSections(metadata) {
     let ownTopics = [];
     for (const topic of allTopics) {
         if (topic.articles !== undefined && topic.articles.includes(filename)) {
-            ownTopics.push([topic.filename, topic.title]);
+            ownTopics.push({ filename: topic.filename, title: topic.title });
         }
     }
     // Generate topics HTML
@@ -17,7 +17,7 @@ function fillArticleSections(metadata) {
     if (ownTopics.length > 0) {
         topicsHTML = "<ul>";
         for (const ownTopic of ownTopics) {
-            topicsHTML += `<li><a href="../topic/${ownTopic[0]}.html">${ownTopic[1]}</a></li>`;
+            topicsHTML += `<li><a href="../topic/${ownTopic.filename}.html">${ownTopic.title}</a></li>`;
         }
         topicsHTML += "</ul>";
     }
@@ -77,7 +77,7 @@ function fillTopicSections(metadata) {
     let ownTopics = [];
     for (const topic of allTopics) {
         if (topic.subtopics !== undefined && topic.subtopics.includes(filename)) {
-            ownTopics.push([topic.filename, topic.title]);
+            ownTopics.push({ filename: topic.filename, title: topic.title });
         }
     }
     // Generate topics HTML
@@ -85,7 +85,7 @@ function fillTopicSections(metadata) {
     if (ownTopics.length > 0) {
         topicsHTML = "<ul>";
         for (const ownTopic of ownTopics) {
-            topicsHTML += `<li><a href="./${ownTopic[0]}.html">${ownTopic[1]}</a></li>`;
+            topicsHTML += `<li><a href="./${ownTopic.filename}.html">${ownTopic.title}</a></li>`;
         }
         topicsHTML += "</ul>";
     }

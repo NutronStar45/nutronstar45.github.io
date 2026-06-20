@@ -15,10 +15,10 @@ function fillArticleSections(metadata: Metadata) {
     const allTopics = metadata.topics;
 
     // Get topics
-    let ownTopics: [string, string][] = [];
+    let ownTopics: { filename: string, title: string }[] = [];
     for (const topic of allTopics) {
         if (topic.articles !== undefined && topic.articles.includes(filename)) {
-            ownTopics.push([topic.filename, topic.title]);
+            ownTopics.push({ filename: topic.filename, title: topic.title });
         }
     }
 
@@ -27,7 +27,7 @@ function fillArticleSections(metadata: Metadata) {
     if (ownTopics.length > 0) {
         topicsHTML = "<ul>";
         for (const ownTopic of ownTopics) {
-            topicsHTML += `<li><a href="../topic/${ownTopic[0]}.html">${ownTopic[1]}</a></li>`;
+            topicsHTML += `<li><a href="../topic/${ownTopic.filename}.html">${ownTopic.title}</a></li>`;
         }
         topicsHTML += "</ul>";
     } else {
@@ -86,10 +86,10 @@ function fillTopicSections(metadata: Metadata) {
     $("section#sec-articles > div").html(articlesHTML);
 
     // Get topics
-    let ownTopics: [string, string][] = [];
+    let ownTopics: { filename: string, title: string }[] = [];
     for (const topic of allTopics) {
         if (topic.subtopics !== undefined && topic.subtopics.includes(filename)) {
-            ownTopics.push([topic.filename, topic.title]);
+            ownTopics.push({ filename: topic.filename, title: topic.title });
         }
     }
 
@@ -98,7 +98,7 @@ function fillTopicSections(metadata: Metadata) {
     if (ownTopics.length > 0) {
         topicsHTML = "<ul>";
         for (const ownTopic of ownTopics) {
-            topicsHTML += `<li><a href="./${ownTopic[0]}.html">${ownTopic[1]}</a></li>`;
+            topicsHTML += `<li><a href="./${ownTopic.filename}.html">${ownTopic.title}</a></li>`;
         }
         topicsHTML += "</ul>";
     } else {

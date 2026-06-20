@@ -4,10 +4,14 @@
     --spacing: 0.5em;
     --border-width: 0.05em;
     --padding: 0.5em;
+    --body-margin: 8px;
 
-    --header-height: 2em;
-    --header-padding: 0.3em;
+    --header-height: 3rem;
+    --header-padding-vertical: 0.3rem;
+    --header-padding-horizontal: 0.5rem;
     --header-font-size: 1.1em;
+    --nav-toggle-size: 1.5em;
+    --nav-toggle-spacing: 0.7em;
 
     --nav-width: 10em;
     --nav-spacing: 1em;
@@ -15,7 +19,8 @@
     --nav-title-font-size: 0.7em;
     --nav-item-spacing: 0.5em;
     --nav-hr-margin-bottom: 0.2em;
-    --nav-max-height: calc(100vh - var(--padding) * 2);
+    --nav-top: var(--header-height);
+    --nav-max-height: calc(100vh - var(--nav-top));
 
     --title-font-size: 1.5em;
     --sec-title-font-size: 0.7em;
@@ -34,9 +39,11 @@
     :root {
         --bg-color: #ffffff;
         --fg-color: #000000;
+        --nav-toggle-color: #000000;
         --section-border-color: #000000;
         --hr-color: #000000;
         --anchor-fg-color: #2132ff;
+        --input-border-color: #dbdbdb;
         --required-ind-fg-color: #000000;
         --alert-fg-color: #f34545;
         --button-border-color: #d1d1d1;
@@ -51,9 +58,11 @@
     :root {
         --bg-color: #141414;
         --fg-color: #ffffff;
+        --nav-toggle-color: #ffffff;
         --section-border-color: #a5a5a5;
         --hr-color: #a5a5a5;
         --anchor-fg-color: #3fadf7;
+        --input-border-color: #7d7d7d;
         --required-ind-fg-color: #ffffff;
         --alert-fg-color: #f34545;
         --button-border-color: #7f7f7f;
@@ -65,7 +74,11 @@
 }
 
 
-body, header, button, dialog, input, select, textarea {
+body {
+    margin: var(--body-margin);
+}
+
+body, header, button, dialog, input, nav, select, textarea {
     font-size: var(--font-size);
     line-height: var(--line-height);
     font-family: Helvetica, sans-serif;
@@ -80,14 +93,33 @@ body, header, button, dialog, input, select, textarea {
 
 /* Header */
 header {
+    position: sticky;
+    top: 0;
     z-index: 1;
     display: flex;
     align-items: center;
     font-size: var(--header-font-size);
     margin-bottom: var(--spacing);
-    padding: var(--header-padding);
+    padding: var(--header-padding-vertical) var(--header-padding-horizontal);
+    width: stretch;
     height: var(--header-height);
-    width: max-content;
+    box-sizing: border-box;
+}
+
+/* Navigation toggle */
+button#nav-toggle {
+    padding: 0;
+    border: none;
+    margin-right: var(--nav-toggle-spacing);
+    line-height: 0;
+
+    div {
+        width: var(--nav-toggle-size);
+        height: var(--nav-toggle-size);
+        background: var(--nav-toggle-color);
+        mask-image: url(/media/nav_toggle.svg);
+        mask-size: contain;
+    }
 }
 
 /* Content wrapper */
@@ -99,13 +131,28 @@ div#content-wrapper {
 /* Navigation */
 nav {
     position: sticky;
-    top: 0;
+    top: var(--nav-top);
     flex: 0 0 var(--nav-width);
     margin-right: var(--nav-spacing);
     padding: var(--padding);
     max-height: var(--nav-max-height);
+    box-sizing: border-box;
     overflow: auto;
     line-height: var(--nav-line-height);
+
+    @media (max-width: 700px) {
+        position: fixed;
+        width: var(--nav-width);
+        height: var(--nav-max-height);
+
+        &:not(.force-shown) {
+            display: none;
+        }
+    }
+
+    &.force-hidden {
+        display: none;
+    }
 
     h3 {
         margin: 0;
@@ -177,6 +224,10 @@ main section {
  * Input *
  *********/
 
+input[type=email], input[type=number], input[type=password], input[type=search], input[type=text], input[type=url] {
+    border-color: var(--input-border-color);
+}
+
 /* Required indicator */
 span.required-ind {
     color: var(--required-ind-fg-color);
@@ -241,7 +292,10 @@ a.external::after {
 button {
     cursor: pointer;
     user-select: none;
-    border: var(--button-border-width) outset var(--button-border-color);
+
+    &:not(.img-button) {
+        border: var(--button-border-width) outset var(--button-border-color);
+    }
 
     &:enabled:active {
         border-style: inset;
