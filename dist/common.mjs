@@ -3,6 +3,8 @@ import {} from "./alerts.mjs";
 import * as alerts from "./alerts.mjs";
 // The page width at which the navigation is hidden by default
 const NAV_HIDDEN_PAGE_WIDTH = "700px";
+// Whether navigation is forced hidden
+let navForcedHidden = false;
 /**
  * Creates an element with the SVG namespace.
  * This function is necessary because all SVG elements must be namespaced.
@@ -317,10 +319,9 @@ function fillNav() {
     }
     $("nav").html(navHTML);
 }
-/**
- * Handles navigation visibility.
- */
+/** Handles navigation visibility. */
 function handleNavVisibility() {
+    $("nav").toggleClass("force-hidden", navForcedHidden);
     // Handle navigation toggle
     const smallWidth = matchMedia(`(max-width: ${NAV_HIDDEN_PAGE_WIDTH})`);
     $("button#nav-toggle").on("click", () => {
@@ -329,9 +330,11 @@ function handleNavVisibility() {
             $("nav").toggleClass("force-shown");
             $("div#main-overlay").toggleClass("active");
             $("div#main-wrapper").prop("inert", !$("div#main-wrapper").prop("inert"));
+            localStorage.setItem("navForcedHidden", String(false));
         }
         else {
             $("nav").toggleClass("force-hidden");
+            localStorage.setItem("navForcedHidden", String($("nav").hasClass("force-hidden")));
         }
     });
     // Handle width change
@@ -342,6 +345,7 @@ function handleNavVisibility() {
     });
 }
 $(() => {
+    navForcedHidden = localStorage.getItem("navForcedHidden") === "true";
     // Location on 404 page
     // `slice(1)` to trim the beginning slash
     $("code#404-location").html(location.pathname.slice(1));
