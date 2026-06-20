@@ -325,8 +325,10 @@ function handleNavVisibility() {
     const smallWidth = matchMedia(`(max-width: ${NAV_HIDDEN_PAGE_WIDTH})`);
     $("button#nav-toggle").on("click", () => {
         if (smallWidth.matches) {
-            $("nav").toggleClass("force-shown");
             $("nav").toggleClass("force-hidden", false);
+            $("nav").toggleClass("force-shown");
+            $("div#main-overlay").toggleClass("active");
+            $("div#main-wrapper").prop("inert", !$("div#main-wrapper").prop("inert"));
         }
         else {
             $("nav").toggleClass("force-hidden");
@@ -335,6 +337,8 @@ function handleNavVisibility() {
     // Handle width change
     smallWidth.addEventListener("change", () => {
         $("nav").toggleClass("force-shown", false);
+        $("div#main-overlay").toggleClass("active", false);
+        $("div#main-wrapper").prop("inert", false);
     });
 }
 $(() => {

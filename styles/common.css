@@ -4,11 +4,9 @@
     --spacing: 0.5em;
     --border-width: 0.05em;
     --padding: 0.5em;
-    --body-margin: 8px;
 
     --header-height: 3rem;
-    --header-padding-vertical: 0.3rem;
-    --header-padding-horizontal: 0.5rem;
+    --header-padding: 0.6em;
     --header-font-size: 1.1em;
     --nav-toggle-size: 1.5em;
     --nav-toggle-spacing: 0.7em;
@@ -20,8 +18,9 @@
     --nav-item-spacing: 0.5em;
     --nav-hr-margin-bottom: 0.2em;
     --nav-top: var(--header-height);
-    --nav-max-height: calc(100vh - var(--nav-top));
+    --nav-height: calc(100vh - var(--nav-top));
 
+    --main-margin: 8px;
     --title-font-size: 1.5em;
     --sec-title-font-size: 0.7em;
 
@@ -75,7 +74,7 @@
 
 
 body {
-    margin: var(--body-margin);
+    margin: 0;
 }
 
 body, header, button, dialog, input, nav, select, textarea {
@@ -95,12 +94,10 @@ body, header, button, dialog, input, nav, select, textarea {
 header {
     position: sticky;
     top: 0;
-    z-index: 1;
     display: flex;
     align-items: center;
     font-size: var(--header-font-size);
-    margin-bottom: var(--spacing);
-    padding: var(--header-padding-vertical) var(--header-padding-horizontal);
+    padding: 0 var(--header-padding);
     width: stretch;
     height: var(--header-height);
     box-sizing: border-box;
@@ -135,7 +132,7 @@ nav {
     flex: 0 0 var(--nav-width);
     margin-right: var(--nav-spacing);
     padding: var(--padding);
-    max-height: var(--nav-max-height);
+    height: var(--nav-height);
     box-sizing: border-box;
     overflow: auto;
     line-height: var(--nav-line-height);
@@ -143,7 +140,7 @@ nav {
     @media (max-width: 700px) {
         position: fixed;
         width: var(--nav-width);
-        height: var(--nav-max-height);
+        height: var(--nav-height);
 
         &:not(.force-shown) {
             display: none;
@@ -178,6 +175,7 @@ nav {
 /* Main wrapper */
 div#main-wrapper {
     flex: 1;
+    margin: var(--main-margin);
 }
 
 /* Page title */
@@ -349,6 +347,19 @@ dialog {
     text-align: center;
 }
 
-::backdrop {
+/* Overlay */
+div#main-overlay {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+
+    &:not(.active) {
+        display: none;
+    }
+}
+
+div#main-overlay.active, ::backdrop {
     backdrop-filter: brightness(var(--backdrop-brightness));
 }
