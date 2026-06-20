@@ -342,8 +342,7 @@ function fillNav() {
     // Navigation
     let navHTML = '<a href="#">Top</a><hr>'
         + '<section><h3>Links</h3>'
-        + '<ul><li><a href="/">Home</a></li>'
-        + '<li><a href="/projects.html">Projects</a></li>'
+        + '<ul><li><a href="/projects.html">Projects</a></li>'
         + '<li><a href="/math.html">Math</a></li></ul></section>';
 
     // Generate section links
