@@ -32,6 +32,7 @@
     --alert-spacing: 0.3em;
     --indent: 1.5em;
     --backdrop-brightness: 70%;
+    --backdrop-blur-radius: 0.05em;
 }
 
 @media (prefers-color-scheme: light) {
@@ -93,6 +94,7 @@ body, header, button, dialog, input, nav, select, textarea {
 /* Header */
 header {
     position: sticky;
+    z-index: 1;
     top: 0;
     display: flex;
     align-items: center;
@@ -361,5 +363,5 @@ div#main-overlay {
 }
 
 div#main-overlay.active, ::backdrop {
-    backdrop-filter: brightness(var(--backdrop-brightness));
+    backdrop-filter: brightness(var(--backdrop-brightness)) blur(var(--backdrop-blur-radius));
 }
