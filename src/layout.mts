@@ -9,8 +9,6 @@ let navForcedHidden = localStorage.getItem("navForcedHidden") === "true";
 
 /** Generates the header. Deletes the header first if already present. */
 function genHeader() {
-    $("header").remove();
-
     const headerHTML = '<header>'
             + '<button id="nav-toggle" class="img-button" title="Toggle navigation"><div></div></button>'
             + '<a href="/">NutronStar45\'s Work</a>'
@@ -20,8 +18,6 @@ function genHeader() {
 
 /** Generates the navigation. Deletes the navigation first if already present. */
 function genNav() {
-    $("nav").remove();
-
     // Fetch sections
     const sections = $("main > section").map(function () {
         const title = $(this).children("h3").text();
@@ -35,12 +31,12 @@ function genNav() {
     // Navigation
     let navHTML = '<nav><a href="#">Top</a><hr>'
         + '<section><h3>Links</h3>'
-        + '<ul><li><a href="/projects.html">Projects</a></li>'
+        + '<ul class="focus-group"><li><a href="/projects.html">Projects</a></li>'
         + '<li><a href="/math.html">Math</a></li></ul></section>';
 
     // Generate section links
     if (sections.length > 0) {
-        navHTML += '<hr><section><h3>Sections</h3><ul>';
+        navHTML += '<hr><section><h3>Sections</h3><ul class="focus-group">';
         for (const section of sections) {
             navHTML += `<li><a href="#${section.id}">${section.title}</a></li>`;
         }

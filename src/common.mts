@@ -314,6 +314,13 @@ export function downloadFile(content: string, filename: string) {
 }
 
 
+const path = location.pathname.split("/");
+if (path.length >= 3 && path[1] === "math") {
+    $("body").on("mathlayoutcomplete.nutronstar45", genLayout);
+} else {
+    genLayout();
+}
+
 // Location on 404 page
 // `slice(1)` to trim the beginning slash
 $("code#404-location").html(location.pathname.slice(1));
@@ -324,9 +331,39 @@ $("input[required]")
     .parent("label")
     .attr("title", "Required");
 
-const path = location.pathname.split("/");
-if (path.length >= 3 && path[1] === "math") {
-    $("body").on("mathlayoutcomplete.nutronstar45", genLayout);
-} else {
-    genLayout();
-}
+// Focus group
+$("ul.focus-group li:not(:first-child) a").attr("tabindex", -1);
+$("ul.focus-group").on("keydown", e => {
+    if (e.target.tagName !== "A") return;
+
+    const $target = $(e.target);
+    if (e.key === "ArrowUp") {
+        e.preventDefault();
+        $target.attr("tabindex", -1);
+
+        if ($target.parent().is(":first-child")) {
+            $target.parent().siblings(":last-child").children()
+                .attr("tabindex", 0)[0]!
+                .focus();
+        } else {
+            $target.parent().prev().children()
+                .attr("tabindex", 0)[0]!
+                .focus();
+        }
+    }
+
+    if (e.key === "ArrowDown") {
+        e.preventDefault();
+        $target.attr("tabindex", -1);
+
+        if ($target.parent().is(":last-child")) {
+            $target.parent().siblings(":first-child").children()
+                .attr("tabindex", 0)[0]!
+                .focus();
+        } else {
+            $target.parent().next().children()
+                .attr("tabindex", 0)[0]!
+                .focus();
+        }
+    }
+});
