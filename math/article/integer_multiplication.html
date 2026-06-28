@@ -21,29 +21,34 @@
             <h2>Multiplication of Integers</h2>
 
             <main>
+                <section id="sec-prereq">
+                    <h3>Prerequisites</h3>
+                    <div>
+                        <ul>
+                            <li><a href="./integers.html">Integers</a></li>
+                            <li><a href="./natural_number_multiplication.html">Multiplication of Natural Numbers</a></li>
+                            <li><a href="./integer_absolute_value.html">Absolute Value of Integers</a></li>
+                        </ul>
+                    </div>
+                </section>
+
                 <section id="sec-informal">
                     <h3>Informal description</h3>
-
-                    <section>
-                        <h3>Prerequisites</h3>
-                        <div>
-                            <ul>
-                                <li><a href="./integers.html">Integers</a></li>
-                                <li><a href="./natural_number_multiplication.html">Multiplication of Natural Numbers</a></li>
-                                <li><a href="./integer_absolute_value.html">Absolute Value of Integers</a></li>
-                            </ul>
-                        </div>
-                    </section>
-
                     <div>
-                        <p>To extend multiplication to integers, we consider a reservoir whose amount of water is represented as a natural number (or zero). Suppose the amount of water increases by \(a\) every day, where \(a\) is an integer. We consider the difference of the amount \(b\) days later and that of today. The difference should be \(a \times b\) if \(a\) and \(b\) are nonnegative. Thus, we define integer multiplication as follows:</p>
+                        <p>For integers \(a\) and \(b\), their product \(a \times b\) is defined to be</p>
                         <ul>
-                            <li>\(a \times b = -(|a| \times b)\) if \(a&lt;0\) and \(b \ge 0\)</li>
-                            <li>\(a \times b = -(a \times |b|)\) if \(a \ge 0\) and \(b&lt;0\)</li>
-                            <li>\(a \times b = |a| \times |b|\) if \(a&lt;0\) and \(b&lt;0\)</li>
+                            <li>\(0\) if \(a=0\) or \(b=0\)</li>
+                            <li>\(-(|a| \times b)\) if \(a&lt;0\) and \(b>0\)</li>
+                            <li>\(-(a \times |b|)\) if \(a>0\) and \(b&lt;0\)</li>
+                            <li>\(|a| \times |b|\) if \(a&lt;0\) and \(b&lt;0\)</li>
                         </ul>
+                    </div>
+                </section>
 
-                        <p>We can verify that the product of multiple integers does not depend on the the order of evaluation, so the product can be written without parentheses; for example, \((a \times b) \times c\) can be written as \(a \times b \times c\).</p>
+                <section id="sec-motivation">
+                    <h3>Motivation</h3>
+                    <div>
+                        <p>To extend multiplication to integers, we consider a reservoir whose amount of water is represented as a natural number (or zero). Suppose the amount of water increases by \(a\) every day, where \(a\) is an integer. We consider the difference of the amount \(b\) days later and that of today. The difference should be \(a \times b\) if \(a\) and \(b\) are nonnegative.</p>
                     </div>
                 </section>
 

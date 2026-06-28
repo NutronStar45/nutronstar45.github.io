@@ -31,6 +31,7 @@
     --code-padding: 0.2em;
     --alert-spacing: 0.3em;
     --indent: 1.5em;
+    --hr-width: 0.05em;
     --backdrop-brightness: 70%;
     --backdrop-blur-radius: 0.05em;
 }
@@ -324,7 +325,7 @@ ul {
 }
 
 hr {
-    border-top: var(--border-width) dashed var(--hr-color);
+    border-top: var(--hr-width) dashed var(--hr-color);
     border-right: none;
     border-bottom: none;
     border-left: none;
