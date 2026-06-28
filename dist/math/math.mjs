@@ -44,9 +44,9 @@ function genArticleLayout(metadata) {
 }
 /** Generates the subtopics section of the topic. */
 function genTopicSubtopics(ownData, allTopics) {
-    let subtopicsHTML;
+    let subtopicsHTML = '<section id="sec-subtopics"><h3>Subtopics</h3><div>';
     if (ownData.subtopics !== undefined) {
-        subtopicsHTML = '<ul>';
+        subtopicsHTML += '<ul>';
         for (const ownSubtopicFilename of ownData.subtopics) {
             for (const topic of allTopics) {
                 if (topic.filename === ownSubtopicFilename) {
@@ -57,15 +57,16 @@ function genTopicSubtopics(ownData, allTopics) {
         subtopicsHTML += '</ul>';
     }
     else {
-        subtopicsHTML = '<i class="status">Empty</i>';
+        subtopicsHTML += '<i class="status">Empty</i>';
     }
-    $("section#sec-subtopics > div").html(subtopicsHTML);
+    subtopicsHTML += '</div></section>';
+    $("main").append(subtopicsHTML);
 }
 /** Generates the articles section of the topic. */
 function genTopicArticles(ownData, allArticles) {
-    let articlesHTML;
+    let articlesHTML = '<section id="sec-articles"><h3>Articles</h3><div>';
     if (ownData.articles !== undefined) {
-        articlesHTML = '<ul>';
+        articlesHTML += '<ul>';
         for (const ownArticleFilename of ownData.articles) {
             for (const article of allArticles) {
                 if (article.filename === ownArticleFilename) {
@@ -76,9 +77,10 @@ function genTopicArticles(ownData, allArticles) {
         articlesHTML += '</ul>';
     }
     else {
-        articlesHTML = '<i class="status">Empty</i>';
+        articlesHTML += '<i class="status">Empty</i>';
     }
-    $("section#sec-articles > div").html(articlesHTML);
+    articlesHTML += '</div></section>';
+    $("main").append(articlesHTML);
 }
 /** Generates the topics section of the topic. */
 function genTopicTopics(allTopics) {
@@ -90,18 +92,19 @@ function genTopicTopics(allTopics) {
         }
     }
     // Generate topics HTML
-    let topicsHTML;
+    let topicsHTML = '<section id="sec-topics"><h3>Topics</h3><div>';
     if (ownTopics.length > 0) {
-        topicsHTML = '<ul>';
+        topicsHTML += '<ul>';
         for (const ownTopic of ownTopics) {
             topicsHTML += `<li><a href="./${ownTopic.filename}.html">${ownTopic.title}</a></li>`;
         }
         topicsHTML += '</ul>';
     }
     else {
-        topicsHTML = '<i class="status">Empty</i>';
+        topicsHTML += '<i class="status">Empty</i>';
     }
-    $("section#sec-topics > div").html(topicsHTML);
+    topicsHTML += '</div></section>';
+    $("main").append(topicsHTML);
 }
 /** Generates the topic's layout and title. */
 function genTopicLayout(metadata) {
