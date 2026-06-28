@@ -18,40 +18,6 @@ export function genHeader() {
     $("div#content-wrapper").before(headerHTML);
 }
 
-/** Handles navigation visibility. */
-function handleNavVisibility() {
-    $("nav").toggleClass("force-hidden", navForcedHidden);
-
-    // Handle navigation toggle
-    const smallWidth = matchMedia(`(max-width: ${NAV_HIDDEN_PAGE_WIDTH})`);
-    $("button#nav-toggle").on("click", () => {
-        if (smallWidth.matches) {
-            $("nav").toggleClass("force-hidden", false);
-            $("nav").toggleClass("force-shown");
-            $("div#main-overlay").toggleClass("active");
-            $("div#main-wrapper").prop("inert", !$("div#main-wrapper").prop("inert"));
-
-            localStorage.setItem("navForcedHidden", String(false));
-        } else {
-            $("nav").toggleClass("force-hidden");
-            localStorage.setItem("navForcedHidden", String($("nav").hasClass("force-hidden")));
-        }
-    });
-
-    // Handle width change
-    smallWidth.addEventListener("change", () => {
-        $("nav").toggleClass("force-shown", false);
-        $("div#main-overlay").toggleClass("active", false);
-        $("div#main-wrapper").prop("inert", false);
-    })
-
-    $("div#main-overlay").on("click", function () {
-        $("nav").toggleClass("force-shown", false);
-        $(this).toggleClass("active");
-        $("div#main-wrapper").prop("inert", false);
-    });
-}
-
 /** Generates the navigation. Deletes the navigation first if already present. */
 export function genNav() {
     $("nav").remove();
@@ -83,7 +49,39 @@ export function genNav() {
 
     navHTML += '</nav>';
     $("div#content-wrapper").prepend(navHTML);
-    handleNavVisibility();
+    $("nav").toggleClass("force-hidden", navForcedHidden);
+}
+
+/** Handles changing navigation visibility. */
+function handleNavVisibilityChange() {
+    // Handle navigation toggle
+    const smallWidth = matchMedia(`(max-width: ${NAV_HIDDEN_PAGE_WIDTH})`);
+    $("button#nav-toggle").on("click", () => {
+        if (smallWidth.matches) {
+            $("nav").toggleClass("force-hidden", false);
+            $("nav").toggleClass("force-shown");
+            $("div#main-overlay").toggleClass("active");
+            $("div#main-wrapper").prop("inert", !$("div#main-wrapper").prop("inert"));
+
+            localStorage.setItem("navForcedHidden", String(false));
+        } else {
+            $("nav").toggleClass("force-hidden");
+            localStorage.setItem("navForcedHidden", String($("nav").hasClass("force-hidden")));
+        }
+    });
+
+    // Handle width change
+    smallWidth.addEventListener("change", () => {
+        $("nav").toggleClass("force-shown", false);
+        $("div#main-overlay").toggleClass("active", false);
+        $("div#main-wrapper").prop("inert", false);
+    })
+
+    $("div#main-overlay").on("click", function () {
+        $("nav").toggleClass("force-shown", false);
+        $(this).toggleClass("active");
+        $("div#main-wrapper").prop("inert", false);
+    });
 }
 
 /** Generates the layout. */
@@ -91,4 +89,5 @@ export function genLayout() {
     $("div#content-wrapper").before('<div id="main-overlay"></div>');
     genHeader();
     genNav();
+    handleNavVisibilityChange();
 }
