@@ -1,4 +1,5 @@
 import $ from "jquery";
+import { genNav } from "../layout.mjs";
 
 /** Article structure. */
 type Article = {
@@ -172,6 +173,7 @@ try {
     } else if (pageType === "topic") {
         genTopicLayout(metadata);
     }
+    genNav();
 } catch (e) {
     console.error(e);
 }

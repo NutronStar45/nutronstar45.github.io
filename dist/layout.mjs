@@ -12,36 +12,8 @@ export function genHeader() {
         + '</header>';
     $("div#content-wrapper").before(headerHTML);
 }
-/** Generates the navigation. Deletes the navigation first if already present. */
-export function genNav() {
-    $("nav").remove();
-    // Fetch sections
-    const sections = $("main > section").map(function () {
-        const title = $(this).children("h3").text();
-        const id = $(this).attr("id");
-        if (id === undefined) {
-            console.error(`Section with title ${title} doesn't have an ID`);
-        }
-        return { title, id: id ?? "" };
-    }).get();
-    // Navigation
-    let navHTML = '<nav><a href="#">Top</a><hr>'
-        + '<section><h3>Links</h3>'
-        + '<ul><li><a href="/projects.html">Projects</a></li>'
-        + '<li><a href="/math.html">Math</a></li></ul></section>';
-    // Generate section links
-    if (sections.length > 0) {
-        navHTML += '<hr><section><h3>Sections</h3><ul>';
-        for (const section of sections) {
-            navHTML += `<li><a href="#${section.id}">${section.title}</a></li>`;
-        }
-        navHTML += '</ul></section>';
-    }
-    navHTML += '</nav>';
-    $("div#content-wrapper").prepend(navHTML);
-}
 /** Handles navigation visibility. */
-export function handleNavVisibility() {
+function handleNavVisibility() {
     $("nav").toggleClass("force-hidden", navForcedHidden);
     // Handle navigation toggle
     const smallWidth = matchMedia(`(max-width: ${NAV_HIDDEN_PAGE_WIDTH})`);
@@ -70,10 +42,38 @@ export function handleNavVisibility() {
         $("div#main-wrapper").prop("inert", false);
     });
 }
+/** Generates the navigation. Deletes the navigation first if already present. */
+export function genNav() {
+    $("nav").remove();
+    // Fetch sections
+    const sections = $("main > section").map(function () {
+        const title = $(this).children("h3").text();
+        const id = $(this).attr("id");
+        if (id === undefined) {
+            console.error(`Section with title ${title} doesn't have an ID`);
+        }
+        return { title, id: id ?? "" };
+    }).get();
+    // Navigation
+    let navHTML = '<nav><a href="#">Top</a><hr>'
+        + '<section><h3>Links</h3>'
+        + '<ul><li><a href="/projects.html">Projects</a></li>'
+        + '<li><a href="/math.html">Math</a></li></ul></section>';
+    // Generate section links
+    if (sections.length > 0) {
+        navHTML += '<hr><section><h3>Sections</h3><ul>';
+        for (const section of sections) {
+            navHTML += `<li><a href="#${section.id}">${section.title}</a></li>`;
+        }
+        navHTML += '</ul></section>';
+    }
+    navHTML += '</nav>';
+    $("div#content-wrapper").prepend(navHTML);
+    handleNavVisibility();
+}
 /** Generates the layout. */
 export function genLayout() {
     $("div#content-wrapper").before('<div id="main-overlay"></div>');
     genHeader();
     genNav();
-    handleNavVisibility();
 }
