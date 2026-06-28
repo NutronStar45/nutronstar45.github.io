@@ -1,33 +1,31 @@
 import $ from "jquery";
 
+/** Article structure. */
+type Article = {
+    filename: string,
+    title: string
+};
+
+/** Topic structure. */
+type Topic = {
+    filename: string,
+    title: string,
+    subtopics?: string[],
+    articles?: string[]
+};
+
 /** Metadata structure. */
 type Metadata = {
-    articles: { filename: string, title: string }[],
-    topics: { filename: string, title: string, subtopics?: string[], articles?: string[] }[]
+    articles: Article[],
+    topics: Topic[]
 };
 
 const path = location.pathname.split("/");
 const pageType = path[2]!;
 const filename = path[3]!.split(".")[0]!;
 
-/** Generates the article's layout. */
-function genArticleLayout(metadata: Metadata) {
-    const allTopics = metadata.topics;
-
-    // Get article data
-    let ownData;
-    for (const article of metadata.articles) {
-        if (article.filename === filename) {
-            ownData = article;
-        }
-    }
-    if (ownData === undefined) {
-        throw Error(`Cannot find article ${filename} in metadata`);
-    }
-
-    // Generate title
-    $("div#main-wrapper").prepend(`<h2>${ownData.title}</h2>`);
-
+/** Generate the topics section of the article. */
+function genArticleTopics(allTopics: Topic[]) {
     // Get topics
     let ownTopics: { filename: string, title: string }[] = [];
     for (const topic of allTopics) {
@@ -50,26 +48,25 @@ function genArticleLayout(metadata: Metadata) {
     $("section#sec-topics > div").html(topicsHTML);
 }
 
-/** Generates the topic's layout. */
-function genTopicLayout(metadata: Metadata) {
-    const { articles: allArticles, topics: allTopics } = metadata;
-
-    // Get topic data
+/** Generates the article's layout. */
+function genArticleLayout(metadata: Metadata) {
+    // Get article data
     let ownData;
-    for (const topic of allTopics) {
-        if (topic.filename === filename) {
-            ownData = topic;
-            break;
+    for (const article of metadata.articles) {
+        if (article.filename === filename) {
+            ownData = article;
         }
     }
     if (ownData === undefined) {
-        throw Error(`Cannot find topic ${filename} in metadata`);
+        throw Error(`Cannot find article ${filename} in metadata`);
     }
 
-    // Generate title
-    $("div#main-wrapper").prepend(`<h2>Topic: ${ownData.title}</h2>`);
+    $("div#main-wrapper").prepend(`<h2>${ownData.title}</h2>`);
+    genArticleTopics(metadata.topics);
+}
 
-    // Generate subtopics section
+/** Generates the subtopics section of the topic. */
+function genTopicSubtopics(ownData: Topic, allTopics: Topic[]) {
     let subtopicsHTML;
     if (ownData.subtopics !== undefined) {
         subtopicsHTML = '<ul>';
@@ -85,8 +82,10 @@ function genTopicLayout(metadata: Metadata) {
         subtopicsHTML = '<i class="status">Empty</i>';
     }
     $("section#sec-subtopics > div").html(subtopicsHTML);
+}
 
-    // Generate articles section
+/** Generates the articles section of the topic. */
+function genTopicArticles(ownData: Topic, allArticles: Article[]) {
     let articlesHTML;
     if (ownData.articles !== undefined) {
         articlesHTML = '<ul>';
@@ -102,7 +101,10 @@ function genTopicLayout(metadata: Metadata) {
         articlesHTML = '<i class="status">Empty</i>';
     }
     $("section#sec-articles > div").html(articlesHTML);
+}
 
+/** Generates the topics section of the topic. */
+function genTopicTopics(allTopics: Topic[]) {
     // Get topics
     let ownTopics: { filename: string, title: string }[] = [];
     for (const topic of allTopics) {
@@ -123,6 +125,26 @@ function genTopicLayout(metadata: Metadata) {
         topicsHTML = '<i class="status">Empty</i>';
     }
     $("section#sec-topics > div").html(topicsHTML);
+}
+
+/** Generates the topic's layout. */
+function genTopicLayout(metadata: Metadata) {
+    // Get topic data
+    let ownData;
+    for (const topic of metadata.topics) {
+        if (topic.filename === filename) {
+            ownData = topic;
+            break;
+        }
+    }
+    if (ownData === undefined) {
+        throw Error(`Cannot find topic ${filename} in metadata`);
+    }
+
+    $("div#main-wrapper").prepend(`<h2>Topic: ${ownData.title}</h2>`);
+    genTopicSubtopics(ownData, metadata.topics);
+    genTopicArticles(ownData, metadata.articles);
+    genTopicTopics(metadata.topics);
 }
 
 try {
