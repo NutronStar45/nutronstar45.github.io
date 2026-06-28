@@ -35,17 +35,18 @@ function genArticleTopics(allTopics: Topic[]) {
     }
 
     // Generate topics section
-    let topicsHTML;
+    let topicsHTML = '<section id="sec-topics"><h3>Topics</h3><div>';
     if (ownTopics.length > 0) {
-        topicsHTML = '<ul>';
+        topicsHTML += '<ul>';
         for (const ownTopic of ownTopics) {
             topicsHTML += `<li><a href="../topic/${ownTopic.filename}.html">${ownTopic.title}</a></li>`;
         }
         topicsHTML += '</ul>';
     } else {
-        topicsHTML = '<i class="status">Empty</i>';
+        topicsHTML += '<i class="status">Empty</i>';
     }
-    $("section#sec-topics > div").html(topicsHTML);
+    topicsHTML += '</div></section>';
+    $("main").append(topicsHTML);
 }
 
 /** Generates the article's layout and title. */
