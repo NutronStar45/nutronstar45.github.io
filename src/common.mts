@@ -315,20 +315,23 @@ function alertError($target: JQuery, alert: Alert) {
 export function downloadFile(content: string, filename: string) {
     const blob = new Blob([content]);
     const url = URL.createObjectURL(blob);
-    $("<a></a>").attr("download", filename).attr("href", url)[0]!.click();
+    $('<a></a>').attr("download", filename).attr("href", url)[0]!.click();
     URL.revokeObjectURL(url);
 }
 
 
-/** Populate the header. */
-function fillHeader() {
+/** Generates the header. */
+function genHeader() {
     // Header
-    const headerHTML = '<button id="nav-toggle" class="img-button" title="Toggle navigation"><div></div></button><a href="/">NutronStar45\'s Work</a>';
-    $("header").html(headerHTML);
+    const headerHTML = '<header>'
+            + '<button id="nav-toggle" class="img-button" title="Toggle navigation"><div></div></button>'
+            + '<a href="/">NutronStar45\'s Work</a>'
+        + '</header>';
+    $("div#content-wrapper").before(headerHTML);
 }
 
-/** Populate the navigation. */
-function fillNav() {
+/** Generates the navigation. */
+function genNav() {
     // Fetch sections
     const sections = $("main > section").map(function () {
         const title = $(this).children("h3").text();
@@ -340,21 +343,22 @@ function fillNav() {
     }).get();
 
     // Navigation
-    let navHTML = '<a href="#">Top</a><hr>'
+    let navHTML = '<nav><a href="#">Top</a><hr>'
         + '<section><h3>Links</h3>'
         + '<ul><li><a href="/projects.html">Projects</a></li>'
         + '<li><a href="/math.html">Math</a></li></ul></section>';
 
     // Generate section links
     if (sections.length > 0) {
-        navHTML += "<hr><section><h3>Sections</h3><ul>";
+        navHTML += '<hr><section><h3>Sections</h3><ul>';
         for (const section of sections) {
             navHTML += `<li><a href="#${section.id}">${section.title}</a></li>`;
         }
-        navHTML += "</ul></section>";
+        navHTML += '</ul></section>';
     }
 
-    $("nav").html(navHTML);
+    navHTML += '</nav>';
+    $("div#content-wrapper").prepend(navHTML);
 }
 
 /** Handles navigation visibility. */
@@ -391,9 +395,19 @@ function handleNavVisibility() {
     });
 }
 
+/** Generates the layout. */
+function genLayout() {
+    $("div#content-wrapper").before('<div id="main-overlay"></div>');
+    genHeader();
+    genNav();
+    handleNavVisibility();
+}
+
 
 $(() => {
     navForcedHidden = localStorage.getItem("navForcedHidden") === "true";
+
+    genLayout();
 
     // Location on 404 page
     // `slice(1)` to trim the beginning slash
@@ -404,8 +418,4 @@ $(() => {
         .before('<span class="required-ind">* </span>')
         .parent("label")
         .attr("title", "Required");
-
-    fillHeader();
-    fillNav();
-    handleNavVisibility();
 });

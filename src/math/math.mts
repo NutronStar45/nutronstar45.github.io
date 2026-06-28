@@ -25,11 +25,11 @@ function fillArticleSections(metadata: Metadata) {
     // Generate topics HTML
     let topicsHTML;
     if (ownTopics.length > 0) {
-        topicsHTML = "<ul>";
+        topicsHTML = '<ul>';
         for (const ownTopic of ownTopics) {
             topicsHTML += `<li><a href="../topic/${ownTopic.filename}.html">${ownTopic.title}</a></li>`;
         }
-        topicsHTML += "</ul>";
+        topicsHTML += '</ul>';
     } else {
         topicsHTML = '<i class="status">Empty</i>';
     }
@@ -54,7 +54,7 @@ function fillTopicSections(metadata: Metadata) {
     // Generate subtopics HTML
     let subtopicsHTML;
     if (subtopics !== undefined) {
-        subtopicsHTML = "<ul>";
+        subtopicsHTML = '<ul>';
         for (const ownSubtopicFilename of subtopics) {
             for (const topic of allTopics) {
                 if (topic.filename === ownSubtopicFilename) {
@@ -62,7 +62,7 @@ function fillTopicSections(metadata: Metadata) {
                 }
             }
         }
-        subtopicsHTML += "</ul>";
+        subtopicsHTML += '</ul>';
     } else {
         subtopicsHTML = '<i class="status">Empty</i>';
     }
@@ -71,7 +71,7 @@ function fillTopicSections(metadata: Metadata) {
     // Generate articles HTML
     let articlesHTML;
     if (articles !== undefined) {
-        articlesHTML = "<ul>";
+        articlesHTML = '<ul>';
         for (const ownArticleFilename of articles) {
             for (const article of allArticles) {
                 if (article.filename === ownArticleFilename) {
@@ -79,7 +79,7 @@ function fillTopicSections(metadata: Metadata) {
                 }
             }
         }
-        articlesHTML += "</ul>";
+        articlesHTML += '</ul>';
     } else {
         articlesHTML = '<i class="status">Empty</i>';
     }
@@ -96,11 +96,11 @@ function fillTopicSections(metadata: Metadata) {
     // Generate topics HTML
     let topicsHTML;
     if (ownTopics.length > 0) {
-        topicsHTML = "<ul>";
+        topicsHTML = '<ul>';
         for (const ownTopic of ownTopics) {
             topicsHTML += `<li><a href="./${ownTopic.filename}.html">${ownTopic.title}</a></li>`;
         }
-        topicsHTML += "</ul>";
+        topicsHTML += '</ul>';
     } else {
         topicsHTML = '<i class="status">Empty</i>';
     }
