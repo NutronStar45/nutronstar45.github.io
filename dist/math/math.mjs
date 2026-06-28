@@ -25,7 +25,7 @@ function genArticleTopics(allTopics) {
     }
     $("section#sec-topics > div").html(topicsHTML);
 }
-/** Generates the article's layout. */
+/** Generates the article's layout and title. */
 function genArticleLayout(metadata) {
     // Get article data
     let ownData;
@@ -37,6 +37,8 @@ function genArticleLayout(metadata) {
     if (ownData === undefined) {
         throw Error(`Cannot find article ${filename} in metadata`);
     }
+    // Generate title
+    $("title").text(`${ownData.title} - Math Reference`);
     $("div#main-wrapper").prepend(`<h2>${ownData.title}</h2>`);
     genArticleTopics(metadata.topics);
 }
@@ -101,7 +103,7 @@ function genTopicTopics(allTopics) {
     }
     $("section#sec-topics > div").html(topicsHTML);
 }
-/** Generates the topic's layout. */
+/** Generates the topic's layout and title. */
 function genTopicLayout(metadata) {
     // Get topic data
     let ownData;
@@ -114,6 +116,8 @@ function genTopicLayout(metadata) {
     if (ownData === undefined) {
         throw Error(`Cannot find topic ${filename} in metadata`);
     }
+    // Generate title
+    $("title").text(`${ownData.title} - Math Reference`);
     $("div#main-wrapper").prepend(`<h2>Topic: ${ownData.title}</h2>`);
     genTopicSubtopics(ownData, metadata.topics);
     genTopicArticles(ownData, metadata.articles);
