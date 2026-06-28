@@ -1,5 +1,4 @@
 import $ from "jquery";
-import { genNav } from "../layout.mjs";
 
 /** Article structure. */
 type Article = {
@@ -173,7 +172,7 @@ try {
     } else if (pageType === "topic") {
         genTopicLayout(metadata);
     }
-    genNav();
+    $("body").trigger("mathlayoutcomplete.nutronstar45");
 } catch (e) {
     console.error(e);
 }

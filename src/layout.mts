@@ -8,7 +8,7 @@ let navForcedHidden = localStorage.getItem("navForcedHidden") === "true";
 
 
 /** Generates the header. Deletes the header first if already present. */
-export function genHeader() {
+function genHeader() {
     $("header").remove();
 
     const headerHTML = '<header>'
@@ -19,7 +19,7 @@ export function genHeader() {
 }
 
 /** Generates the navigation. Deletes the navigation first if already present. */
-export function genNav() {
+function genNav() {
     $("nav").remove();
 
     // Fetch sections

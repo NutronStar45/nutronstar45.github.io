@@ -4,7 +4,7 @@ const NAV_HIDDEN_PAGE_WIDTH = "700px";
 // Whether navigation is forced hidden
 let navForcedHidden = localStorage.getItem("navForcedHidden") === "true";
 /** Generates the header. Deletes the header first if already present. */
-export function genHeader() {
+function genHeader() {
     $("header").remove();
     const headerHTML = '<header>'
         + '<button id="nav-toggle" class="img-button" title="Toggle navigation"><div></div></button>'
@@ -13,7 +13,7 @@ export function genHeader() {
     $("div#content-wrapper").before(headerHTML);
 }
 /** Generates the navigation. Deletes the navigation first if already present. */
-export function genNav() {
+function genNav() {
     $("nav").remove();
     // Fetch sections
     const sections = $("main > section").map(function () {

@@ -26,37 +26,35 @@ function convertFromRepr(repr: Representation) {
     }
 }
 
-$(() => {
-    for (const key in Representation) {
-        const repr = Representation[key as keyof typeof Representation];
+for (const key in Representation) {
+    const repr = Representation[key as keyof typeof Representation];
 
-        // Convert button
-        $(`button#convert-from-${repr}`).on("click", () => {
-            convertFromRepr(repr);
-        });
-
-        // Convert if enter is pressed and "Convert on enter" is enabled
-        $(`textarea#${repr}`).on("keydown", e => {
-            // Pressed enter
-            // "Convert on enter" is enabled
-            if (e.key === "Enter" && $("input#convert-on-enter").prop("checked")) {
-                // Check for "Exclude text"
-                if (!(repr === Representation.Text && $("input#convert-on-enter-exclude-text").prop("checked"))) {
-                    convertFromRepr(repr);
-                    e.preventDefault();
-                }
-            }
-        });
-    }
-
-    // Convert on enter
-    $("input#convert-on-enter").prop("checked", true);
-
-    // Convert on enter > Exclude text
-    $("input#convert-on-enter").on("change", function () {
-        $("input#convert-on-enter-exclude-text").prop("disabled", !(this as HTMLInputElement).checked);
+    // Convert button
+    $(`button#convert-from-${repr}`).on("click", () => {
+        convertFromRepr(repr);
     });
 
-    // Uppercase
-    $("input#uppercase").prop("checked", true);
+    // Convert if enter is pressed and "Convert on enter" is enabled
+    $(`textarea#${repr}`).on("keydown", e => {
+        // Pressed enter
+        // "Convert on enter" is enabled
+        if (e.key === "Enter" && $("input#convert-on-enter").prop("checked")) {
+            // Check for "Exclude text"
+            if (!(repr === Representation.Text && $("input#convert-on-enter-exclude-text").prop("checked"))) {
+                convertFromRepr(repr);
+                e.preventDefault();
+            }
+        }
+    });
+}
+
+// Convert on enter
+$("input#convert-on-enter").prop("checked", true);
+
+// Convert on enter > Exclude text
+$("input#convert-on-enter").on("change", function () {
+    $("input#convert-on-enter-exclude-text").prop("disabled", !(this as HTMLInputElement).checked);
 });
+
+// Uppercase
+$("input#uppercase").prop("checked", true);

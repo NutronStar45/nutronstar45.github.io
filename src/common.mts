@@ -314,16 +314,19 @@ export function downloadFile(content: string, filename: string) {
 }
 
 
-$(() => {
+// Location on 404 page
+// `slice(1)` to trim the beginning slash
+$("code#404-location").html(location.pathname.slice(1));
+
+// Required indicators
+$("input[required]")
+    .before('<span class="required-ind">* </span>')
+    .parent("label")
+    .attr("title", "Required");
+
+const path = location.pathname.split("/");
+if (path.length >= 3 && path[1] === "math") {
+    $("body").on("mathlayoutcomplete.nutronstar45", genLayout);
+} else {
     genLayout();
-
-    // Location on 404 page
-    // `slice(1)` to trim the beginning slash
-    $("code#404-location").html(location.pathname.slice(1));
-
-    // Required indicators
-    $("input[required]")
-        .before('<span class="required-ind">* </span>')
-        .parent("label")
-        .attr("title", "Required");
-});
+}

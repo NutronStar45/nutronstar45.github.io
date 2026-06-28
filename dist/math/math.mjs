@@ -1,5 +1,4 @@
 import $ from "jquery";
-import { genNav } from "../layout.mjs";
 const path = location.pathname.split("/");
 const pageType = path[2];
 const filename = path[3].split(".")[0];
@@ -142,7 +141,7 @@ try {
     else if (pageType === "topic") {
         genTopicLayout(metadata);
     }
-    genNav();
+    $("body").trigger("mathlayoutcomplete.nutronstar45");
 }
 catch (e) {
     console.error(e);
