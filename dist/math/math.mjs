@@ -2,9 +2,21 @@ import $ from "jquery";
 const path = location.pathname.split("/");
 const pageType = path[2];
 const filename = path[3].split(".")[0];
-/** Populate the article's topics section. */
-function fillArticleSections(metadata) {
+/** Generates the article's layout. */
+function genArticleLayout(metadata) {
     const allTopics = metadata.topics;
+    // Get article data
+    let ownData;
+    for (const article of metadata.articles) {
+        if (article.filename === filename) {
+            ownData = article;
+        }
+    }
+    if (ownData === undefined) {
+        throw Error(`Cannot find article ${filename} in metadata`);
+    }
+    // Generate title
+    $("div#main-wrapper").prepend(`<h2>${ownData.title}</h2>`);
     // Get topics
     let ownTopics = [];
     for (const topic of allTopics) {
@@ -12,62 +24,65 @@ function fillArticleSections(metadata) {
             ownTopics.push({ filename: topic.filename, title: topic.title });
         }
     }
-    // Generate topics HTML
+    // Generate topics section
     let topicsHTML;
     if (ownTopics.length > 0) {
-        topicsHTML = "<ul>";
+        topicsHTML = '<ul>';
         for (const ownTopic of ownTopics) {
             topicsHTML += `<li><a href="../topic/${ownTopic.filename}.html">${ownTopic.title}</a></li>`;
         }
-        topicsHTML += "</ul>";
+        topicsHTML += '</ul>';
     }
     else {
         topicsHTML = '<i class="status">Empty</i>';
     }
     $("section#sec-topics > div").html(topicsHTML);
 }
-/** Populate the topic's subtopics, articles and topics sections. */
-function fillTopicSections(metadata) {
+/** Generates the topic's layout. */
+function genTopicLayout(metadata) {
     const { articles: allArticles, topics: allTopics } = metadata;
-    // Get subtopics and articles
-    let subtopics;
-    let articles;
+    // Get topic data
+    let ownData;
     for (const topic of allTopics) {
         if (topic.filename === filename) {
-            subtopics = topic.subtopics;
-            articles = topic.articles;
+            ownData = topic;
             break;
         }
     }
-    // Generate subtopics HTML
+    if (ownData === undefined) {
+        throw Error(`Cannot find topic ${filename} in metadata`);
+    }
+    // Generate title
+    $("div#main-wrapper").prepend(`<h2>Topic: ${ownData.title}</h2>`);
+    // Generate subtopics section
     let subtopicsHTML;
-    if (subtopics !== undefined) {
-        subtopicsHTML = "<ul>";
-        for (const ownSubtopicFilename of subtopics) {
+    if (ownData.subtopics !== undefined) {
+        subtopicsHTML = '<ul>';
+        for (const ownSubtopicFilename of ownData.subtopics) {
             for (const topic of allTopics) {
                 if (topic.filename === ownSubtopicFilename) {
                     subtopicsHTML += `<li><a href="../topic/${ownSubtopicFilename}.html">${topic.title}</a></li>`;
                 }
             }
         }
-        subtopicsHTML += "</ul>";
+        subtopicsHTML += '</ul>';
     }
     else {
         subtopicsHTML = '<i class="status">Empty</i>';
     }
     $("section#sec-subtopics > div").html(subtopicsHTML);
-    // Generate articles HTML
+    // Generate articles section
     let articlesHTML;
-    if (articles !== undefined) {
-        articlesHTML = "<ul>";
-        for (const ownArticleFilename of articles) {
+    if (ownData.articles !== undefined) {
+        articlesHTML = '<ul>';
+        for (const ownArticleFilename of ownData.articles) {
             for (const article of allArticles) {
                 if (article.filename === ownArticleFilename) {
                     articlesHTML += `<li><a href="../article/${ownArticleFilename}.html">${article.title}</a></li>`;
                 }
             }
         }
-        articlesHTML += "</ul>";
+        articlesHTML += '</ul>';
     }
     else {
         articlesHTML = '<i class="status">Empty</i>';
@@ -83,11 +98,11 @@ function fillTopicSections(metadata) {
     // Generate topics HTML
     let topicsHTML;
     if (ownTopics.length > 0) {
-        topicsHTML = "<ul>";
+        topicsHTML = '<ul>';
         for (const ownTopic of ownTopics) {
             topicsHTML += `<li><a href="./${ownTopic.filename}.html">${ownTopic.title}</a></li>`;
         }
-        topicsHTML += "</ul>";
+        topicsHTML += '</ul>';
     }
     else {
         topicsHTML = '<i class="status">Empty</i>';
@@ -102,13 +117,11 @@ try {
     }
     // Parse metadata
     const metadata = await response.json();
-    // Articles
     if (pageType === "article") {
-        fillArticleSections(metadata);
+        genArticleLayout(metadata);
     }
-    // Topics
     else if (pageType === "topic") {
-        fillTopicSections(metadata);
+        genTopicLayout(metadata);
     }
 }
 catch (e) {

@@ -283,7 +283,7 @@ function alertError($target, alert) {
 export function downloadFile(content, filename) {
     const blob = new Blob([content]);
     const url = URL.createObjectURL(blob);
-    $("<a></a>").attr("download", filename).attr("href", url)[0].click();
+    $('<a></a>').attr("download", filename).attr("href", url)[0].click();
     URL.revokeObjectURL(url);
 }
 /** Generates the header. */
