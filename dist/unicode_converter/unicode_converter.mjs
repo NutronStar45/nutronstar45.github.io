@@ -24,6 +24,18 @@ function convertFromRepr(repr) {
         }
     }
 }
+/** Handle settings. */
+function handleSettings() {
+    // Convert on enter
+    $("input#convert-on-enter").prop("checked", true);
+    // Convert on enter > Exclude text
+    $("input#convert-on-enter").on("change", function () {
+        $("input#convert-on-enter-exclude-text").prop("disabled", !this.checked);
+    });
+    // Uppercase
+    $("input#uppercase").prop("checked", true);
+}
+// Handle conversion
 for (const key in Representation) {
     const repr = Representation[key];
     // Convert button
@@ -43,11 +55,4 @@ for (const key in Representation) {
         }
     });
 }
-// Convert on enter
-$("input#convert-on-enter").prop("checked", true);
-// Convert on enter > Exclude text
-$("input#convert-on-enter").on("change", function () {
-    $("input#convert-on-enter-exclude-text").prop("disabled", !this.checked);
-});
-// Uppercase
-$("input#uppercase").prop("checked", true);
+handleSettings();
