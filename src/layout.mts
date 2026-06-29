@@ -31,12 +31,12 @@ function genNav() {
     // Navigation
     let navHTML = '<nav><a href="#">Top</a><hr>'
         + '<section><h3>Links</h3>'
-        + '<ul class="focus-group"><li><a href="/projects.html">Projects</a></li>'
+        + '<ul><li><a href="/projects.html">Projects</a></li>'
         + '<li><a href="/math.html">Math</a></li></ul></section>';
 
     // Generate section links
     if (sections.length > 0) {
-        navHTML += '<hr><section><h3>Sections</h3><ul class="focus-group">';
+        navHTML += '<hr><section><h3>Sections</h3><ul>';
         for (const section of sections) {
             navHTML += `<li><a href="#${section.id}">${section.title}</a></li>`;
         }

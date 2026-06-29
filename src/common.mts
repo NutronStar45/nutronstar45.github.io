@@ -332,8 +332,8 @@ $("input[required]")
     .attr("title", "Required");
 
 // Focus group
-$("ul.focus-group li:not(:first-child) a").attr("tabindex", -1);
-$("ul.focus-group").on("keydown", e => {
+$("nav ul li:not(:first-child) a").attr("tabindex", -1);
+$("nav ul").on("keydown", e => {
     if (e.target.tagName !== "A") return;
 
     const $target = $(e.target);
